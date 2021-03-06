@@ -1,0 +1,130 @@
+/* ЛЕВОЕ МЕНЮ */
+a:focus { outline: none; }
+
+.leftmenu, .leftmenu ul, .leftmenu ul li, #catHead {
+    margin : 0;
+    padding : 0;
+    width : 227px;
+}
+.leftmenu ul li {
+    float: left;
+    position:relative;
+    display:block;
+    border-top : 1px solid #004461;
+    list-style-type : none;
+    color : #004461;
+    background-color: #C8C8C8;
+    /*background-color: #EFA500;*/
+}
+.leftmenu ul li a, .leftmenu ul li a.div {
+    color : #004461;
+    text-decoration : none;
+    padding : 4px;
+    display:block;
+    font-size: 8pt;
+}
+.leftmenu ul li a:hover {
+    color : #000000;
+    position: relative;
+    text-decoration : none;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    -moz-box-shadow:rgba(0, 0, 0, 0.9) 0 0 5px;
+    -webkit-box-shadow:rgba(0, 0, 0, 0.9) 0 0 5px;
+    -o-box-shadow:rgba(0, 0, 0, 0.9) 0 0 5px;
+    box-shadow:rgba(0, 0, 0, 0.9) 0 0 5px;
+    z-index: 1000;
+}
+.leftmenu .active {
+    color : #000000;
+    text-decoration : none;
+    background-color:#FFF;
+}
+.leftmenu ul li a.div {
+    /*background-color:#D6D4CA;*/
+    background-color:#FFF;
+}
+.h, #catHead {
+    font-size: 11px;
+    font-weight: bold;
+    color: #D6D4CA;
+}
+.h { padding: 5px; }
+#catHead {
+    background-color: #A50505;
+    background : url(images/but0.gif) repeat-x;
+    height: 22px;
+    clear: both;
+}
+#catHead DIV { padding : 3px 0 0 5px;}
+#catHead a { display:block; text-decoration : none; font-weight: bold;	color: #D6D4CA; }
+#catHead a:hover { text-decoration : none; color: #fff; }
+
+.leftmenu ul li ul {
+    display: none;
+    position:absolute;
+    top:0px;
+    left:227px;
+}
+.leftmenu ul li ul, .leftmenu ul li ul li {
+    width:53px;
+    background-color:#f4d25b;
+}
+
+.leftmenu ul li ul li ul {
+    float:left; left:53px; width:inherit; width:auto;
+}
+.leftmenu ul li ul li ul li {
+    white-space : nowrap;
+    width:inherit;
+    width:auto;
+    float:left;
+    display:inline;
+    padding-right:3px;
+}
+/*.leftmenu ul li ul li div {
+    display: none;
+    position:absolute;
+    top:0px;
+    left:53px;
+	padding:3px;
+	white-space : nowrap;
+	border : 1px solid #004461;
+	background-color:#D6D4CA;
+}
+.leftmenu ul li ul li div a {
+	font-family : Arial, Helvetica, sans-serif;
+	padding-right:1px;
+	display:inline;
+	font-size: 11px;
+	font-weight: bold;
+}*/
+.leftmenu .active {
+    /*background-color:#D6D4CA;*/
+    background-color:#fff;
+    display:block;
+}
+.leftmenu ul li ul li div {
+    display: none;
+    position:absolute;
+    top:2px;
+    left:52px;
+    white-space : nowrap;
+    font-size : 1px;
+}
+.leftmenu ul li ul li div a  {
+    display:inline;
+    font-family : Arial, Helvetica, sans-serif;
+    font-size : 8pt;
+    font-weight : bold;
+    color : #004461;
+    text-decoration : none;
+    padding : 4px 5px;
+    background-color: #fff;
+    border : 1px solid #004461;
+    line-height:20px;
+}
+.leftmenu ul li ul li div a:hover  {
+    color : #000;
+    background-color: #f4d25b;
+}
+/* ЛЕВОЕ МЕНЮ КОНЕЦ*/

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{header :: head}"></head>
+<body>
+<div th:replace="~{header :: header_menu}"></div>
+
+<div id="content">
+    <div th:replace="~{left_menu :: menu}"></div>
+    <div id="main_block">
+        <div class="page_title" th:text="'Статьи по ключевому слову '+${keywords}"></div>
+        <div class="article_box" th:each="article : ${articles}">
+            <div class="article_box_name"><a th:text="${article.name}" th:href="@{'/article/'+${article.id}}"></a></div>
+            <div class="article_box_authors" th:utext="${article.authors}"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

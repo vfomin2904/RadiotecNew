@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{header :: head}"></head>
+<body>
+<div th:replace="~{header :: header_menu}"></div>
+
+<div id="content">
+    <div th:replace="~{left_menu :: menu}"></div>
+    <div id="main_block">
+         <div th:if="${article.keywords != ''}">
+            <span>Ключевые слова: </span>
+            <span class="keywords" th:each="keyword:${article.keywords}">
+                <a th:href="@{/keywords(keywords = ${keyword})}" th:text="${keyword}"></a>
+            </span>
+             <div class="page_title" th:text="${article.name}"></div>
+             <div th:if="${article.udk != ''}" th:text="'УДК: '+ ${article.udk}"></div>
+             <div th:if="${article.doi != ''}" th:text="'DOI: '+ ${article.doi}"></div>
+             <div th:if="${article.authors != ''}" class="subtitle">Авторы</div>
+            <div th:utext="${article.authors}"></div>
+             <div th:if="${article.descript != ''}" class="subtitle">Аннотация</div>
+             <div th:utext="${article.descript}"></div>
+
+             <div th:if="${article.citata != ''}" class="subtitle">Для цитирования</div>
+             <div th:utext="${article.citata}"></div>
+
+             <div th:if="${article.literature != ''}" class="subtitle">Список литературы</div>
+             <div th:utext="${article.literature}"></div>
+        </div>
+
+</div>
+</div>
+</body>
+</html>

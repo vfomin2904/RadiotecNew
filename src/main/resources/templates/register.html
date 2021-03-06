@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{header :: head}"></head>
+<body>
+<div th:replace="~{header :: header_menu}"></div>
+
+<div id="content">
+    <div th:replace="~{left_menu :: menu}"></div>
+    <div id="main_block">
+
+       <h3 class="page_title">Регистрация</h3>
+
+
+        <form method="post" th:attr="action=@{/register}" th:object="${userRepo}" class="auth_form">
+            <label for="login">Логин</label>
+            <input id="login" th:field="*{login}" name="login" type="text">
+            <small class="reg_error" th:each="err : ${#fields.errors('login')}" th:text="${err}"></small>
+            <label for="password">Пароль</label>
+            <input id="password" th:field="*{password}" name="password" type="password">
+            <small class="reg_error" th:each="err : ${#fields.errors('password')}" th:text="${err}"></small>
+            <label for="repeat_password">Повторите пароль</label>
+            <input id="repeat_password" th:field="*{repeatPassword}" name="repeat_password" type="password">
+            <small class="reg_error" th:each="err : ${#fields.errors('repeatPassword')}" th:text="${err}"></small>
+            <input type="submit">
+        </form>
+
+    </div>
+</div>
+</body>
+</html>

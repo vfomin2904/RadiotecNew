@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{header :: head}"></head>
+<body>
+<div th:replace="~{header :: header_menu}"></div>
+
+<div id="content">
+    <div th:replace="~{left_menu :: menu}"></div>
+    <div id="main_block">
+<!--        <ul th:each="book : ${booksnew}">-->
+<!--            <li th:text="${book.name}"></li>-->
+<!--        </ul>-->
+
+<!--        <div class="card" style="width: 18rem;" th:each="book : ${booksnew}">-->
+<!--            <img th:src="@{'/covers/book/' + ${book.coverImg}}" class="card-img-top" th:alt="${book.name}">-->
+<!--            <div class="card-body">-->
+<!--                <p class="card-text" th:text="${book.name}"></p>-->
+<!--            </div>-->
+<!--        </div>-->
+       <h3 class="page_title">Новые книги</h3>
+        <div class="card-group">
+            <div class="card" th:each="book : ${booksnew}">
+               <a th:href="@{'/books/'+${book.id}}"><img th:src="@{'/covers/book/' + ${book.coverImg}}" class="card-img-top" th:alt="${book.name}"></a>
+                <div class="card-body">
+                    <a class="black_link"  th:href="@{'/books/'+${book.id}}"><h4 class="card-title" th:text="${book.name}"></h4></a>
+                    <p class="card-text" th:utext="${book.author}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

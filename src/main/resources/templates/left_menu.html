@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <div id="left_menu" th:fragment="menu">
+        <div class="left_menu_title">Журналы</div>
+
+        <ul th:each="journal : ${journals}">
+           <li><a th:href="@{'/journal/'+${journal.id}}" th:text="${journal.menu_name}"></a></li>
+        </ul>
+        <div class="left_menu_title">Книги</div>
+        <ul th:each="booksec : ${booksecs}">
+            <li><a th:href="@{'/booksection/'+${booksec.id}}" th:text="${booksec.name}"></a></li>
+        </ul>
+<!--        <ul>-->
+<!--            <li><a href="#">item1</a></li>-->
+<!--            <li><a href="#">item2</a></li>-->
+<!--            <li><a href="#">item3</a></li>-->
+<!--            <li><a href="#">item4</a></li>-->
+<!--            <li><a href="#">item5</a></li>-->
+<!--            <li><a href="#">item6</a></li>-->
+<!--        </ul>-->
+    </div>
+</html>

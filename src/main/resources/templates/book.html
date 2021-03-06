@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{header :: head}"></head>
+<body>
+<div th:replace="~{header :: header_menu}"></div>
+
+<div id="content">
+    <div th:replace="~{left_menu :: menu}"></div>
+    <div id="main_block">
+        <div class="page_title" th:text="${book.name}"></div>
+        <div class="cursive_title" th:if="${book. author != ''}"><span th:utext="${book.author}"></span></div>
+        <img class="journal_img" th:src="@{'/covers/book/'+${book.coverImg}}">
+        <div class="jurnal_short_info">
+            <p th:if="${book.description != ''}" th:utext="${book.description}"></p>
+            <p th:if="${book.pages != ''}" th:text="'Количество страниц: '+${book.pages}"></p>
+            <p th:if="${book.price > 0}" th:text="'Цена: '+${book.price}"></p>
+            <p th:if="${book.isbn != ''}" th:text="'ISBN: '+${book.isbn}"></p>
+        </div>
+        <p th:if="${book.content != ''}" th:utext="${book.content}"></p>
+    </div>
+</div>
+</body>
+</html>
