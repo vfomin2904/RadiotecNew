@@ -5,7 +5,7 @@
         <div class="left_menu_title">Журналы</div>
 
         <ul th:each="journal : ${journals}">
-           <li><a th:href="@{'/journal/'+${journal.id}}" th:text="${journal.menu_name}"></a></li>
+           <li><a th:href="@{'/journal/'+${journal.id}}" th:text="${journal.menuName}"></a></li>
         </ul>
         <div class="left_menu_title">Книги</div>
         <ul th:each="booksec : ${booksecs}">

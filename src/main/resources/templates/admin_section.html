@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<body>
+<div th:if="${action == 'section_add'} or ${action == 'section_change'} or ${action == 'section_list'}"
+     th:fragment="section_options" class="relative">
+    <div class="title" th:if="${action == 'section_add'}">Добавление раздела номера</div>
+    <div class="page_title" th:if="${action == 'section_change'} or ${action == 'section_list'}">Изменение раздела</div>
+    <form class="main_form" method="post"
+          th:attr="action=@{${action == 'section_add'?'/admin/section_add':'/admin/section_change'}}"
+          th:object="${section}">
+        <input th:if="${action == 'section_change'}" th:field="*{id}" id="section_id" name="section_id" type="hidden">
+        <input th:if="${action == 'section_change'}" th:field="*{numberId}" id="number_id" name="number_id"
+               type="hidden">
+        <!--        <label class="select_label"  th:if="${action == 'section_add'}" for="journal_name">Журнал</label>-->
+        <select class="select-css" th:if="${action == 'section_add'} or ${action == 'section_list'}"
+                id="select_journal_name" name="journal_name">
+            <option selected readonly>Журнал</option>
+            <option th:each="journal : ${journals}" th:value="${journal.id}" th:text="${journal.name}"></option>
+        </select>
+
+        <!--        <label class="select_label" th:if="${action == 'section_add'}" for="number_year">Год номера</label>-->
+        <select class="select-css" th:if="${action == 'section_add'} or ${action == 'section_list'}"
+                id="select_number_year" name="number_year">
+            <option selected disabled>Год</option>
+            <option th:if="${number != null}" th:value="${number.year}" th:text="${number.year}">Год</option>
+        </select>
+        <select class="select-css" name="numberId" th:if="${action == 'section_add'} or ${action == 'section_list'}"
+                id="select_number_name">
+            <option value="0" readonly th:selected="selected">Номер</option>
+        </select>
+
+        <select class="select-css" name="id" th:if="${action == 'section_list'}" id="select_section_name">
+            <option value="" th:disabled="disabled" th:selected="selected">Раздел</option>
+        </select>
+
+
+        <div class="section_main_params" th:if="${action == 'section_add'} or ${action == 'section_change'}">
+            <a th:if="${action == 'section_change'}" th:href="@{/admin/section_delete(id=${section.id})}"><img
+                    title="удалить" class="remove_img" src="/images/delete.png"></a>
+
+            <div class="form__group field">
+                <input class="form__field" th:field="*{name}" id="name" name="name"
+                       placeholder="Название" type="text">
+                <label class="form__label">Название</label>
+            </div>
+            <small class="input_error" th:each="err : ${#fields.errors('name')}" th:text="${err}"></small>
+
+
+            <div class="form__group field">
+                <input class="form__field" th:field="*{nameEng}" id="nameEng" name="nameEng"
+                       placeholder="Английское название" type="text">
+                <label class="form__label">Английское название</label>
+            </div>
+            <br>
+            <small class="input_error" th:each="err : ${#fields.errors('nameEng')}" th:text="${err}"></small>
+
+
+            <input class="custom-checkbox active" id="checkbox_active" type="checkbox" name="checkbox_active">
+            <label for="checkbox_active">Активировать</label>
+            <input th:field="*{post}" class="checkbox_value" id="post" name="post" th:value="0" type="hidden">
+            <input th:if="${action == 'section_add'}" id="submit" value="Добавить раздел" type="submit">
+            <input th:if="${action == 'section_change'}" id="submit" value="Изменить раздел" type="submit">
+        </div>
+        <div id="section_options" class="change_options">
+
+        </div>
+    </form>
+</div>
+</body>
+</html>

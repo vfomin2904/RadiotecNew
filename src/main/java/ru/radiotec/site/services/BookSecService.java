@@ -26,4 +26,15 @@ public class BookSecService {
         return bookSecRepository.findById(id).get();
     }
 
+    public void create(BookSec section) {
+        bookSecRepository.save(section);
+    }
+
+    public void update(BookSec section) {
+        bookSecRepository.save(section);
+    }
+
+    public void delete(BookSec section) {
+        bookSecRepository.delete(section);
+    }
 }

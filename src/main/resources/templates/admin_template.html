@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:fragment="head">
+
+    <title>Журнал «Радиотехника» | Администрирование</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+
+    <script type="text/javascript" async="" charset="utf-8" src="http://site.yandex.net/v2.0/js/all.js"></script>
+
+    <link rel="shortcut icon" th:href="@{/images/favicon.png}" type="image/x-icon">
+    <script th:src="@{/js/ckeditor/ckeditor.js}"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{/js/popup.js}"></script>
+    <script type="text/javascript" th:src="@{/js/admin.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/admin.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/popup.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/admin_menu/css/style.css}">
+</head>
+<body>
+<div id="admin">
+    <div id="left_menu_column">
+        <ul class="accordion-menu">
+            <li>
+                <div class="dropdownlink"><i class="fa fa-road" aria-hidden="true"></i> Журнал
+                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                </div>
+                <ul class="submenuItems">
+                    <li><a href="/admin/journal_add">Добавить</a></li>
+                    <li><a href="/admin/journal_change">Изменить</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="dropdownlink"><i class="fa fa-paper-plane" aria-hidden="true"></i> Номер
+                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                </div>
+                <ul class="submenuItems">
+                    <li><a href="/admin/number_add">Добавить</a></li>
+                    <li><a href="/admin/number_change">Изменить</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="dropdownlink"><i class="fa fa-quote-left" aria-hidden="true"></i> Раздел
+                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                </div>
+                <ul class="submenuItems">
+                    <li><a href="/admin/section_add">Добавить</a></li>
+                    <li><a href="/admin/section_change">Изменить</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Статья
+                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                </div>
+                <ul class="submenuItems">
+                    <li><a href="/admin/article_add">Добавить</a></li>
+                    <li><a href="/admin/article_change">Изменить</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Книжный раздел
+                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                </div>
+                <ul class="submenuItems">
+                    <li><a href="/admin/booksec_add">Добавить</a></li>
+                    <li><a href="/admin/booksec_change">Изменить</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Книга
+                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                </div>
+                <ul class="submenuItems">
+                    <li><a href="/admin/book_add">Добавить</a></li>
+                    <li><a href="/admin/book_change">Изменить</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Новости
+                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                </div>
+                <ul class="submenuItems">
+                    <li><a href="/admin/news_add">Добавить</a></li>
+                    <li><a href="/admin/news_change">Изменить</a></li>
+                </ul>
+            </li>
+        </ul>
+        <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
+
+        <script th:src="@{/admin_menu/js/index.js}"></script>
+    </div>
+    <div id="admin_content">
+            <div th:replace="~{admin_journal :: journal_options}"></div>
+            <div th:replace="~{admin_number :: number_options}"></div>
+            <div th:replace="~{admin_section :: section_options}"></div>
+            <div th:replace="~{admin_article :: article_options}"></div>
+            <div th:replace="~{admin_booksec :: booksec_options}"></div>
+            <div th:replace="~{admin_book :: book_options}"></div>
+            <div th:replace="~{admin_news :: news_options}"></div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<body>
+<div th:if="${action == 'booksec_change'} or ${action == 'booksec_list'} or ${action == 'booksec_add'}" class="relative"
+     th:fragment="booksec_options">
+    <div class="title" th:if="${action == 'booksec_add'}">Добавление книжного раздела</div>
+    <div class="page_title" th:if="${action == 'booksec_list'}">Изменение книжного раздела</div>
+    <form class="main_form" method="post" th:attr="action=@{${action == 'booksec_add'?'/admin/booksec_add':'/admin/booksec_change'}}"
+          th:object="${booksec}">
+        <label th:if="${action == 'booksec_list'}" for="booksec_name">Раздел</label>
+        <select class="select-css" th:if="${action == 'booksec_list'}" id="booksec_name" name="booksec_name">
+            <option selected disabled>Книжный раздел</option>
+            <option th:each="booksec : ${booksecs}" th:value="${booksec.id}" th:text="${booksec.name}"></option>
+        </select>
+
+        <div class="booksec_main_params" th:if="${action == 'booksec_add'} or ${action == 'booksec_change'}">
+            <a th:if="${action == 'booksec_change'}" th:href="@{/admin/booksec_delete(id=${booksec.id})}"><img
+                    title="удалить" class="remove_img" src="/images/delete.png"></a>
+
+
+            <input th:if="${action == 'booksec_change'}" th:field="*{id}" id="booksec_id" name="booksec_id"
+                   type="hidden">
+
+            <div class="group">
+                <input th:field="*{name}" id="booksec_name" name="booksec_name" type="text" required>
+                <span class="bar"></span>
+                <label class="label_input">Название</label>
+            </div>
+
+            <div class="group">
+                <input th:field="*{redaktor}" id="redaktor" name="redaktor" type="text" required>
+                <span class="bar"></span>
+                <label class="label_input">Редколлегия</label>
+            </div>
+
+            <div class="group">
+                <input th:field="*{keywords}" id="keywords" name="keywords" type="text" required>
+                <span class="bar"></span>
+                <label class="label_input">Ключевые слова</label>
+            </div>
+
+            <input id="submit" th:if="${action == 'booksec_add'}" value="Добавить книжный раздел" type="submit">
+            <input id="submit" th:if="${action == 'booksec_change'}" value="Сохранить книжный раздел" type="submit">
+        </div>
+        <div id="booksec_options" class="change_options">
+
+        </div>
+    </form>
+
+</div>
+</body>
+</html>

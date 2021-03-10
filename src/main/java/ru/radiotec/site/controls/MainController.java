@@ -47,22 +47,7 @@ public class MainController {
         Journals currentJournal = journalsService.getJournalById(id);
         init_menu(model);
 
-        TreeMap<String, TreeSet<Number>> numberSorted = new TreeMap<>(new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return Integer.parseInt(o2) - Integer.parseInt(o1);
-            }
-        });
-
-        currentJournal.getNumbers().forEach((Number number) ->{
-
-            TreeSet<Number> currentValue = numberSorted.getOrDefault(number.getYear(), new TreeSet<Number>());
-
-            currentValue.add(number);
-                 numberSorted.put(number.getYear(), currentValue);
-                }
-        );
-
+        TreeMap<String, TreeSet<Number>> numberSorted = journalsService.getNumberSortedByYear(currentJournal);
         model.addAttribute("currentJournal", currentJournal);
         model.addAttribute("numbersSorted", numberSorted);
         return "journal";

@@ -1,6 +1,11 @@
 package ru.radiotec.site.entity;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,12 +21,14 @@ public class Number implements Comparable{
     @Column(name="jr_num")
     private int journalId;
 
+    @Length(min=1, max=10)
     @Column(name="num_num")
-    private String number;
+    private String name;
 
     @Column(name="num_descript")
     private String descript;
 
+    @NotEmpty
     @Column(name="num_year")
     private String year;
 
@@ -78,12 +85,12 @@ public class Number implements Comparable{
         this.journalId = journalId;
     }
 
-    public String getNumber() {
-        return number;
+    public String getName() {
+        return name;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescript() {
@@ -103,7 +110,12 @@ public class Number implements Comparable{
     }
 
     public String getYear() {
-        return year.substring(0,4);
+        if(year != null && year.length()>0){
+            return year.substring(0,4);
+        }else{
+            return year;
+        }
+
     }
 
     public void setYear(String year) {
@@ -112,8 +124,13 @@ public class Number implements Comparable{
 
     @Override
     public int compareTo(Object o) {
-        String[] num1 = this.getNumber().split("-");
-        String[] num2 =  ((Number) o).getNumber().split("-");
+        String[] num1 = this.getName().split("-");
+        String[] num2 =  ((Number) o).getName().split("-");
         return Integer.parseInt(num1[0])  - Integer.parseInt(num2[0]);
+    }
+
+    @Override
+    public String toString() {
+        return this.getYear()+" : "+this.getName();
     }
 }

@@ -24,4 +24,19 @@ public class ArticleService {
     public List<Article> getArticlesByKeywords(String keywords) {
         return articleRepository.findByKeywordsContaining(keywords);
     }
+
+    public void create(Article article) {
+        articleRepository.save(article);
+    }
+
+    public List<Article> getArticleBySection(int section_id) {
+        return articleRepository.findBySectionId(section_id);
+    }
+
+    public void update(Article article) {
+        articleRepository.save(article);
+    }
+    public void delete(Article article) {
+        articleRepository.delete(article);
+    }
 }

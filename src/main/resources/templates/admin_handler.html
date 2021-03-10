@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<body>
+<div>
+    <div th:if="${not #lists.isEmpty(years)}" th:fragment="numbers_years" class="years_list">
+        <option selected disabled>Год</option>
+        <option class="custom_option" th:each="year : ${years}" th:text="${year}" th:value="${year}"></option>
+    </div>
+    <div th:if="${not #lists.isEmpty(numbers)}" th:fragment="numbers_name" class="numbers_list">
+        <option selected disabled>Номер</option>
+        <option class="custom_option" th:each="number : ${numbers}" th:text="${number.name}"
+                th:value="${number.id}"></option>
+    </div>
+    <div th:if="${selectedNumber != null}" class="section_list">
+        <option selected disabled>Раздел</option>
+        <option class="custom_option" th:each="section : ${selectedNumber.sections}" th:text="${section.name}"
+                th:value="${section.id}"></option>
+    </div>
+
+    <div th:if="${selectedSection != null}" class="articles_list">
+        <option selected disabled>Статья</option>
+        <option class="custom_option" th:each="article : ${selectedSection.articles}" th:text="${article.name}"
+                th:value="${article.id}"></option>
+    </div>
+
+    <div th:if="${booksec != null} and ${action == 'book_change'}" class="books_list">
+        <option selected disabled>Книга</option>
+        <option class="custom_option" th:each="book : ${booksec.books}" th:text="${book.name}"
+                th:value="${book.id}"></option>
+    </div>
+</div>
+</body>
+</html>

@@ -25,7 +25,7 @@ public class UserAuthService implements UserDetailsService {
         return userRepository.findByLogin(login).map(user -> new User(
                 user.getLogin(),
                 user.getPassword(),
-                Collections.singleton(new SimpleGrantedAuthority("USER"))
+                Collections.singleton(new SimpleGrantedAuthority(user.getGroup().getName()))
         )).orElseThrow(()->new UsernameNotFoundException("Пользователь не найден"));
     }
 }

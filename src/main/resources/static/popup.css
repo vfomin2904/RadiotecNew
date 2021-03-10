@@ -12,11 +12,11 @@
 }
 
 .popup {
-    position: absolute;
+    position: fixed;
     top: 5%;
     left: 50%;
     padding: 20px;
-    width: 360px;
+    width: 420px;
     margin-left: -200px;
     background: #fff;
     border: 1px solid orange;
@@ -31,11 +31,11 @@
 }
 
 .popup-open{
-    background: #2d3845;
+    background: #59595d;
     color:#fff;
     border-radius: 8px;
-    padding:10px 10px;
-    margin: 10px 0;
+    padding:6px 10px;
+    margin: 6px 0;
     display: inline-block;
     cursor:pointer;
 }

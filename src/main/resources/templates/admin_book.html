@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<body>
+<div th:if="${action == 'book_change'} or ${action == 'book_list'} or ${action == 'book_add'}" class="relative"
+     th:fragment="book_options">
+    <div class="title" th:if="${action == 'book_add'}">Добавление книги</div>
+    <div class="page_title" th:if="${action == 'book_list'}">Изменение книги</div>
+    <form class="main_form" method="post" th:attr="action=@{${action == 'book_add'?'/admin/book_add':'/admin/book_change'}}"
+          th:object="${book}">
+        <select class="select-css" th:if="${action == 'book_add'} or ${action == 'book_list'}" id="book_select_section" name="section">
+            <option selected disabled th:value="0">Книжный раздел</option>
+            <option th:each="booksec : ${booksecs}" th:value="${booksec.id}" th:text="${booksec.name}"></option>
+        </select>
+
+        <select class="select-css" th:if="${action == 'book_list'}"  id="select_book_name" name="id">
+            <option selected disabled th:value="0">Книга</option>
+        </select>
+
+        <div class="book_main_params" th:if="${action == 'book_add'} or ${action == 'book_change'}">
+            <a th:if="${action == 'book_change'}" th:href="@{/admin/book_delete(id=${book.id})}"><img
+                    title="удалить" class="remove_img" src="/images/delete.png"></a>
+
+
+            <input th:if="${action == 'book_change'}" th:field="*{id}" id="book_id" name="book_id"
+                   type="hidden">
+
+            <div class="group">
+                <input th:field="*{name}" id="book_name" name="book_name" type="text" required>
+                <span class="bar"></span>
+                <label class="label_input">Название</label>
+            </div>
+
+            <div class="group">
+                <input th:field="*{author}" id="author" name="author" type="text" required>
+                <span class="bar"></span>
+                <label class="label_input">Авторы</label>
+            </div>
+
+            <select class="select-css" th:field="*{publisher}" id="publisher" name="publisher">
+                <option selected disabled th:value="0">Издательство</option>
+                <option th:each="publisher : ${publishers}" th:value="${publisher.id}" th:text="${publisher.name}"></option>
+            </select>
+
+            <select class="select-css" th:field="*{bookcover}" id="cover" name="cover">
+                <option selected disabled th:value="0">Обложка</option>
+                <option th:each="bookcover : ${bookcovers}" th:value="${bookcover.id}" th:text="${bookcover.name}"></option>
+            </select>
+
+            <select class="select-css"  th:field="*{booksize}" id="size" name="size">
+                <option selected disabled th:value="0">Размер обложки</option>
+                <option th:each="size : ${booksizes}" th:value="${size.id}" th:text="${size.name}"></option>
+            </select>
+            <br>
+            <div class="group">
+                <input th:field="*{pages}" id="pages" name="pages" type="text">
+                <span class="bar"></span>
+                <label class="label_input">Количество страниц</label>
+            </div>
+
+            <input class="custom-checkbox active" id="checkbox_pict" type="checkbox" name="checkbox_pict">
+            <label for="checkbox_pict">Иллюстрации</label>
+            <input th:field="*{fpict}" class="checkbox_value"  id="fpict" name="fpict" th:value="0" type="hidden">
+
+
+            <div class="group">
+                <input th:field="*{description}" id="description" name="description" type="text" required>
+                <span class="bar"></span>
+                <label class="label_input">Аннотация</label>
+            </div>
+
+            <div class="group">
+                <input th:field="*{isbn}" id="isbn" name="isbn" type="text" required>
+                <span class="bar"></span>
+                <label class="label_input">ISBN</label>
+            </div>
+
+            <div class="group">
+                <input th:field="*{price}" id="price" name="price" type="text" required>
+                <span class="bar"></span>
+                <label class="label_input">Цена</label>
+            </div>
+
+
+            <div class="group">
+                <input th:field="*{editionNumber}" id="editionNumber" name="editionNumber" type="text" required>
+                <span class="bar"></span>
+                <label class="label_input">Номер издания</label>
+            </div>
+
+            <div class="group">
+                <input th:field="*{udk}" id="udk" name="udk" type="text" required>
+                <span class="bar"></span>
+                <label class="label_input">УДК</label>
+            </div>
+
+            <div class="group">
+                <input th:field="*{bbk}" id="bbk" name="bbk" type="text" required>
+                <span class="bar"></span>
+                <label class="label_input">BBK</label>
+            </div>
+
+            <div class="group">
+                <input th:field="*{coverImg}" id="coverImg" name="coverImg" type="text" required>
+                <span class="bar"></span>
+                <label class="label_input">Обложка</label>
+            </div>
+
+            <div class="group">
+                <input th:field="*{content}" id="content" name="content" type="text" required>
+                <span class="bar"></span>
+                <label class="label_input">Содержание</label>
+            </div>
+
+
+            <input class="custom-checkbox active" id="checkbox_new" type="checkbox" name="checkbox_new">
+            <label for="checkbox_new">Новая книга</label>
+            <input th:field="*{bookNew}" class="checkbox_value"  id="bookNew" name="bookNew" th:value="0" type="hidden">
+
+
+            <input id="submit" th:if="${action == 'book_add'}" value="Добавить книгу" type="submit">
+            <input id="submit" th:if="${action == 'book_change'}" value="Сохранить книгу" type="submit">
+        </div>
+        <div id="books_options" class="change_options">
+
+        </div>
+    </form>
+
+</div>
+</body>
+</html>

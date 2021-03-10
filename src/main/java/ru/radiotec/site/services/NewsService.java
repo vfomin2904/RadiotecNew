@@ -20,4 +20,14 @@ public class NewsService {
     public News getNewsById(int id) {
         return newsRepository.findById(id).get();
     }
+
+    public void create(News news) {
+        newsRepository.save(news);
+    }
+    public void update(News news) {
+        newsRepository.save(news);
+    }
+    public void delete(News news) {
+        newsRepository.delete(news);
+    }
 }

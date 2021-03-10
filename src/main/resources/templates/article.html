@@ -9,7 +9,7 @@
     <div id="main_block">
          <div th:if="${article.keywords != ''}">
             <span>Ключевые слова: </span>
-            <span class="keywords" th:each="keyword:${article.keywords}">
+            <span class="keywords" th:each="keyword: ${#strings.arraySplit(article.keywords, ',')}">
                 <a th:href="@{/keywords(keywords = ${keyword})}" th:text="${keyword}"></a>
             </span>
              <div class="page_title" th:text="${article.name}"></div>

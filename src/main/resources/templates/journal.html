@@ -8,7 +8,7 @@
     <div th:replace="~{left_menu :: menu}"></div>
     <div id="main_block">
        <h3 class="page_title" th:text="'Журнал '+${currentJournal.name}"></h3>
-        <div><span class="popup-open">Выбрать номер журнала</span></div>
+        <div th:if="${not #lists.isEmpty(currentJournal.numbers)}"><span class="popup-open">Выбрать номер журнала</span></div>
         <div class="popup-fade">
             <div class="popup">
                 <a class="popup-close" href="#">Закрыть</a>
@@ -16,7 +16,7 @@
                     <div class="number_line" th:each="number : ${numbersSorted}">
                         <span class="number_year" th:text="${number.key}"></span>
                         <div class="number_val" th:each="num : ${number.value}">
-                            <a th:href="@{'/number/'+${num.id}}"><span th:text="${num.number}"></span></a>
+                            <a th:href="@{'/number/'+${num.id}}"><span th:text="${num.name}"></span></a>
                         </div>
                     </div>
                 </div>

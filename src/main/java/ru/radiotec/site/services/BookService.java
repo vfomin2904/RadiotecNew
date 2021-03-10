@@ -25,4 +25,16 @@ public class BookService {
     public Books getBookById(int id){
         return bookRepository.findById(id).get();
     }
+
+    public void create(Books book) {
+        bookRepository.save(book);
+    }
+
+    public void update(Books book) {
+        bookRepository.save(book);
+    }
+
+    public void delete(Books book) {
+        bookRepository.delete(book);
+    }
 }

@@ -7,9 +7,9 @@
 <div id="content">
     <div th:replace="~{left_menu :: menu}"></div>
     <div id="main_block">
-        <div th:text="${selectedNews == null}? 'Новости издательства' : ${selectedNews.date}+ ' '+${selectedNews.shortNews}" class="page_title"></div>
+        <div th:text="${selectedNews == null}? 'Новости издательства' : ${selectedNews.date}+ ' '+${selectedNews.name}" class="page_title"></div>
         <div th:if="${selectedNews == null}" th:each="item : ${news}">
-            <div><a class="black_link" th:href="@{'/news/'+${item.id}}"><span th:text="${item.date}+' '"></span><span th:text="${item.shortNews}"></span></a></div>
+            <div><a class="black_link" th:href="@{'/news/'+${item.id}}"><span th:text="${item.date}+' '"></span><span th:text="${item.name}"></span></a></div>
         </div>
         <div th:if="${selectedNews != null}" th:utext="${selectedNews.longNews}">
         </div>

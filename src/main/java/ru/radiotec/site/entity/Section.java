@@ -1,6 +1,8 @@
 package ru.radiotec.site.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,15 +20,20 @@ public class Section {
     @JoinColumn(name = "number", referencedColumnName = "num_id", insertable = false, updatable = false)
     private Number number;
 
+    @NotEmpty
     @Column(name="razd_name")
     private String name;
 
+    @Column(name="number")
+    private int numberId;
+
     @Column(name="post")
-    private String post;
+    private int post;
 
     @Column(name="r_sort")
     private int sort;
 
+    @NotEmpty
     @Column(name="razd_name_eng")
     private String nameEng;
 
@@ -54,6 +61,13 @@ public class Section {
         this.number = number;
     }
 
+    public int getNumberId() {
+        return numberId;
+    }
+
+    public void setNumberId(int numberId) {
+        this.numberId = numberId;
+    }
 
     public int getId() {
         return id;
@@ -71,11 +85,11 @@ public class Section {
         this.name = name;
     }
 
-    public String getPost() {
+    public int getPost() {
         return post;
     }
 
-    public void setPost(String post) {
+    public void setPost(int post) {
         this.post = post;
     }
 

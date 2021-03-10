@@ -5,7 +5,7 @@ $(document).ready(function($) {
         return false;
     });
     $('.popup-open').click(function() {
-        $('.popup-fade').fadeIn();
+        $(this).parent().next('.popup-fade').fadeIn();
         return false;
     });
 

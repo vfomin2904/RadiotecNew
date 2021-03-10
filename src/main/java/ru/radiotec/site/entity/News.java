@@ -15,7 +15,7 @@ public class News {
     private String date;
 
     @Column(name="shortnews")
-    private String shortNews;
+    private String name;
 
     @Column(name="longnews")
     private String longNews;
@@ -36,12 +36,12 @@ public class News {
         this.date = date;
     }
 
-    public String getShortNews() {
-        return shortNews;
+    public String getName() {
+        return name;
     }
 
-    public void setShortNews(String shortNews) {
-        this.shortNews = shortNews;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getLongNews() {
