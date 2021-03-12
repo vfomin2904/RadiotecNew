@@ -30,12 +30,15 @@
             <option value="0" readonly th:selected="selected">Номер</option>
         </select>
 
-        <select class="select-css" name="id" th:if="${action == 'section_list'}" id="select_section_name">
-            <option value="" th:disabled="disabled" th:selected="selected">Раздел</option>
+        <select class="select-css" th:field="*{id}" name="id" th:if="${action == 'section_list'}" id="select_section_name">
+            <option value="0" th:disabled="disabled" th:selected="selected">Раздел</option>
         </select>
 
 
-        <div class="section_main_params" th:if="${action == 'section_add'} or ${action == 'section_change'}">
+        <div class="section_main_params main_params" th:if="${action == 'section_add'} or ${action == 'section_change'}">
+            <small class="input_error" th:each="err : ${#fields.errors('numberId')}" th:text="${err}"></small>
+            <small class="input_error" th:each="err : ${#fields.errors('id')}" th:text="${err}"></small>
+
             <a th:if="${action == 'section_change'}" th:href="@{/admin/section_delete(id=${section.id})}"><img
                     title="удалить" class="remove_img" src="/images/delete.png"></a>
 
@@ -45,7 +48,6 @@
                 <label class="form__label">Название</label>
             </div>
             <small class="input_error" th:each="err : ${#fields.errors('name')}" th:text="${err}"></small>
-
 
             <div class="form__group field">
                 <input class="form__field" th:field="*{nameEng}" id="nameEng" name="nameEng"
@@ -59,10 +61,25 @@
             <input class="custom-checkbox active" id="checkbox_active" type="checkbox" name="checkbox_active">
             <label for="checkbox_active">Активировать</label>
             <input th:field="*{post}" class="checkbox_value" id="post" name="post" th:value="0" type="hidden">
-            <input th:if="${action == 'section_add'}" id="submit" value="Добавить раздел" type="submit">
-            <input th:if="${action == 'section_change'}" id="submit" value="Изменить раздел" type="submit">
+            <input class="ajax_submit" th:if="${action == 'section_add'}" id="submit" value="Добавить раздел" type="button">
+            <input class="ajax_submit" th:if="${action == 'section_change'}" id="submit" value="Изменить раздел" type="button">
+
+            <script>
+                $(".ajax_submit").click(
+                    function(){
+                        var url = $(".main_form").attr("action");
+                        sendAjaxForm('main_params', 'main_form', url);
+                        return false;
+                    }
+                );
+                init_checkbox();
+            </script>
+            <div class="form_message"></div>
         </div>
-        <div id="section_options" class="change_options">
+        <div th:if="${action == 'section_list'}" class="section_main_params main_params">
+
+        </div>
+        <div id="section_options"  class="change_options">
 
         </div>
     </form>

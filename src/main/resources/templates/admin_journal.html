@@ -5,9 +5,8 @@
 <div th:if="${action == 'journal_change'} or ${action == 'journal_list'} or ${action == 'journal_add'}" th:fragment="journal_options">
     <div class="title" th:if="${action == 'journal_add'}">Добавление журнала</div>
     <div class="page_title" th:if="${action == 'journal_change'} or ${action == 'journal_list'}">Изменение журнала</div>
-    <form method="post" th:if="${action == 'journal_add'} or ${action == 'journal_change'}" th:attr="action=@{${action == 'journal_add'?'/admin/journal_add':'/admin/journal_change'}}" th:object="${journals}">
+    <form enctype="multipart/form-data" method="post" th:if="${action == 'journal_add'} or ${action == 'journal_change'}" th:attr="action=@{${action == 'journal_add'?'/admin/journal_add':'/admin/journal_change'}}" th:object="${journals}">
         <input th:field="*{id}" id="journ_id" name="journ_id" type="hidden">
-
         <div class="form__group field">
             <input class="form__field" th:field="*{name}" id="journ_name" placeholder="Название журнала" required name="journ_name" type="text" >
             
@@ -38,6 +37,7 @@
         <label class="textarea_label" for="descript">Аннотация</label>
         <textarea th:field="*{descript}" id="descript" name="descript" cols="60"
                   rows="5"></textarea>
+
 
         <label class="textarea_label" for="redkol">Редколлегия</label>
         <textarea th:field="*{redkol}" id="redkol" name="redkol" cols="60"
@@ -89,6 +89,14 @@
             <label class="form__label">Ключевые слова</label>
         </div>
 
+        <div class="form__group field">
+            <input type="file" name="file">
+            <label class="form__label">Обложка</label>
+        </div>
+        <small class="input_error" th:each="err : ${#fields.errors('cover')}" th:text="${err}"></small>
+
+
+
         <input id="submit" th:if="${action == 'journal_add'}" value="Добавить журнал" type="submit">
         <input id="submit" th:if="${action == 'journal_change'}" value="Сохранить журнал" type="submit">
         <!--                <label for="jr_active">Активировать</label>-->
@@ -105,7 +113,7 @@
         <div class="admin_card_item">
             <a th:href="@{/admin/journal_delete(id=${journal.id})}"><img title="удалить" class="remove_card_img" src="/images/delete.png"></a>
             <div><a class="black_link" th:href="@{/admin/journal_change('id'=${journal.id})}" th:text="${journal.name}"></a></div>
-            <div><img class="journal_img" th:if="${journal.cover != null and #strings.length(journal.cover) > 0}" th:src="@{'/covers/'+${journal.cover}}">
+            <div><img class="journal_img" th:if="${journal.cover != null and #strings.length(journal.cover) > 0}" th:src="@{'/uploads/journals/'+${journal.cover}}">
                 <div class="jurnal_short_info">
                     <div th:if="${journal.redaktor != null and #strings.length(journal.redaktor) > 0}">Редактор: <span th:text="${journal.redaktor}"></span></div>
                     <div th:if="${journal.num_year != null and #strings.length(journal.num_year) > 0}">Периодичность: <span th:text="${journal.num_year}"></span></div>

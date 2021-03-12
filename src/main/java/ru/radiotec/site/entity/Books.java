@@ -2,6 +2,8 @@ package ru.radiotec.site.entity;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name="books")
@@ -12,6 +14,7 @@ public class Books {
     @Column(name="id")
     private int id;
 
+    @NotEmpty
     @Column(name="bookname")
     private String name;
 

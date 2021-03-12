@@ -1,21 +1,26 @@
 package ru.radiotec.site.controls;
 
-import org.hibernate.boot.jaxb.spi.Binding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.radiotec.site.entity.Number;
 import ru.radiotec.site.entity.*;
 import ru.radiotec.site.services.*;
+import ru.radiotec.site.settings.Settings;
 
 import javax.validation.Valid;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.*;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
+
 
     @Autowired
     private JournalsService journalsService;
@@ -68,7 +73,27 @@ public class AdminController {
     }
 
     @PostMapping("/journal_add")
-    public String getAdminJournalAddPage(@Valid Journals journal, BindingResult bindingResult, Model model){
+    public String getAdminJournalAddPage(@Valid Journals journal, BindingResult bindingResult, Model model, @RequestParam("file") MultipartFile cover){
+
+        if (!cover.isEmpty()) {
+            String name = Settings.uploadPath+"journals\\"+cover.getOriginalFilename();
+            System.out.println(cover.getContentType());
+            if(cover.getContentType().equals("image/png") || cover.getContentType().equals("image/jpeg")){
+                try {
+                    byte[] bytes = cover.getBytes();
+                    BufferedOutputStream stream =
+                            new BufferedOutputStream(new FileOutputStream(name));
+                    stream.write(bytes);
+                    stream.close();
+                    System.out.println("Файл загружен");
+                    journal.setCover(name);
+                } catch (Exception e) {
+                    bindingResult.rejectValue("cover","","Не удалось загрузить файл");
+                }
+            } else{
+                bindingResult.rejectValue("cover","","Файл должен быть в формате png или jpg");
+            }
+        }
         if(bindingResult.hasErrors()){
             model.addAttribute("action", "journal_add");
             return "admin_template";
@@ -78,7 +103,29 @@ public class AdminController {
     }
 
     @PostMapping("/journal_change")
-    public String getAdminJournalChangePage(@Valid Journals journal, BindingResult bindingResult, Model model){
+    public String getAdminJournalChangePage(@Valid Journals journal, BindingResult bindingResult, Model model, @RequestParam("file") MultipartFile cover){
+        if (!cover.isEmpty()) {
+            String name = Settings.uploadPath+"/journals/"+cover.getOriginalFilename();
+            System.out.println(cover.getContentType());
+            if(cover.getContentType().equals("image/png") || cover.getContentType().equals("image/jpeg")){
+                try {
+                    byte[] bytes = cover.getBytes();
+                    BufferedOutputStream stream =
+                            new BufferedOutputStream(new FileOutputStream(name));
+                    stream.write(bytes);
+                    stream.close();
+                    System.out.println("Файл загружен");
+                    journal.setCover(cover.getOriginalFilename());
+                } catch (Exception e) {
+                    System.out.println("Вам не удалось загрузить " + name + " => " + e.getMessage());
+
+                    bindingResult.rejectValue("cover","","Не удалось загрузить файл");
+                }
+            } else{
+                bindingResult.rejectValue("cover","","Файл должен быть в формате png или jpg");
+            }
+
+        }
         if(bindingResult.hasErrors()){
             System.out.println("error");
             return getAdminJournalChangePage(model, journal,0);
@@ -94,7 +141,6 @@ public class AdminController {
             if(id > 0){
                 journal = journalsService.getJournalById(id);
             }
-//            Journals journal = journalsService.getJournalById(id);
             model.addAttribute("journals", journal);
             model.addAttribute("action", "journal_change");
         } else{
@@ -269,10 +315,12 @@ public class AdminController {
     }
 
     @GetMapping("/article_change")
-    public String getAdminArticleChangePage(Model model, @RequestParam(defaultValue = "-1") int id){
+    public String getAdminArticleChangePage(Model model, Article article, @RequestParam(defaultValue = "-1") int id){
 
-        if(id > 0){
-            Article article = articleService.getArticleById(id);
+        if(id > 0 || article.getId() > 0){
+            if(id > 0){
+                article = articleService.getArticleById(id);
+            }
             model.addAttribute("article", article);
             model.addAttribute("action", "article_change");
         } else{
@@ -285,6 +333,10 @@ public class AdminController {
 
     @PostMapping("/article_change")
     public String getAdminArticleChangePage(@Valid Article article, BindingResult bindingResult, Model model){
+        if(bindingResult.hasErrors()){
+            return getAdminArticleChangePage(model, article, 0);
+        }
+
         articleService.update(article);
         return "redirect:/admin/article_change";
     }
@@ -298,14 +350,21 @@ public class AdminController {
 
     @GetMapping("/booksec_add")
     public String getAdminBookSecPage(Model model){
-        model.addAttribute("booksec", new BookSec());
+        if(!model.containsAttribute("bookSec")){
+            model.addAttribute("bookSec", new BookSec());
+        }
         model.addAttribute("action", "booksec_add");
         return "admin_template";
     }
 
     @PostMapping("/booksec_add")
-    public String getAdminBookSecAddPage(@Valid BookSec booksec, BindingResult bindingResult){
-        bookSecService.create(booksec);
+    public String getAdminBookSecAddPage(@Valid BookSec bookSec, BindingResult bindingResult, Model model){
+        if(bindingResult.hasErrors()){
+            BookSec bookSecCopy = bookSec;
+            model.addAttribute("bookSec", bookSecCopy);
+            return getAdminBookSecPage(model);
+        }
+        bookSecService.create(bookSec);
         return "redirect:/admin/";
     }
 
@@ -313,9 +372,11 @@ public class AdminController {
     @GetMapping("/booksec_change")
     public String getAdminBookSecChangePage(Model model, @RequestParam(defaultValue = "-1") int id){
 
-        if(id > 0){
-            BookSec booksec = bookSecService.getBookSecById(id);
-            model.addAttribute("booksec", booksec);
+        if(id > 0 || model.containsAttribute("bookSec")){
+            if(id > 0){
+                BookSec booksec = bookSecService.getBookSecById(id);
+                model.addAttribute("bookSec", booksec);
+            }
             model.addAttribute("action", "booksec_change");
         } else{
             List<BookSec> booksecs = bookSecService.getAllBookSec();
@@ -328,6 +389,13 @@ public class AdminController {
 
     @PostMapping("/booksec_change")
     public String getAdminBookSecChangePage(@Valid BookSec booksec, BindingResult bindingResult, Model model){
+
+        if(bindingResult.hasErrors()){
+            BookSec bookSecCopy = booksec;
+            model.addAttribute("bookSec", bookSecCopy);
+            return getAdminBookSecChangePage(model,0);
+        }
+
         bookSecService.update(booksec);
         return "redirect:/admin/booksec_change";
     }
@@ -350,13 +418,34 @@ public class AdminController {
         model.addAttribute("booksizes", booksizes);
         model.addAttribute("publishers", publishers);
         model.addAttribute("booksecs", booksecs);
-        model.addAttribute("book", new Books());
+
+        if(!model.containsAttribute("books")){
+            model.addAttribute("books", new Books());
+        }
+
         model.addAttribute("action", "book_add");
         return "admin_template";
     }
 
     @PostMapping("/book_add")
-    public String getAdminBookAddPage(@Valid Books book, BindingResult bindingResult){
+    public String getAdminBookAddPage(@Valid Books book, BindingResult bindingResult, Model model){
+
+        if(book.getSection() < 1){
+            bindingResult.rejectValue("section", "", "Раздел не выбран");
+        }
+        if(book.getBookcover() < 1){
+            bindingResult.rejectValue("bookcover", "", "Тип обложки не выбран");
+        }
+        if(book.getBooksize() < 1){
+            bindingResult.rejectValue("booksize", "", "Размер обложки не выбран");
+        }
+        if(book.getPublisher() < 1){
+            bindingResult.rejectValue("publisher", "", "Издательство не выбрано");
+        }
+        if(bindingResult.hasErrors()){
+            model.addAttribute("books", book);
+            return getAdminBookPage(model);
+        }
         bookService.create(book);
         return "redirect:/admin/";
     }
@@ -364,9 +453,17 @@ public class AdminController {
     @GetMapping("/book_change")
     public String getAdminBookChangePage(Model model, @RequestParam(defaultValue = "-1") int id){
 
-        if(id > 0){
-            Books book = bookService.getBookById(id);
-            model.addAttribute("book", book);
+        if(id > 0 || model.containsAttribute("books")){
+            if(!model.containsAttribute("books")){
+                Books book = bookService.getBookById(id);
+                model.addAttribute("books", book);
+            }
+            List<BookSize> booksizes = bookSizeService.getAllBookSizes();
+            List<BookCover> bookcovers = bookCoverService.getAllBookCovers();
+            List<Publisher> publishers = publisherService.getAllPublishers();
+            model.addAttribute("bookcovers", bookcovers);
+            model.addAttribute("booksizes", booksizes);
+            model.addAttribute("publishers", publishers);
             model.addAttribute("action", "book_change");
         } else{
             List<BookSec> booksecs = bookSecService.getAllBookSec();
@@ -379,6 +476,22 @@ public class AdminController {
 
     @PostMapping("/book_change")
     public String getAdminBookChangePage(@Valid Books book, BindingResult bindingResult, Model model){
+        if(book.getSection() < 1){
+            bindingResult.rejectValue("section", "", "Раздел не выбран");
+        }
+        if(book.getBookcover() < 1){
+            bindingResult.rejectValue("bookcover", "", "Тип обложки не выбран");
+        }
+        if(book.getBooksize() < 1){
+            bindingResult.rejectValue("booksize", "", "Размер обложки не выбран");
+        }
+        if(book.getPublisher() < 1){
+            bindingResult.rejectValue("publish", "", "Издательство не выбрано");
+        }
+        if(bindingResult.hasErrors()){
+            model.addAttribute("books", book);
+            return getAdminBookChangePage(model, 0);
+        }
         bookService.update(book);
         return "redirect:/admin/book_change";
     }
@@ -392,12 +505,18 @@ public class AdminController {
 
     @GetMapping("/news_add")
     public String getAdminNewsPage(Model model){
-        model.addAttribute("news", new News());
+        if(!model.containsAttribute("news")){
+            model.addAttribute("news", new News());
+        }
         model.addAttribute("action", "news_add");
         return "admin_template";
     }
     @PostMapping("/news_add")
-    public String getAdminNewsAddPage(@Valid News news, BindingResult bindingResult){
+    public String getAdminNewsAddPage(@Valid News news, BindingResult bindingResult, Model model){
+        if(bindingResult.hasErrors()){
+            model.addAttribute("news", news);
+            return getAdminNewsPage(model);
+        }
         newsService.create(news);
         return "redirect:/admin/";
     }
@@ -412,9 +531,11 @@ public class AdminController {
     @GetMapping("/news_change")
     public String getAdminNewsChangePage(Model model, @RequestParam(defaultValue = "-1") int id){
 
-        if(id > 0){
-            News news = newsService.getNewsById(id);
-            model.addAttribute("news", news);
+        if(id > 0 || model.containsAttribute("news")){
+            if(!model.containsAttribute("news")){
+                News news = newsService.getNewsById(id);
+                model.addAttribute("news", news);
+            }
             model.addAttribute("action", "news_change");
         } else{
             List<News> news_list = newsService.getAllNews();
@@ -427,6 +548,10 @@ public class AdminController {
 
     @PostMapping("/news_change")
     public String getAdminNewsChangePage(@Valid News news, BindingResult bindingResult, Model model){
+        if(bindingResult.hasErrors()){
+            model.addAttribute("news", news);
+            return getAdminNewsChangePage(model, 0);
+        }
         newsService.update(news);
         return "redirect:/admin/news_change";
     }
@@ -479,8 +604,8 @@ public class AdminController {
         }
         else if(booksec_id>0){
             if(action.equals("booksec_change")){
-                BookSec booksec = bookSecService.getBookSecById(booksec_id);
-                model.addAttribute("booksec", booksec);
+                BookSec bookSec = bookSecService.getBookSecById(booksec_id);
+                model.addAttribute("bookSec", bookSec);
                 model.addAttribute("action", "booksec_change");
                 return "admin_template";
             } else if(action.equals("book_change")){
@@ -496,7 +621,7 @@ public class AdminController {
            model.addAttribute("bookcovers", bookcovers);
            model.addAttribute("booksizes", booksizes);
            model.addAttribute("publishers", publishers);
-           model.addAttribute("book", book);
+           model.addAttribute("books", book);
            model.addAttribute("action", "book_change");
            return "admin_template";
         }

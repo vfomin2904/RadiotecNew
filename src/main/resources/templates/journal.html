@@ -22,7 +22,7 @@
                 </div>
             </div>
         </div>
-        <img class="journal_img" th:src="@{'/covers/'+${currentJournal.cover}}">
+        <img class="journal_img" th:src="${'file:///'+@uploadPath+'journals/'+currentJournal.cover}">
         <div class="jurnal_short_info">
             <div>Редактор: <span th:text="${currentJournal.redaktor}"></span></div>
             <div>Периодичность: <span th:text="${currentJournal.num_year}"></span></div>

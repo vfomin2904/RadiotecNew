@@ -76,7 +76,7 @@ $(document).ready(function () {
         }).success(function (data) {
             var data = $(data);
             if (action == "section_change") {
-                $('#section_options').html(data.find('.section_main_params').html());
+                $('.main_params').html(data.find('.section_main_params').html());
                 init_checkbox();
             } else if (action == "article_change") {
                 var data = $(data);
@@ -98,7 +98,7 @@ $(document).ready(function () {
             }
         }).success(function (data) {
             var data = $(data);
-            $('#article_options').html(data.find('.article_main_params').html());
+            $('.main_params').html(data.find('.article_main_params').html());
             init_checkbox();});
     });
 
@@ -122,7 +122,7 @@ $(document).ready(function () {
                 $('#select_book_name').html(data.find('.books_list').html());
             }
             else{
-                $('#booksec_options').html(data.find('.booksec_main_params').html());
+                $('.booksec_main_params').html(data.find('.booksec_main_params').html());
                 init_checkbox();
             }});
     });
@@ -145,8 +145,36 @@ $(document).ready(function () {
     });
 
 
+
     init_checkbox();
 });
+
+function sendAjaxForm(result_form, ajax_form, url) {
+    $.ajax({
+        url:     url,
+        type:     "POST", //метод отправки
+        dataType: "html", //формат данных
+        data: $("."+ajax_form).serialize(),
+        processData: false,
+        contentType: false,
+        cache: false,
+        success: function(response) { //Данные отправлены успешно
+            // result = $.parseJSON(response);
+            console.log(response);
+            var response = $(response);
+            if(response.find('.main_params').html() != undefined){
+                $('.main_params').html(response.find('.main_params').html());
+            }
+            else{
+                $('form').append('<div class="ajax_success">Данные успешно сохранены</div>');
+            }
+        },
+        error: function(response) { // Данные не отправлены
+            $(".form_message").html('<div class="ajax_error">Ошибка. Данные не отправлены.</div>');
+        }
+    });
+}
+
 
 function init_checkbox() {
     $(".checkbox_value").each(function () {
@@ -164,20 +192,4 @@ function init_checkbox() {
             $(this).next().next(".checkbox_value").val("0");
         }
     });
-}
-
-function get_sections(section){
-
-        var valueNumber = number;
-        $.ajax({
-            url: "/admin/handler",
-            method: "POST",
-            data: {
-                number_id: valueNumber
-            }
-        }).success(function (data) {
-            var data = $(data);
-
-            $('#select_section_name').html(data.find('.section_list').html());
-        });
 }

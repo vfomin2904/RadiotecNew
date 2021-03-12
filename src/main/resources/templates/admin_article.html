@@ -18,17 +18,14 @@
             <option selected disabled>Журнал</option>
             <option th:each="journal : ${journals}" th:value="${journal.id}" th:text="${journal.name}"></option>
         </select>
-        <script>
-            $("#select_journal_name option[value = [[${action}]]]").prop('selected', true);
-        </script>
 
         <select class="select-css" th:if="${action == 'article_add'} or ${action == 'article_list'}"
                 id="select_number_year" name="number_year">
             <option selected disabled>Год</option>
         </select>
-        <script>
-            $("#select_number_year option[value = 2021]").prop('selected', true);
-        </script>
+<!--        <script>-->
+<!--            $("#select_number_year option[value = 2021]").prop('selected', true);-->
+<!--        </script>-->
 
         <select class="select-css" name="numberId" th:if="${action == 'article_add'} or ${action == 'article_list'}"
                 id="select_number_name">
@@ -38,13 +35,13 @@
         <select class="select-css" name="sectionId" th:if="${action == 'article_list'} or ${action == 'article_add'}" id="select_section_name">
             <option value="" th:disabled="disabled" th:selected="selected">Раздел</option>
         </select>
-        <small class="input_error" th:each="err : ${#fields.errors('sectionId')}" th:text="${err}"></small>
 
         <select class="select-css" name="id" th:if="${action == 'article_list'}" id="select_article_name">
             <option value="" th:disabled="disabled" th:selected="selected">Статья</option>
         </select>
 
-        <div class="article_main_params" th:if="${action == 'article_add'} or ${action == 'article_change'}">
+        <div class="article_main_params  main_params" th:if="${action == 'article_add'} or ${action == 'article_change'}">
+            <small class="input_error" th:each="err : ${#fields.errors('sectionId')}" th:text="${err}"></small>
             <a th:if="${action == 'article_change'}" th:href="@{/admin/article_delete(id=${article.id})}"><img
                     title="удалить" class="remove_img" src="/images/delete.png"></a>
 
@@ -157,25 +154,38 @@
 <!--            <input class="custom-checkbox active" id="checkbox_active" type="checkbox" name="checkbox_active">-->
 <!--            <label for="checkbox_active">Активировать</label>-->
 <!--            <input th:field="*{post}" class="checkbox_value" id="post" name="post" th:value="0" type="hidden">-->
-            <input th:if="${action == 'article_add'}" id="submit" value="Добавить статью" type="submit">
-            <input th:if="${action == 'article_change'}" id="submit" value="Сохранить статью" type="submit">
+
+
+            <input class="ajax_submit"  th:if="${action == 'article_add'}" id="submit" value="Добавить статью" type="button">
+            <input class="ajax_submit" th:if="${action == 'article_change'}" id="submit" value="Сохранить статью" type="button">
+            <div class="form_message"></div>
+            <script>
+
+                var textarea = ["authors","authorsEng","descript","descriptEng","literature","literatureEng","citata", "citataEng","articleText"];
+
+                for(var i = 0; i < textarea.length;i++){
+                    CKEDITOR.replace(textarea[i]);
+                }
+
+                $(".ajax_submit").click(
+                    function(){
+                        for(var i = 0; i < textarea.length;i++){
+                            var value = CKEDITOR.instances[textarea[i]].getData();
+                            $("#"+textarea[i]).val(value);
+                        }
+                        var url = $(".main_form").attr("action");
+                        sendAjaxForm('main_params', 'main_form', url);
+                        return false;
+                    }
+                );
+            </script>
+        </div>
+        <div th:if="${action == 'article_list'}" class="article_main_params main_params">
+
         </div>
         <div id="article_options" class="change_options">
 
         </div>
-        <script>
-
-            CKEDITOR.replace( 'authors' );
-            CKEDITOR.replace( 'authorsEng' );
-            CKEDITOR.replace( 'descript' );
-            CKEDITOR.replace( 'descriptEng' );
-            CKEDITOR.replace( 'literature' );
-            CKEDITOR.replace( 'literatureEng' );
-            CKEDITOR.replace( 'citata' );
-            CKEDITOR.replace( 'citataEng' );
-            CKEDITOR.replace( 'articleText' );
-
-        </script>
     </form>
 </div>
 </body>
