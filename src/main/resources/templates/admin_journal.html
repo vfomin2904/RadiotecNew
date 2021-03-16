@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<body>
+<div th:if="${action == 'journal_change'} or ${action == 'journal_list'} or ${action == 'journal_add'}" th:fragment="journal_options">
+    <div class="title" th:if="${action == 'journal_add'}">Добавление журнала</div>
+    <div class="page_title" th:if="${action == 'journal_change'} or ${action == 'journal_list'}">Изменение журнала</div>
+    <form enctype="multipart/form-data" method="post" th:if="${action == 'journal_add'} or ${action == 'journal_change'}" th:attr="action=${action == 'journal_add'?'/admin/journal_add':'/admin/journal_change'}" th:object="${journals}">
+        <input th:field="*{id}" id="journ_id" name="journ_id" type="hidden">
+        <div class="form__group field">
+            <input class="form__field" th:field="*{name}" id="journ_name" placeholder="Название журнала" required name="journ_name" type="text" >
+            
+            <label class="form__label">Название журанала</label>
+        </div>
+        <small class="input_error" th:each="err : ${#fields.errors('name')}" th:text="${err}"></small>
+
+        <div class="form__group field">
+            <input class="form__field" th:field="*{menuName}" id="menuName" name="menuName" placeholder="Название для меню"  type="text" >
+            
+            <label class="form__label">Название для меню</label>
+        </div>
+        <small class="input_error" th:each="err : ${#fields.errors('menuName')}" th:text="${err}"></small>
+
+        <select class="select-css" th:field="*{type}" id="publisher" name="publisher">
+            <option th:selected="selected" readonly th:value="null">Тип журнала</option>
+            <option th:value="Журнал">Журнал</option>
+            <option th:value="Ежегодник">Ежегодник</option>
+        </select>
+        <small class="input_error" th:each="err : ${#fields.errors('type')}" th:text="${err}"></small>
+
+        <div class="form__group field">
+            <input class="form__field" th:field="*{redaktor}" id="redaktor" name="redaktor" placeholder="Редактор" type="text" >
+            
+            <label class="form__label">Редактор</label>
+        </div>
+
+        <label class="textarea_label" for="descript">Аннотация</label>
+        <textarea th:field="*{descript}" id="descript" name="descript" cols="60"
+                  rows="5"></textarea>
+
+
+        <label class="textarea_label" for="redkol">Редколлегия</label>
+        <textarea th:field="*{redkol}" id="redkol" name="redkol" cols="60"
+                  rows="5"></textarea>
+
+        <div class="form__group field">
+            <input class="form__field" th:field="*{num_year}" id="num_year" placeholder="Год" name="num_year" type="text" >
+            <label for="num_year" class="form__label">Год</label>
+        </div>
+
+        <div class="form__group field">
+            <input th:field="*{komplect}" type="text" class="form__field" placeholder="Комплект" name="komplect" id='komplect'  />
+            <label for="komplect" class="form__label">Комплект</label>
+        </div>
+
+        <div class="form__group field">
+            <input class="form__field" th:field="*{undercover}" placeholder="Под обложкой" id="undercover" name="undercover" type="text" >
+            
+            <label class="form__label">Под обложкой</label>
+        </div>
+
+        <div class="form__group field">
+            <input class="form__field" th:field="*{vak}" placeholder="Место в ВАК" id="vak" name="vak" type="text" >
+            
+            <label class="form__label">Место в ВАК</label>
+        </div>
+
+        <div class="form__group field">
+            <input class="form__field" th:field="*{rospech}" placeholder="Роспечать" id="rospech" name="rospech" type="text" >
+            
+            <label class="form__label">Роспечать</label>
+        </div>
+
+        <div class="form__group field">
+            <input class="form__field" th:field="*{pochta}" placeholder="Почта" id="pochta" name="pochta" type="text" >
+            
+            <label class="form__label">Почта</label>
+        </div>
+
+        <div class="form__group field">
+            <input class="form__field" th:field="*{issn}" placeholder="ISSN" id="issn" name="issn" type="text" >
+            
+            <label class="form__label">ISSN</label>
+        </div>
+
+        <div class="form__group field">
+            <input class="form__field" th:field="*{keywords}" placeholder="Ключевые слова" id="keywords" name="keywords" type="text" >
+            
+            <label class="form__label">Ключевые слова</label>
+        </div>
+
+        <div class="form__group field">
+            <input type="file" name="file">
+            <label class="form__label">Обложка</label>
+        </div>
+        <input type="hidden" th:field="*{cover}">
+        <small class="input_error" th:each="err : ${#fields.errors('cover')}" th:text="${err}"></small>
+        <p th:if="${journals.cover != null} and ${#strings.length(journals.cover) > 0}"><img th:src="@{'/uploads/journals/'+${journals.cover}}"></img></p>
+
+
+
+        <input id="submit" th:if="${action == 'journal_add'}" value="Добавить журнал" type="submit">
+        <input id="submit" th:if="${action == 'journal_change'}" value="Сохранить журнал" type="submit">
+        <!--                <label for="jr_active">Активировать</label>-->
+        <!--                <input th:field="*{jr_active}"  id="jr_active" name="jr_active" type="checkbox">-->
+        <script>
+
+            CKEDITOR.replace( 'redkol' );
+            CKEDITOR.replace( 'descript' );
+
+        </script>
+    </form>
+
+    <div th:if="${journals != null} and ${action == 'journal_list'}" th:each="journal : ${journals}">
+        <div class="admin_card_item">
+            <a th:href="@{/admin/journal_delete(id=${journal.id})}"><img title="удалить" class="remove_card_img" src="/images/delete.png"></a>
+            <div><a class="black_link" th:href="@{/admin/journal_change(id=${journal.id})}" th:text="${journal.name}"></a></div>
+            <div><img class="journal_img" th:if="${journal.cover != null and #strings.length(journal.cover) > 0}" th:src="@{'/uploads/journals/'+${journal.cover}}">
+                <div class="jurnal_short_info">
+                    <div th:if="${journal.redaktor != null and #strings.length(journal.redaktor) > 0}">Редактор: <span th:text="${journal.redaktor}"></span></div>
+                    <div th:if="${journal.num_year != null and #strings.length(journal.num_year) > 0}">Периодичность: <span th:text="${journal.num_year}"></span></div>
+                    <div th:if="${journal.issn != null and #strings.length(journal.issn) > 0}">ISSN: <span th:text="${journal.issn}"></span></div>
+                    <div th:if="${journal.pochta != null and #strings.length(journal.pochta) > 0}" >«Пресса России» - индекс <span th:text="${journal.pochta}"></span></div>
+                    <div th:if="${journal.descript != null and #strings.length(journal.descript) > 0}" >Аннотация:<br><span th:utext="${journal.descript}"></span></div>
+                </div>
+            </div>
+
+            <div th:if="${not #lists.isEmpty(journal.numbers)}"><span class="popup-open">Выбрать номер журнала</span>
+            </div>
+            <div class="popup-fade">
+                <div class="popup">
+                    <a class="popup-close" href="#">Закрыть</a>
+
+                    <div class="number_line" th:each="number : ${numberSortedList.get(journal)}">
+                        <span class="number_year" th:text="${number.key}+': '"></span>
+                        <div class="number_val" th:each="num : ${number.value}">
+                            <a th:href="@{/admin/change_number(id=${num.id})}"><span
+                                    th:text="${num.name}"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

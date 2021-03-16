@@ -8,20 +8,20 @@
     <div th:replace="~{left_menu :: menu}"></div>
     <div id="main_block">
 
-       <h3 class="page_title">Регистрация</h3>
+       <h3 class="page_title" th:text="#{reg.registration}">Регистрация</h3>
 
 
         <form method="post" th:attr="action=@{/register}" th:object="${userRepo}" class="auth_form">
-            <label for="login">Логин</label>
+            <label for="login" th:text="#{reg.login}">Логин</label>
             <input id="login" th:field="*{login}" name="login" type="text">
             <small class="reg_error" th:each="err : ${#fields.errors('login')}" th:text="${err}"></small>
-            <label for="password">Пароль</label>
+            <label for="password" th:text="#{reg.password}">Пароль</label>
             <input id="password" th:field="*{password}" name="password" type="password">
             <small class="reg_error" th:each="err : ${#fields.errors('password')}" th:text="${err}"></small>
-            <label for="repeat_password">Повторите пароль</label>
+            <label for="repeat_password" th:text="#{reg.repeatPassword}">Повторите пароль</label>
             <input id="repeat_password" th:field="*{repeatPassword}" name="repeat_password" type="password">
             <small class="reg_error" th:each="err : ${#fields.errors('repeatPassword')}" th:text="${err}"></small>
-            <input type="submit">
+            <input type="submit" th:value="#{reg.regButton}">
         </form>
 
     </div>

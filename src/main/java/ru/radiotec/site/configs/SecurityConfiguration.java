@@ -39,10 +39,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/register").permitAll()
-                .antMatchers("/admin**").authenticated()
+                .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .and().formLogin().loginPage("/login")
                 .loginProcessingUrl("/authenticateTheUser").permitAll().and()
-                .logout().logoutSuccessUrl("/login").permitAll().and().csrf().disable();
+                .logout().logoutSuccessUrl("/login").permitAll().and().csrf().disable().headers()
+                .frameOptions().sameOrigin()
+                .httpStrictTransportSecurity().disable();
     }
 
     public DaoAuthenticationProvider authenticationProvider(){

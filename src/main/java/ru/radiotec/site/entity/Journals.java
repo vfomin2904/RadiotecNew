@@ -1,6 +1,10 @@
 package ru.radiotec.site.entity;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.*;
 
 @Entity
@@ -11,9 +15,11 @@ public class Journals {
     @Column(name="journ_id")
     private int id;
 
+    @NotEmpty
     @Column(name="menu_name")
-    private String menu_name;
+    private String menuName;
 
+    @NotEmpty
     @Column(name="type")
     private String type;
 
@@ -50,12 +56,20 @@ public class Journals {
     @Column(name="cover")
     private String cover;
 
+    @NotEmpty
     @Column(name="journ_name")
     private String name;
 
     @Column(name="keywords")
     private String keywords;
 
+    public String getMenuName() {
+        return menuName;
+    }
+
+    public void setMenuName(String menuName) {
+        this.menuName = menuName;
+    }
 
     @Column(name="jr_active")
     private int jr_active;
@@ -81,10 +95,6 @@ public class Journals {
 
     public int getId() {
         return id;
-    }
-
-    public String getMenu_name() {
-        return menu_name;
     }
 
     public String getType() {
@@ -151,9 +161,6 @@ public class Journals {
         this.id = id;
     }
 
-    public void setMenu_name(String menu_name) {
-        this.menu_name = menu_name;
-    }
 
     public void setType(String type) {
         this.type = type;

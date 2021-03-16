@@ -22,9 +22,10 @@ body{
 }
 #header_top_line ul{
     list-style-type: none;
-    width:100%;
+    width:95%;
     margin: 0 auto;
     height:100%;
+    /*padding-left:5%;*/
 }
 #header_top_line ul li{
     float:left;
@@ -36,6 +37,23 @@ body{
     color:#fff;
     font-size:15px;
     text-decoration: none;
+}
+
+#select_lang{
+    float:right;
+    width:auto !important;
+}
+
+#select_lang li a{
+    font-size:10px !important;
+}
+
+#select_lang li.active_lang a{
+    font-size: 12px !important;
+    color: #9a202b !important;
+}
+#select_lang li a:hover{
+    font-size:12px !important;
 }
 
 #header_menu{
@@ -318,4 +336,11 @@ body{
 #reg_link{
     text-align: center;
     margin-bottom: 14px;
+}
+
+#logout_button {
+    background: #2d3845;
+    border: 0;
+    font-size: 15px;
+    color: white;
 }

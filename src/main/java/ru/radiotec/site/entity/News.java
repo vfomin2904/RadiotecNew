@@ -1,6 +1,7 @@
 package ru.radiotec.site.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name="newsbase")
@@ -11,12 +12,15 @@ public class News {
     @Column(name="id_news")
     private int id;
 
+    @NotEmpty
     @Column(name="date_news")
     private String date;
 
+    @NotEmpty
     @Column(name="shortnews")
-    private String shortNews;
+    private String name;
 
+    @NotEmpty
     @Column(name="longnews")
     private String longNews;
 
@@ -36,12 +40,12 @@ public class News {
         this.date = date;
     }
 
-    public String getShortNews() {
-        return shortNews;
+    public String getName() {
+        return name;
     }
 
-    public void setShortNews(String shortNews) {
-        this.shortNews = shortNews;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getLongNews() {

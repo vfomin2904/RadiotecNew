@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<body>
+<div th:if="${action == 'menu_change'}" class="relative"
+     th:fragment="menu_options">
+    <div class="page_title">Изменение страницы</div>
+    <form enctype="multipart/form-data" class="main_form" method="post" action=""
+          th:object="${page}">
+
+        <div class="page_main_params main_params">
+
+            <input type="hidden" th:field="*{id}">
+
+            <label class="textarea_label" for="author">Содержимое страницы</label>
+            <textarea th:field="*{content}" id="content" name="content" cols="60"
+                      rows="5"></textarea>
+
+            <input id="submit" value="Сохранить страницу" type="submit">
+
+            <div class="form_message"></div>
+            <script>
+
+                var textarea = ["content"];
+
+                for(var i = 0; i < textarea.length;i++){
+                    CKEDITOR.replace(textarea[i]);
+                }
+
+                $(".ajax_submit").click(
+                    function(){
+                        for(var i = 0; i < textarea.length;i++){
+                            var value = CKEDITOR.instances[textarea[i]].getData();
+                            $("#"+textarea[i]).val(value);
+                        }
+                        var url = $(".main_form").attr("action");
+                        sendAjaxForm('main_params', 'main_form', url);
+                        return false;
+                    }
+                );
+            </script>
+        </div>
+    </form>
+
+</div>
+</body>
+</html>

@@ -1,6 +1,8 @@
 package ru.radiotec.site.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name="articles")
@@ -16,6 +18,7 @@ public class Article {
     @Column(name="authors")
     private String authors;
 
+    @NotEmpty
     @Column(name="art_name")
     private String name;
 
@@ -28,6 +31,7 @@ public class Article {
     @Column(name="authors_eng")
     private String authorsEng;
 
+    @NotEmpty
     @Column(name="art_name_eng")
     private String nameEng;
 
@@ -61,11 +65,25 @@ public class Article {
     @Column(name="article_text")
     private String articleText;
 
+
+    @Column(name="article_type")
+    private String articleType;
+
     @Column(name="art_pdf")
-    private String file;
+    private String articleFile;
 
     @Column(name="razd_id")
     private int sectionId;
+
+    @Column(name="data_recieved")
+    private String dataRecieved;
+
+    @Column(name="data_approved")
+    private String dataApproved;
+
+    @Column(name="data_accepted")
+    private String dataAccepted;
+
 
     @ManyToOne
     @JoinColumn(name = "razd_id", referencedColumnName = "razd_id", insertable = false, updatable = false)
@@ -116,6 +134,30 @@ public class Article {
         return literature;
     }
 
+    public String getDataRecieved() {
+        return dataRecieved;
+    }
+
+    public void setDataRecieved(String dataRecieved) {
+        this.dataRecieved = dataRecieved;
+    }
+
+    public String getDataApproved() {
+        return dataApproved;
+    }
+
+    public void setDataApproved(String dataApproved) {
+        this.dataApproved = dataApproved;
+    }
+
+    public String getDataAccepted() {
+        return dataAccepted;
+    }
+
+    public void setDataAccepted(String dataAccepted) {
+        this.dataAccepted = dataAccepted;
+    }
+
     public void setLiterature(String literature) {
         this.literature = literature;
     }
@@ -148,12 +190,20 @@ public class Article {
         return literatureEng;
     }
 
+    public String getArticleType() {
+        return articleType;
+    }
+
+    public void setArticleType(String articleType) {
+        this.articleType = articleType;
+    }
+
     public void setLiteratureEng(String literatureEng) {
         this.literatureEng = literatureEng;
     }
 
-    public String[] getKeywords() {
-        return keywords.split(",");
+    public String getKeywords() {
+        return keywords;
     }
 
     public void setKeywords(String keywords) {
@@ -216,12 +266,12 @@ public class Article {
         this.articleText = articleText;
     }
 
-    public String getFile() {
-        return file;
+    public String getArticleFile() {
+        return articleFile;
     }
 
-    public void setFile(String file) {
-        this.file = file;
+    public void setArticleFile(String articleFile) {
+        this.articleFile = articleFile;
     }
 
     public int getSectionId() {
@@ -239,4 +289,5 @@ public class Article {
     public void setSection(Section section) {
         this.section = section;
     }
+
 }

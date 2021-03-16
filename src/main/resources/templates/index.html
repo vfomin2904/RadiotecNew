@@ -17,12 +17,12 @@
 <!--                <p class="card-text" th:text="${book.name}"></p>-->
 <!--            </div>-->
 <!--        </div>-->
-       <h3 class="page_title">Новые книги</h3>
+       <h3 class="page_title" th:text="#{book.newBooks}">Новые книги</h3>
         <div class="card-group">
             <div class="card" th:each="book : ${booksnew}">
-               <a th:href="@{'/books/'+${book.id}}"><img th:src="@{'/covers/book/' + ${book.coverImg}}" class="card-img-top" th:alt="${book.name}"></a>
+               <a th:href="'/'+#{language}+'/books/'+${book.id}"><img th:src="'/uploads/books/' + ${book.coverImg}" class="card-img-top" th:alt="${book.name}"></a>
                 <div class="card-body">
-                    <a class="black_link"  th:href="@{'/books/'+${book.id}}"><h4 class="card-title" th:text="${book.name}"></h4></a>
+                    <a class="black_link"  th:href="'/'+#{language}+'/books/'+${book.id}"><h4 class="card-title" th:text="${book.name}"></h4></a>
                     <p class="card-text" th:utext="${book.author}"></p>
                 </div>
             </div>

@@ -12,10 +12,10 @@
 
 
             <div class="card" th:each="i : ${#numbers.sequence(start, end, 1)}">
-                <a th:href="@{'/books/'+${section.books[i].id}}"><img th:src="@{'/covers/book/' + ${section.books[i].coverImg}}"
+                <a th:href="'/'+#{language}+'/books/'+${section.books[i].id}"><img th:src="'/uploads/books/' + ${section.books[i].coverImg}"
                                                          class="card-img-top" th:alt="${section.books[i].name}"></a>
                 <div class="card-body">
-                    <a class="black_link" th:href="@{'/books/'+${section.books[i].id}}"><h4 class="card-title"
+                    <a class="black_link" th:href="'/'+#{language}+'/books/'+${section.books[i].id}"><h4 class="card-title"
                                                                                th:text="${section.books[i].name}"></h4></a>
                     <p class="card-text" th:utext="${section.books[i].author}"></p>
                 </div>

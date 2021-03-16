@@ -22,4 +22,22 @@ public class NumberService {
     public Number getNumberById(int id) {
         return numberRepository.findById(id).get();
     }
+
+    public void create(Number number) {
+        numberRepository.save(number);
+    }
+
+    public void update( Number number){
+//        Number original = getNumberById(number.getId());
+//        original = number;
+        numberRepository.save(number);
+    }
+
+    public void delete(Number number){
+        numberRepository.delete(number);
+    }
+
+    public List<Number> getNumbersByYear(String year){
+        return numberRepository.findByYearIsContaining(year);
+    }
 }

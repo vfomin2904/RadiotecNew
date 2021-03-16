@@ -16,8 +16,20 @@ public class User {
     @Column(name="pass")
     private String password;
 
+    @ManyToOne
+    @JoinColumn(name="group_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private UserGroup group;
+
     public User(){
 
+    }
+
+    public UserGroup getGroup() {
+        return group;
+    }
+
+    public void setGroup(UserGroup group) {
+        this.group = group;
     }
 
     public Long getId() {

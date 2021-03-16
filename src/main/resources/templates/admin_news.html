@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<body>
+<div th:if="${action == 'news_change'}  or ${action == 'news_add'} or ${action == 'news_list'}" class="relative"
+     th:fragment="news_options">
+    <div class="title" th:if="${action == 'news_add'}">Добавление новости</div>
+    <div class="page_title" th:if="${action == 'news_list'} or ${action == 'news_change'}">Изменение новости</div>
+    <form class="main_form" method="post" th:attr="action=${action == 'news_add'?'/admin/news_add':'/admin/news_change'}"
+          th:object="${news}">
+
+        <div class="news_main_params main_params" th:if="${action == 'news_add'} or ${action == 'news_change'}">
+            <a th:if="${action == 'news_change'}" th:href="@{/admin/news_delete(id=${news.id})}"><img
+                    title="удалить" class="remove_img" src="/images/delete.png"></a>
+
+
+            <input th:if="${action == 'news_change'}" th:field="*{id}" id="news_id" name="news_id"
+                   type="hidden">
+
+
+            <div class="form__group field">
+                <input class="form__field" th:field="*{name}" id="name" name="name" placeholder="Название" type="text" >
+                <label class="form__label">Название</label>
+            </div>
+            <small class="input_error" th:each="err : ${#fields.errors('name')}" th:text="${err}"></small>
+
+
+            <label class="textarea_label" for="longNews">Новость</label>
+            <textarea th:field="*{longNews}" id="longNews" name="content" cols="60"
+                      rows="5"></textarea>
+            <small class="input_error" th:each="err : ${#fields.errors('longNews')}" th:text="${err}"></small>
+
+
+            <div class="form__group field">
+                <input class="form__field" th:field="*{date}" id="date" name="date" placeholder="Дата" type="text" >
+                <label class="form__label">Дата</label>
+            </div>
+            <small class="input_error" th:each="err : ${#fields.errors('date')}" th:text="${err}"></small>
+
+
+            <input class="ajax_submit"  id="submit" th:if="${action == 'news_add'}" value="Добавить новость" type="button">
+            <input class="ajax_submit"  id="submit" th:if="${action == 'news_change'}" value="Сохранить новость" type="button">
+            <div class="form_message"></div>
+            <script>
+
+                var textarea = ["longNews"];
+
+                for(var i = 0; i < textarea.length;i++){
+                    CKEDITOR.replace(textarea[i]);
+                }
+
+                $(".ajax_submit").click(
+                    function(){
+                        for(var i = 0; i < textarea.length;i++){
+                            var value = CKEDITOR.instances[textarea[i]].getData();
+                            $("#"+textarea[i]).val(value);
+                        }
+                        var url = $(".main_form").attr("action");
+                        sendAjaxForm('main_params', 'main_form', url);
+                        return false;
+                    }
+                );
+            </script>
+            <div th:if="${action == 'news_list'}" class="news_main_params main_params" id="news_options">
+
+            </div>
+        </div>
+    </form>
+    <div class="page_title" th:if="${action == 'news_list'}">Изменение новости</div>
+    <div id="news_list" th:if="${action == 'news_list'} and not ${#lists.isEmpty(news_list)}" class="change_options">
+        <div class="admin_card_item" th:each="news : ${news_list}">
+            <a th:href="@{/admin/news_delete(id=${news.id})}"><img title="удалить" class="remove_card_img" src="/images/delete.png"></a>
+            <div><a class="black_link" th:href="@{/admin/news_change(id=${news.id}" th:text="${news.name}"></a></div>
+            <div th:utext="${news.longNews}"></div>
+            <div th:text="${news.date}"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

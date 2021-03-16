@@ -7,31 +7,31 @@
 <div id="content">
     <div th:replace="~{left_menu :: menu}"></div>
     <div id="main_block">
-       <h3 class="page_title" th:text="'Журнал '+${currentJournal.name}"></h3>
-        <div><span class="popup-open">Выбрать номер журнала</span></div>
+       <h3 class="page_title" th:text="#{journal.journal}+' '+${currentJournal.name}"></h3>
+        <div th:if="${not #lists.isEmpty(currentJournal.numbers)}"><span class="popup-open" th:text="#{journal.chooseNumber}">Выбрать номер журнала</span></div>
         <div class="popup-fade">
             <div class="popup">
-                <a class="popup-close" href="#">Закрыть</a>
+                <a class="popup-close" href="#" th:text="#{journal.close}">Закрыть</a>
                 <div class="number_list" th:if="${not #lists.isEmpty(currentJournal.numbers)}">
                     <div class="number_line" th:each="number : ${numbersSorted}">
                         <span class="number_year" th:text="${number.key}"></span>
                         <div class="number_val" th:each="num : ${number.value}">
-                            <a th:href="@{'/number/'+${num.id}}"><span th:text="${num.number}"></span></a>
+                            <a th:href="'/'+#{language}+'/number/'+${num.id}"><span th:text="${num.name}"></span></a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <img class="journal_img" th:src="@{'/covers/'+${currentJournal.cover}}">
+        <img class="journal_img" th:src="${'/uploads/journals/'+currentJournal.cover}">
         <div class="jurnal_short_info">
-            <div>Редактор: <span th:text="${currentJournal.redaktor}"></span></div>
-            <div>Периодичность: <span th:text="${currentJournal.num_year}"></span></div>
-            <div>ISSN: <span th:text="${currentJournal.issn}"></span></div>
-            <div>«Пресса России» - индекс <span th:text="${currentJournal.pochta}"></span></div>
+            <div><span th:text="#{journal.editor}+': '">Редактор: </span><span th:text="${currentJournal.redaktor}"></span></div>
+            <div><span th:text="#{journal.periodicity}+': '">Периодичность: </span><span th:text="${currentJournal.num_year}"></span></div>
+            <div><span th:text="#{journal.issn}+': '">ISSN: </span><span th:text="${currentJournal.issn}"></span></div>
+            <div><span th:text="#{journal.pochta}+': '">«Пресса России» - индекс</span> <span th:text="${currentJournal.pochta}"></span></div>
         </div>
-        <div th:if="${currentJournal.descript != ''}" class="subtitle">Аннотация</div>
+        <div th:if="${currentJournal.descript != ''}" class="subtitle" th:text="#{journal.abstract}">Аннотация</div>
         <div th:if="${currentJournal.descript != ''}" th:utext="${currentJournal.descript}"></div>
-        <div class="subtitle" th:if="${currentJournal.redkol != ''}">Редколлегия</div>
+        <div class="subtitle" th:if="${currentJournal.redkol != ''}" th:text="#{journal.editorialBoard}">Редколлегия</div>
         <div th:if="${currentJournal.redkol != ''}" th:utext="${currentJournal.redkol}"></div>
     </div>
 </div>

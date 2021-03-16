@@ -2,6 +2,8 @@ package ru.radiotec.site.entity;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name="books")
@@ -12,6 +14,7 @@ public class Books {
     @Column(name="id")
     private int id;
 
+    @NotEmpty
     @Column(name="bookname")
     private String name;
 
@@ -19,17 +22,17 @@ public class Books {
     private String author;
 
     @Column(name="booksection")
-    private String section;
+    private int section;
 
     @ManyToOne
     @JoinColumn(name="booksection", referencedColumnName = "sec_id", insertable = false, updatable = false)
     private BookSec bookSec;
 
     @Column(name="pages")
-    private String pages;
+    private int pages;
 
     @Column(name="fpict")
-    private String fpict;
+    private int fpict;
 
     @Column(name="description")
     private String description;
@@ -40,6 +43,10 @@ public class Books {
     @Column(name="publisher")
     private int publisher;
 
+    @ManyToOne
+    @JoinColumn(name="publisher", referencedColumnName = "id", insertable = false, updatable = false)
+    private Publisher publish;
+
     @Column(name="isbn")
     private String isbn;
 
@@ -47,13 +54,21 @@ public class Books {
     private Integer price;
 
     @Column(name="editionnumber")
-    private String editionnumber;
+    private String editionNumber;
 
     @Column(name="bookcover")
-    private int bookover;
+    private int bookcover;
+
+    @ManyToOne
+    @JoinColumn(name="bookcover", referencedColumnName = "id", insertable = false, updatable = false)
+    private BookCover cover;
 
     @Column(name="booksize")
     private int booksize;
+
+    @ManyToOne
+    @JoinColumn(name="booksize", referencedColumnName = "id", insertable = false, updatable = false)
+    private BookSize size;
 
     @Column(name="publisheddate")
     private String publisheddate;
@@ -101,27 +116,27 @@ public class Books {
         this.author = author;
     }
 
-    public String getSection() {
+    public int getSection() {
         return section;
     }
 
-    public void setSection(String section) {
+    public void setSection(int section) {
         this.section = section;
     }
 
-    public String getPages() {
+    public int getPages() {
         return pages;
     }
 
-    public void setPages(String pages) {
+    public void setPages(int pages) {
         this.pages = pages;
     }
 
-    public String getFpict() {
+    public int getFpict() {
         return fpict;
     }
 
-    public void setFpict(String fpict) {
+    public void setFpict(int fpict) {
         this.fpict = fpict;
     }
 
@@ -168,20 +183,20 @@ public class Books {
         this.price = price;
     }
 
-    public String getEditionnumber() {
-        return editionnumber;
+    public String getEditionNumber() {
+        return editionNumber;
     }
 
-    public void setEditionnumber(String editionnumber) {
-        this.editionnumber = editionnumber;
+    public void setEditionNumber(String editionNumber) {
+        this.editionNumber = editionNumber;
     }
 
     public int getBookover() {
-        return bookover;
+        return bookcover;
     }
 
-    public void setBookover(int bookover) {
-        this.bookover = bookover;
+    public void setBookcover(int bookcover) {
+        this.bookcover = bookcover;
     }
 
     public int getBooksize() {
@@ -247,5 +262,33 @@ public class Books {
 
     public void setBookSec(BookSec bookSec) {
         this.bookSec = bookSec;
+    }
+
+    public Publisher getPublish() {
+        return publish;
+    }
+
+    public void setPublish(Publisher publish) {
+        this.publish = publish;
+    }
+
+    public int getBookcover() {
+        return bookcover;
+    }
+
+    public BookCover getCover() {
+        return cover;
+    }
+
+    public void setCover(BookCover cover) {
+        this.cover = cover;
+    }
+
+    public BookSize getSize() {
+        return size;
+    }
+
+    public void setSize(BookSize size) {
+        this.size = size;
     }
 }

@@ -7,25 +7,35 @@
 <div id="content">
     <div th:replace="~{left_menu :: menu}"></div>
     <div id="main_block">
-         <div th:if="${article.keywords != ''}">
-            <span>Ключевые слова: </span>
-            <span class="keywords" th:each="keyword:${article.keywords}">
-                <a th:href="@{/keywords(keywords = ${keyword})}" th:text="${keyword}"></a>
+        <div th:if="${article.keywords != ''}">
+            <span th:text="#{article.keywords}+': '">Ключевые слова: </span>
+            <span th:if="#{language} == 'ru'" class="keywords"
+                  th:each="keyword: ${#strings.arraySplit(article.keywords, ',')}">
+                <a th:href="@{'/'+#{language}+'/keywords'(keywords = ${keyword})}" th:text="${keyword}"></a>
             </span>
-             <div class="page_title" th:text="${article.name}"></div>
-             <div th:if="${article.udk != ''}" th:text="'УДК: '+ ${article.udk}"></div>
-             <div th:if="${article.doi != ''}" th:text="'DOI: '+ ${article.doi}"></div>
-             <div th:if="${article.authors != ''}" class="subtitle">Авторы</div>
-            <div th:utext="${article.authors}"></div>
-             <div th:if="${article.descript != ''}" class="subtitle">Аннотация</div>
-             <div th:utext="${article.descript}"></div>
-
-             <div th:if="${article.citata != ''}" class="subtitle">Для цитирования</div>
-             <div th:utext="${article.citata}"></div>
-
-             <div th:if="${article.literature != ''}" class="subtitle">Список литературы</div>
-             <div th:utext="${article.literature}"></div>
+            <span th:if="#{language} == 'en'" class="keywords"
+                  th:each="keyword: ${#strings.arraySplit(article.keywordsEng, ',')}">
+                <a th:href="@{'/'+#{language}+'/keywords'(keywords = ${keyword})}" th:text="${keyword}"></a>
+            </span>
         </div>
+        <div class="page_title" th:text="(#{language}=='ru')?${article.name}:${article.nameEng}"></div>
+        <div th:if="${article.udk != ''}" th:text="'УДК:"><span th:text="#{article.udk}+': '"></span><span
+                th:text="${article.udk}"></span></div>
+        <div th:if="${article.doi != ''}" th:text="'DOI: '+ ${article.doi}"></div>
+        <div th:if="${article.authors != ''}" class="subtitle" th:text="#{article.authors}">Авторы</div>
+        <div th:utext="(#{language}=='ru')? ${article.authors} : ${article.authorsEng}"></div>
+        <div th:if="${article.descript != ''}" class="subtitle" th:text="#{article.annot}">Аннотация</div>
+        <div th:utext="(#{language}=='ru')?${article.descript}:${article.descriptEng}"></div>
+        <div th:if="${article.page != ''}"><span th:text="#{article.page}+': '"></span><span
+                th:text="${article.page}"></span></div>
+
+        <div th:if="${article.citata != ''}" class="subtitle" th:text="#{article.citata}">Для цитирования</div>
+        <div th:utext="(#{language}=='ru')?${article.citata}:${article.citataEng}"></div>
+
+        <div th:if="${article.literature != ''}" class="subtitle" th:text="#{article.literatura}">Список литературы
+        </div>
+        <div th:utext="(#{language}=='ru')?${article.literature}:${article.literatureEng}"></div>
+    </div>
 
 </div>
 </div>

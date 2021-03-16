@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<body>
+<div th:if="${action == 'booksec_change'} or ${action == 'booksec_list'} or ${action == 'booksec_add'}" class="relative"
+     th:fragment="booksec_options">
+    <div class="title" th:if="${action == 'booksec_add'}">Добавление книжного раздела</div>
+    <div class="page_title" th:if="${action == 'booksec_list'}">Изменение книжного раздела</div>
+
+    <form class="main_form" method="post" th:attr="action=${action == 'booksec_add'?'/admin/booksec_add':'/admin/booksec_change'}"
+          th:object="${bookSec}">
+
+        <label th:if="${action == 'booksec_list'}" for="booksec_name">Раздел</label>
+        <select class="select-css" th:if="${action == 'booksec_list'}" id="book_select_section" name="booksec_name">
+            <option selected disabled>Книжный раздел</option>
+            <option th:each="booksec : ${booksecs}" th:value="${booksec.id}" th:text="${booksec.name}"></option>
+        </select>
+
+        <div class="booksec_main_params main_params" th:if="${action == 'booksec_add'} or ${action == 'booksec_change'}">
+            <a th:if="${action == 'booksec_change'}" th:href="@{/admin/booksec_delete(id=${bookSec.id})}"><img
+                    title="удалить" class="remove_img" src="/images/delete.png"></a>
+
+            <input th:if="${action == 'booksec_change'}" th:field="*{id}" id="booksec_id" name="booksec_id"
+                   type="hidden">
+
+            <div class="form__group field">
+                <input class="form__field" th:field="*{name}" id="name" name="name" placeholder="Название" type="text" >
+                <label class="form__label">Название</label>
+            </div>
+            <small class="input_error" th:each="err : ${#fields.errors('name')}" th:text="${err}"></small>
+
+            <div class="form__group field">
+                <input class="form__field" th:field="*{redaktor}" id="redaktor" name="redaktor" placeholder="Редактор серии" type="text" >
+                <label class="form__label">Редактор серии</label>
+            </div>
+
+            <div class="form__group field">
+                <input class="form__field" th:field="*{keywords}" id="keywords" name="keywords" placeholder="Ключевые слова" type="text" >
+                <label class="form__label">Ключевые слова</label>
+            </div>
+
+            <input class="ajax_submit"  id="submit" th:if="${action == 'booksec_add'}" value="Добавить книжный раздел" type="button">
+            <input class="ajax_submit"  id="submit" th:if="${action == 'booksec_change'}" value="Сохранить книжный раздел" type="button">
+
+            <div class="form_message"></div>
+            <script>
+                $(".ajax_submit").click(
+                    function(){
+                        var url = $(".main_form").attr("action");
+                        sendAjaxForm('main_params', 'main_form', url);
+                        return false;
+                    }
+                );
+                init_checkbox();
+            </script>
+
+        </div>
+        <div th:if="${action == 'booksec_list'}" class="booksec_main_params main_params">
+
+        </div>
+<!--        <div id="booksec_options" class="change_options">-->
+
+<!--        </div>-->
+
+    </form>
+</div>
+</body>
+</html>

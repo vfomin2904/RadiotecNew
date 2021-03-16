@@ -1,6 +1,9 @@
 package ru.radiotec.site.entity;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,6 +15,7 @@ public class BookSec {
     @Column(name="sec_id")
     private int id;
 
+    @NotEmpty
     @Column(name="sec_name")
     private String name;
 
