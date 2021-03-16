@@ -3,18 +3,19 @@ package ru.radiotec.site.controls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.radiotec.site.entity.*;
 import ru.radiotec.site.entity.Number;
 import ru.radiotec.site.services.*;
 
+import javax.sound.midi.Soundbank;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
 import java.util.*;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping(value={"/", "/ru/", "/en/"})
 public class MainController {
 
     @Autowired
@@ -35,6 +36,9 @@ public class MainController {
     @Autowired
     private NewsService newsService;
 
+    @Autowired
+    private PageService pageService;
+
     @GetMapping("/")
     public String getMainPage(Model model){
         init_menu(model);
@@ -54,7 +58,7 @@ public class MainController {
     }
 
     @GetMapping("/number/{numb_id}")
-    private String getNumberPage(Model model, @PathVariable int numb_id){
+    public String getNumberPage(Model model, @PathVariable int numb_id){
         Number number = numberService.getNumberById(numb_id);
         model.addAttribute(number);
         init_menu(model);
@@ -62,7 +66,7 @@ public class MainController {
     }
 
     @GetMapping("/article/{art_id}")
-    private String getArticlePage(Model model, @PathVariable int art_id){
+    public String getArticlePage(Model model, @PathVariable int art_id){
         Article article = articleService.getArticleById(art_id);
         model.addAttribute(article);
         init_menu(model);
@@ -70,7 +74,7 @@ public class MainController {
     }
 
     @GetMapping("/books/{book_id}")
-    private String getBookPage(Model model, @PathVariable int book_id){
+    public String getBookPage(Model model, @PathVariable int book_id){
         Books book = bookService.getBookById(book_id);
         model.addAttribute("book", book);
         init_menu(model);
@@ -78,7 +82,7 @@ public class MainController {
     }
 
     @GetMapping("/booksection/{id}")
-    private String getBookSectionPage(Model model, @PathVariable int id, @RequestParam(required = false, defaultValue = "1") int page){
+    public String getBookSectionPage(Model model, @PathVariable int id, @RequestParam(required = false, defaultValue = "1") int page){
         BookSec section = bookSecService.getBookSecById(id);
         int bookCount = section.getBooks().size();
         int bookCountOnPage = 9;
@@ -95,7 +99,7 @@ public class MainController {
     }
 
     @GetMapping("/news")
-    private String getNewsPage(Model model){
+    public String getNewsPage(Model model){
         List<News> news = newsService.getAllNews();
         model.addAttribute("news", news);
         init_menu(model);
@@ -103,7 +107,7 @@ public class MainController {
     }
 
     @GetMapping("/news/{id}")
-    private String getNewsPage(Model model, @PathVariable int id){
+    public String getNewsPage(Model model, @PathVariable int id){
         News selectedNews = newsService.getNewsById(id);
         model.addAttribute("selectedNews", selectedNews);
         init_menu(model);
@@ -111,13 +115,66 @@ public class MainController {
     }
 
     @GetMapping("/keywords")
-    private String getArticleByKeywordsPage(Model model, @RequestParam (required = true) String keywords){
+    public String getArticleByKeywordsPage(Model model, @RequestParam (required = true) String keywords){
         List<Article> articles = articleService.getArticlesByKeywords(keywords);
         model.addAttribute("articles", articles);
         model.addAttribute("keywords", keywords);
         init_menu(model);
         return "keywords";
     }
+
+    @GetMapping("/subscription")
+    public String getSubscriptionPage(Model model){
+        init_menu(model);
+        return "subscription";
+    }
+    @GetMapping("/order")
+    public String getOrderPage(Model model){
+        init_menu(model);
+        return "order_books";
+    }
+
+    @GetMapping("/for_authors")
+    public String getAuthorsPage(Model model){
+        init_menu(model);
+        Page page = pageService.getPageById(1);
+        model.addAttribute("page", page);
+        return "custom_page";
+    }
+
+    @GetMapping("/about")
+    public String getAboutPage(Model model){
+        init_menu(model);
+        Page page = pageService.getPageById(2);
+        model.addAttribute("page", page);
+        return "custom_page";
+    }
+
+    @PostMapping("/upload_ckeditor")
+    public String CKEditor_upload(Model model, @RequestParam String CKEditorFuncNum, @RequestParam("upload") MultipartFile file){
+
+        if (!file.isEmpty()) {
+            String name = "/home/tomcat/webapps/uploads/CKEditor/"+file.getOriginalFilename();
+            model.addAttribute("path","/uploads/CKEditor/"+file.getOriginalFilename());
+            if(file.getContentType().equals("image/png") || file.getContentType().equals("image/jpeg")){
+                try {
+                    byte[] bytes = file.getBytes();
+                    BufferedOutputStream stream =
+                            new BufferedOutputStream(new FileOutputStream(name));
+                    stream.write(bytes);
+                    stream.close();
+                    System.out.println("Файл загружен");
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+
+        model.addAttribute("callback",CKEditorFuncNum);
+
+        return "ckeditor_upload";
+    }
+
 
     private void init_menu(Model model){
         ArrayList<Journals> journals = new ArrayList<>(journalsService.getAllJournals());

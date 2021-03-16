@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping(value={"/","/ru/","/en/"})
 public class LoginController {
 
     @Autowired

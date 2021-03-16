@@ -10,14 +10,14 @@
 
     <script type="text/javascript" async="" charset="utf-8" src="http://site.yandex.net/v2.0/js/all.js"></script>
 
-    <link rel="shortcut icon" th:href="@{/images/favicon.png}" type="image/x-icon">
-    <script th:src="@{/js/ckeditor/ckeditor.js}"></script>
+    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
+    <script src="/js/ckeditor/ckeditor.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-    <script type="text/javascript" th:src="@{/js/popup.js}"></script>
-    <script type="text/javascript" th:src="@{/js/admin.js}"></script>
-    <link rel="stylesheet" type="text/css" th:href="@{/admin.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/popup.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/admin_menu/css/style.css}">
+    <script type="text/javascript" src="/js/popup.js"></script>
+    <script type="text/javascript" src="/js/admin.js"></script>
+    <link rel="stylesheet" type="text/css" href="/admin.css">
+    <link rel="stylesheet" type="text/css" href="/popup.css">
+    <link rel="stylesheet" type="text/css" href="/admin_menu/css/style.css">
 </head>
 <body>
 <div id="admin">
@@ -86,10 +86,19 @@
                     <li><a href="/admin/news_change">Изменить</a></li>
                 </ul>
             </li>
+            <li>
+                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Меню
+                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                </div>
+                <ul class="submenuItems">
+                    <li><a th:href="@{/admin/menu_change(id=1)}">Для авторов</a></li>
+                    <li><a th:href="@{/admin/menu_change(id=2)}">Об издательстве</a></li>
+                </ul>
+            </li>
         </ul>
         <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
 
-        <script th:src="@{/admin_menu/js/index.js}"></script>
+        <script src="/admin_menu/js/index.js"></script>
     </div>
     <div id="admin_content">
             <div th:replace="~{admin_journal :: journal_options}"></div>
@@ -99,6 +108,7 @@
             <div th:replace="~{admin_booksec :: booksec_options}"></div>
             <div th:replace="~{admin_book :: book_options}"></div>
             <div th:replace="~{admin_news :: news_options}"></div>
+            <div th:replace="~{admin_menu :: menu_options}"></div>
     </div>
 </div>
 </body>

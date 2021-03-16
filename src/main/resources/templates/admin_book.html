@@ -6,7 +6,7 @@
      th:fragment="book_options">
     <div class="title" th:if="${action == 'book_add'}">Добавление книги</div>
     <div class="page_title" th:if="${action == 'book_list'}">Изменение книги</div>
-    <form class="main_form" method="post" th:attr="action=@{${action == 'book_add'?'/admin/book_add':'/admin/book_change'}}"
+    <form enctype="multipart/form-data" class="main_form" method="post" th:attr="action=${action == 'book_add'?'/admin/book_add':'/admin/book_change'}"
           th:object="${books}">
         <select class="select-css" th:if="${action == 'book_add'} or ${action == 'book_list'}" id="book_select_section" name="section">
             <option selected disabled th:value="0">Книжный раздел</option>
@@ -46,7 +46,7 @@
 
 
             <select class="select-css" th:field="*{bookcover}" id="cover" name="cover">
-                <option selected disabled th:value="0">Обложка</option>
+                <option selected disabled th:value="0">Тип обложки</option>
                 <option th:each="bookcover : ${bookcovers}" th:value="${bookcover.id}" th:text="${bookcover.name}"></option>
             </select>
             <small class="input_error" th:each="err : ${#fields.errors('bookcover')}" th:text="${err}"></small>
@@ -57,6 +57,8 @@
                 <option th:each="size : ${booksizes}" th:value="${size.id}" th:text="${size.name}"></option>
             </select>
             <small class="input_error" th:each="err : ${#fields.errors('booksize')}" th:text="${err}"></small>
+
+            <small class="input_error" th:each="err : ${#fields.errors('coverImg')}" th:text="${err}"></small>
 
             <br>
 
@@ -101,18 +103,22 @@
                 <label class="form__label">BBK</label>
             </div>
 
-            <div class="form__group field">
-                <input class="form__field" th:field="*{coverImg}" id="coverImg" name="coverImg" placeholder="Обложка" type="text" >
-                <label class="form__label">Обложка</label>
-            </div>
-
             <label class="textarea_label" for="content">Содержание</label>
             <textarea th:field="*{content}" id="content" name="content" cols="60"
                       rows="5"></textarea>
 
+            <br>
             <input class="custom-checkbox active" id="checkbox_new" type="checkbox" name="checkbox_new">
             <label for="checkbox_new">Новая книга</label>
             <input th:field="*{bookNew}" class="checkbox_value"  id="bookNew" name="bookNew" th:value="0" type="hidden">
+
+
+            <div class="form__group field">
+                <input type="file" name="file">
+                <label class="form__label">Обложка</label>
+            </div>
+            <input type="hidden" th:field="*{coverImg}">
+            <p th:if="${books.coverImg != null} and ${#strings.length(books.coverImg) > 0}"><img alt="Текущая обложка" th:src="@{'/uploads/books/'+${books.coverImg}}" /></p>
 
 
             <input class="ajax_submit"  id="submit" th:if="${action == 'book_add'}" value="Добавить книгу" type="button">

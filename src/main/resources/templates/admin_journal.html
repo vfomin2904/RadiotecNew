@@ -5,7 +5,7 @@
 <div th:if="${action == 'journal_change'} or ${action == 'journal_list'} or ${action == 'journal_add'}" th:fragment="journal_options">
     <div class="title" th:if="${action == 'journal_add'}">Добавление журнала</div>
     <div class="page_title" th:if="${action == 'journal_change'} or ${action == 'journal_list'}">Изменение журнала</div>
-    <form enctype="multipart/form-data" method="post" th:if="${action == 'journal_add'} or ${action == 'journal_change'}" th:attr="action=@{${action == 'journal_add'?'/admin/journal_add':'/admin/journal_change'}}" th:object="${journals}">
+    <form enctype="multipart/form-data" method="post" th:if="${action == 'journal_add'} or ${action == 'journal_change'}" th:attr="action=${action == 'journal_add'?'/admin/journal_add':'/admin/journal_change'}" th:object="${journals}">
         <input th:field="*{id}" id="journ_id" name="journ_id" type="hidden">
         <div class="form__group field">
             <input class="form__field" th:field="*{name}" id="journ_name" placeholder="Название журнала" required name="journ_name" type="text" >
@@ -93,7 +93,9 @@
             <input type="file" name="file">
             <label class="form__label">Обложка</label>
         </div>
+        <input type="hidden" th:field="*{cover}">
         <small class="input_error" th:each="err : ${#fields.errors('cover')}" th:text="${err}"></small>
+        <p th:if="${journals.cover != null} and ${#strings.length(journals.cover) > 0}"><img th:src="@{'/uploads/journals/'+${journals.cover}}"></img></p>
 
 
 
@@ -112,7 +114,7 @@
     <div th:if="${journals != null} and ${action == 'journal_list'}" th:each="journal : ${journals}">
         <div class="admin_card_item">
             <a th:href="@{/admin/journal_delete(id=${journal.id})}"><img title="удалить" class="remove_card_img" src="/images/delete.png"></a>
-            <div><a class="black_link" th:href="@{/admin/journal_change('id'=${journal.id})}" th:text="${journal.name}"></a></div>
+            <div><a class="black_link" th:href="@{/admin/journal_change(id=${journal.id})}" th:text="${journal.name}"></a></div>
             <div><img class="journal_img" th:if="${journal.cover != null and #strings.length(journal.cover) > 0}" th:src="@{'/uploads/journals/'+${journal.cover}}">
                 <div class="jurnal_short_info">
                     <div th:if="${journal.redaktor != null and #strings.length(journal.redaktor) > 0}">Редактор: <span th:text="${journal.redaktor}"></span></div>
@@ -132,7 +134,7 @@
                     <div class="number_line" th:each="number : ${numberSortedList.get(journal)}">
                         <span class="number_year" th:text="${number.key}+': '"></span>
                         <div class="number_val" th:each="num : ${number.value}">
-                            <a th:href="@{/admin/change_number('id'=${num.id})}"><span
+                            <a th:href="@{/admin/change_number(id=${num.id})}"><span
                                     th:text="${num.name}"></span></a>
                         </div>
                     </div>

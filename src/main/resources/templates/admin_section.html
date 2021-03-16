@@ -7,7 +7,7 @@
     <div class="title" th:if="${action == 'section_add'}">Добавление раздела номера</div>
     <div class="page_title" th:if="${action == 'section_change'} or ${action == 'section_list'}">Изменение раздела</div>
     <form class="main_form" method="post"
-          th:attr="action=@{${action == 'section_add'?'/admin/section_add':'/admin/section_change'}}"
+          th:attr="action=${action == 'section_add'?'/admin/section_add':'/admin/section_change'}"
           th:object="${section}">
         <input th:if="${action == 'section_change'}" th:field="*{id}" id="section_id" name="section_id" type="hidden">
         <input th:if="${action == 'section_change'}" th:field="*{numberId}" id="number_id" name="number_id"

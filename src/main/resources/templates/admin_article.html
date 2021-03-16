@@ -5,8 +5,8 @@
 <div th:if="${action == 'article_add'} or ${action == 'article_list'} or ${action == 'article_change'}" th:fragment="article_options" class="relative">
     <div class="title" th:if="${action == 'article_add'}">Добавление статьи</div>
     <div class="page_title" th:if="${action == 'article_change'} or ${action == 'article_list'}">Изменение статьи</div>
-    <form class="main_form" method="post"
-          th:attr="action=@{${action == 'article_add'?'/admin/article_add':'/admin/article_change'}}"
+    <form enctype="multipart/form-data"  class="main_form" method="post"
+          th:attr="action=${action == 'article_add'?'/admin/article_add':'/admin/article_change'}"
           th:object="${article}">
         <input th:if="${action == 'article_change'}" th:field="*{id}" id="article_id" name="article_id" type="hidden">
         <input th:if="${action == 'article_change'}" th:field="*{sectionId}" id="section_id" name="section_id"
@@ -150,10 +150,13 @@
             <textarea th:field="*{citataEng}" id="citataEng" name="citataEng" cols="60"
                       rows="5"></textarea>
 
-
-<!--            <input class="custom-checkbox active" id="checkbox_active" type="checkbox" name="checkbox_active">-->
-<!--            <label for="checkbox_active">Активировать</label>-->
-<!--            <input th:field="*{post}" class="checkbox_value" id="post" name="post" th:value="0" type="hidden">-->
+            <div class="form__group field">
+                <input type="file" name="file">
+                <label class="form__label">Статья</label>
+            </div>
+            <input type="hidden" th:field="*{articleFile}">
+            <p th:if="${article.articleFile != null} and ${#strings.length(article.articleFile) > 0}"><a target="_blank" th:href="@{'/uploads/articles/'+${article.articleFile}}">Текущая версия статьи</a></p>
+            <small class="input_error" th:each="err : ${#fields.errors('articleFile')}" th:text="${err}"></small>
 
 
             <input class="ajax_submit"  th:if="${action == 'article_add'}" id="submit" value="Добавить статью" type="button">

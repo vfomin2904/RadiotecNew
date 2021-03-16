@@ -9,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.radiotec.site.entity.Number;
 import ru.radiotec.site.entity.*;
 import ru.radiotec.site.services.*;
-import ru.radiotec.site.settings.Settings;
 
 import javax.validation.Valid;
 import java.io.BufferedOutputStream;
@@ -33,6 +32,9 @@ public class AdminController {
 
     @Autowired
     private SectionService sectionService;
+
+    @Autowired
+    private PageService pageService;
 
     @Autowired
     private NumberService numberService;
@@ -76,8 +78,7 @@ public class AdminController {
     public String getAdminJournalAddPage(@Valid Journals journal, BindingResult bindingResult, Model model, @RequestParam("file") MultipartFile cover){
 
         if (!cover.isEmpty()) {
-            String name = Settings.uploadPath+"journals\\"+cover.getOriginalFilename();
-            System.out.println(cover.getContentType());
+            String name = "/home/tomcat/webapps/uploads/journals/"+cover.getOriginalFilename();
             if(cover.getContentType().equals("image/png") || cover.getContentType().equals("image/jpeg")){
                 try {
                     byte[] bytes = cover.getBytes();
@@ -86,9 +87,9 @@ public class AdminController {
                     stream.write(bytes);
                     stream.close();
                     System.out.println("Файл загружен");
-                    journal.setCover(name);
+                    journal.setCover(cover.getOriginalFilename());
                 } catch (Exception e) {
-                    bindingResult.rejectValue("cover","","Не удалось загрузить файл");
+                    bindingResult.rejectValue("cover","","Не удалось загрузить файл: "+e.getMessage());
                 }
             } else{
                 bindingResult.rejectValue("cover","","Файл должен быть в формате png или jpg");
@@ -105,7 +106,7 @@ public class AdminController {
     @PostMapping("/journal_change")
     public String getAdminJournalChangePage(@Valid Journals journal, BindingResult bindingResult, Model model, @RequestParam("file") MultipartFile cover){
         if (!cover.isEmpty()) {
-            String name = Settings.uploadPath+"/journals/"+cover.getOriginalFilename();
+            String name = "/home/tomcat/webapps/uploads/journals/"+cover.getOriginalFilename();
             System.out.println(cover.getContentType());
             if(cover.getContentType().equals("image/png") || cover.getContentType().equals("image/jpeg")){
                 try {
@@ -117,17 +118,17 @@ public class AdminController {
                     System.out.println("Файл загружен");
                     journal.setCover(cover.getOriginalFilename());
                 } catch (Exception e) {
-                    System.out.println("Вам не удалось загрузить " + name + " => " + e.getMessage());
+                    System.out.println("Не удалось загрузить " + name + " => " + e.getMessage());
 
-                    bindingResult.rejectValue("cover","","Не удалось загрузить файл");
+                    bindingResult.rejectValue("cover","","Не удалось загрузить файл: "+e.getMessage());
                 }
             } else{
                 bindingResult.rejectValue("cover","","Файл должен быть в формате png или jpg");
             }
 
         }
+
         if(bindingResult.hasErrors()){
-            System.out.println("error");
             return getAdminJournalChangePage(model, journal,0);
         }
         journalsService.update(journal);
@@ -302,7 +303,26 @@ public class AdminController {
     }
 
     @PostMapping("/article_add")
-    public String getAdminArticleAddPage(@Valid Article article, BindingResult bindingResult, Model model){
+    public String getAdminArticleAddPage(@Valid Article article, BindingResult bindingResult, Model model, @RequestParam("file") MultipartFile file){
+
+        if (!file.isEmpty()) {
+            String name = "/home/tomcat/webapps/uploads/articles/"+file.getOriginalFilename();
+                try {
+                    byte[] bytes = file.getBytes();
+                    BufferedOutputStream stream =
+                            new BufferedOutputStream(new FileOutputStream(name));
+                    stream.write(bytes);
+                    stream.close();
+                    System.out.println("Файл загружен");
+                    article.setArticleFile(file.getOriginalFilename());
+                } catch (Exception e) {
+                    System.out.println("Не удалось загрузить " + name + " => " + e.getMessage());
+
+                    bindingResult.rejectValue("file","","Не удалось загрузить файл: "+e.getMessage());
+                }
+
+        }
+
         if(article.getSectionId() <=0){
             bindingResult.rejectValue("sectionId", "", "Не выбран раздел");
             return getAdminArticleAddPage(model, article);
@@ -332,7 +352,26 @@ public class AdminController {
     }
 
     @PostMapping("/article_change")
-    public String getAdminArticleChangePage(@Valid Article article, BindingResult bindingResult, Model model){
+    public String getAdminArticleChangePage(@Valid Article article, BindingResult bindingResult, Model model, @RequestParam("file") MultipartFile file){
+
+        if (!file.isEmpty()) {
+            String name = "/home/tomcat/webapps/uploads/articles/"+file.getOriginalFilename();
+            try {
+                byte[] bytes = file.getBytes();
+                BufferedOutputStream stream =
+                        new BufferedOutputStream(new FileOutputStream(name));
+                stream.write(bytes);
+                stream.close();
+                System.out.println("Файл загружен");
+                article.setArticleFile(file.getOriginalFilename());
+            } catch (Exception e) {
+                System.out.println("Не удалось загрузить " + name + " => " + e.getMessage());
+
+                bindingResult.rejectValue("file","","Не удалось загрузить файл: "+e.getMessage());
+            }
+
+        }
+
         if(bindingResult.hasErrors()){
             return getAdminArticleChangePage(model, article, 0);
         }
@@ -428,7 +467,26 @@ public class AdminController {
     }
 
     @PostMapping("/book_add")
-    public String getAdminBookAddPage(@Valid Books book, BindingResult bindingResult, Model model){
+    public String getAdminBookAddPage(@Valid Books book, BindingResult bindingResult, Model model, @RequestParam("file") MultipartFile cover){
+
+        if (!cover.isEmpty()) {
+            String name = "/home/tomcat/webapps/uploads/books/"+cover.getOriginalFilename();
+            if(cover.getContentType().equals("image/png") || cover.getContentType().equals("image/jpeg")){
+                try {
+                    byte[] bytes = cover.getBytes();
+                    BufferedOutputStream stream =
+                            new BufferedOutputStream(new FileOutputStream(name));
+                    stream.write(bytes);
+                    stream.close();
+                    System.out.println("Файл загружен");
+                    book.setCoverImg(cover.getOriginalFilename());
+                } catch (Exception e) {
+                    bindingResult.rejectValue("coverImg","","Не удалось загрузить файл: "+e.getMessage());
+                }
+            } else{
+                bindingResult.rejectValue("coverImg","","Файл должен быть в формате png или jpg");
+            }
+        }
 
         if(book.getSection() < 1){
             bindingResult.rejectValue("section", "", "Раздел не выбран");
@@ -475,7 +533,29 @@ public class AdminController {
     }
 
     @PostMapping("/book_change")
-    public String getAdminBookChangePage(@Valid Books book, BindingResult bindingResult, Model model){
+    public String getAdminBookChangePage(@Valid Books book, BindingResult bindingResult, Model model, @RequestParam("file") MultipartFile cover){
+
+        if (!cover.isEmpty()) {
+            String name = "/home/tomcat/webapps/uploads/books/"+cover.getOriginalFilename();
+            System.out.println(cover.getContentType());
+            if(cover.getContentType().equals("image/png") || cover.getContentType().equals("image/jpeg")){
+                try {
+                    byte[] bytes = cover.getBytes();
+                    BufferedOutputStream stream =
+                            new BufferedOutputStream(new FileOutputStream(name));
+                    stream.write(bytes);
+                    stream.close();
+                    System.out.println("Файл загружен");
+                    book.setCoverImg(cover.getOriginalFilename());
+                } catch (Exception e) {
+                    System.out.println("Не удалось загрузить " + name + " => " + e.getMessage());
+
+                    bindingResult.rejectValue("coverImg","","Не удалось загрузить файл: "+e.getMessage());
+                }
+            } else{
+                bindingResult.rejectValue("coverImg","","Файл должен быть в формате png или jpg");
+            }
+        }
         if(book.getSection() < 1){
             bindingResult.rejectValue("section", "", "Раздел не выбран");
         }
@@ -554,6 +634,20 @@ public class AdminController {
         }
         newsService.update(news);
         return "redirect:/admin/news_change";
+    }
+
+    @GetMapping("/menu_change")
+    public String getMenuChangePage(Model model, @RequestParam(required = true) int id){
+        Page page = pageService.getPageById(id);
+        model.addAttribute("action", "menu_change");
+        model.addAttribute("page", page);
+        return "admin_template";
+    }
+
+    @PostMapping("/menu_change")
+    public String getMenuChangePostPage(Model model, Page page){
+        pageService.update(page);
+        return "redirect:/admin/menu_change?id="+page.getId();
     }
 
 

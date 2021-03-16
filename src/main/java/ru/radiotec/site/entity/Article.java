@@ -65,11 +65,12 @@ public class Article {
     @Column(name="article_text")
     private String articleText;
 
+
     @Column(name="article_type")
     private String articleType;
 
     @Column(name="art_pdf")
-    private String file;
+    private String articleFile;
 
     @Column(name="razd_id")
     private int sectionId;
@@ -265,12 +266,12 @@ public class Article {
         this.articleText = articleText;
     }
 
-    public String getFile() {
-        return file;
+    public String getArticleFile() {
+        return articleFile;
     }
 
-    public void setFile(String file) {
-        this.file = file;
+    public void setArticleFile(String articleFile) {
+        this.articleFile = articleFile;
     }
 
     public int getSectionId() {
@@ -288,4 +289,5 @@ public class Article {
     public void setSection(Section section) {
         this.section = section;
     }
+
 }

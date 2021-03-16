@@ -5,7 +5,7 @@
 <div th:if="${action == 'number_change'} or ${action == 'number_list'} or ${action == 'number_add'}" th:fragment="number_options" class="relative">
     <div class="title" th:if="${action == 'number_add'}">Добавление номера</div>
     <div class="page_title" th:if="${action == 'number_change'} or ${action == 'number_list'}">Изменение номера</div>
-    <form method="post" th:if="${action == 'number_add'} or ${action == 'number_change'}" th:attr="action=@{${action == 'number_add'?'/admin/number_add':'/admin/number_change'}}" th:object="${number}">
+    <form method="post" th:if="${action == 'number_add'} or ${action == 'number_change'}" th:attr="action=${action == 'number_add'?'/admin/number_add':'/admin/number_change'}" th:object="${number}">
         <a th:if="${action == 'number_change'}"  th:href="@{/admin/number_delete(id=${number.id})}"><img title="удалить" class="remove_img" src="/images/delete.png"></a>
         <input th:if="${action == 'number_change'}" th:field="*{id}" id="number_id" name="number_id" type="hidden">
         <input th:if="${action == 'number_change'}" th:field="*{journalId}" id="journal_id" name="journal_id" type="hidden">
@@ -52,13 +52,13 @@
     <div th:if="${journals != null} and ${action == 'number_list'}" th:each="journal : ${journals}">
         <div class="admin_card_item">
             <a th:href="@{/admin/journal_delete(id=${journal.id})}"><img title="удалить" class="remove_img" src="/images/delete.png"></a>
-            <div><a class="black_link" th:href="@{/admin/journal_change('id'=${journal.id})}" th:text="${journal.name}"></a></div>
-            <div><img class="journal_img" th:if="${journal.cover != null and #strings.length(journal.cover) > 0}" th:src="@{'/covers/'+${journal.cover}}">
+            <div><a class="black_link" th:href="@{/admin/journal_change(id=${journal.id})}" th:text="${journal.name}"></a></div>
+            <div><img class="journal_img" th:if="${journal.cover != null and #strings.length(journal.cover) > 0}" th:src="'/covers/'+${journal.cover}">
                 <div class="jurnal_short_info">
                     <div class="number_line" th:each="number : ${numberSortedList.get(journal)}">
                         <span class="number_year" th:text="${number.key}+': '"></span>
                         <div class="number_val" th:each="num : ${number.value}">
-                            <a th:href="@{/admin/number_change('id'=${num.id})}"><span
+                            <a th:href="@{/admin/number_change(id=${num.id})}"><span
                                     th:text="${num.name}"></span></a>
                         </div>
                     </div>

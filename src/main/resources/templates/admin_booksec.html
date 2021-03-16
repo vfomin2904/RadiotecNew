@@ -7,7 +7,7 @@
     <div class="title" th:if="${action == 'booksec_add'}">Добавление книжного раздела</div>
     <div class="page_title" th:if="${action == 'booksec_list'}">Изменение книжного раздела</div>
 
-    <form class="main_form" method="post" th:attr="action=@{${action == 'booksec_add'?'/admin/booksec_add':'/admin/booksec_change'}}"
+    <form class="main_form" method="post" th:attr="action=${action == 'booksec_add'?'/admin/booksec_add':'/admin/booksec_change'}"
           th:object="${bookSec}">
 
         <label th:if="${action == 'booksec_list'}" for="booksec_name">Раздел</label>

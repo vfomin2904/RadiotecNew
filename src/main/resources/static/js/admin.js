@@ -150,11 +150,19 @@ $(document).ready(function () {
 });
 
 function sendAjaxForm(result_form, ajax_form, url) {
+    // var data = $("."+ajax_form).serialize();
+    // data
+
+    var form = $('.main_form')[0];
+
+    var data = new FormData(form);
+
     $.ajax({
         url:     url,
         type:     "POST", //метод отправки
         dataType: "html", //формат данных
-        data: $("."+ajax_form).serialize(),
+        data: data,
+        enctype: 'multipart/form-data',
         processData: false,
         contentType: false,
         cache: false,

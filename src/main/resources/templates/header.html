@@ -13,34 +13,41 @@
 
     <script type="text/javascript" async="" charset="utf-8" src="http://site.yandex.net/v2.0/js/all.js"></script>
 
-    <link rel="shortcut icon" th:href="@{/images/favicon.png}" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-    <script type="text/javascript" th:src="@{/js/popup.js}"></script>
-    <link rel="stylesheet" type="text/css" th:href="@{/main.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/popup.css}">
+    <script type="text/javascript" src="/js/popup.js"></script>
+    <link rel="stylesheet" type="text/css" href="/main.css">
+    <link rel="stylesheet" type="text/css" href="/popup.css">
 
 </head>
 <div th:fragment="header_menu" id="header_menu">
     <div id="top_background_line"></div>
     <div id="header_top_line">
         <ul>
-            <li><a href="/">Главная</a></li>
-            <li><a href="/news">Новости</a></li>
-            <li><a href="/">Корзина</a></li>
-            <li><a href="/">Подписки</a></li>
-            <li sec:authorize="isAnonymous()"><a href="/login">Войти на сайт</a></li>
-            <li sec:authorize="isAuthenticated()"><form th:attr="action=@{/logout}" method="post"><input type="submit" value="Выход"></form></li>
+            <li><a th:href="'/'+#{language}+'/'" th:text="#{header.main}">Главная</a></li>
+            <li><a th:href="'/'+#{language}+'/news'" th:text="#{header.news}">Новости</a></li>
+            <li><a th:href="'/'+#{language}+'/about'" th:text="#{header.about}">Об издательстве</a></li>
+            <li><a th:href="'/'+#{language}+'/for_authors'" th:text="#{header.authors}">Для авторов</a></li>
+            <li><a th:href="'/'+#{language}+'/subscription'" th:text="#{header.subscription}">Подписка</a></li>
+            <li><a th:href="'/'+#{language}+'/order'" th:text="#{header.order}">Заказ книг</a></li>
+            <li><a href="/uploads/price.xls" th:text="#{header.price}">Прайс-лист</a></li>
+<!--            <li><a href="#">Корзина</a></li>-->
+<!--            <li><a href="#">Подписки</a></li>-->
+            <li sec:authorize="isAnonymous()"><a th:href="'/'+#{language}+'/login' " th:text="#{header.login}">Войти на сайт</a></li>
+            <li sec:authorize="isAuthenticated()"><form th:attr="action='/logout'" method="post"><input id="logout_button" type="submit" th:value="#{header.logout}"></form></li>
+            <ul id="select_lang">
+                <li th:classappend="(#{language} == 'ru')?'active_lang':''"><a th:href="@{${#strings.replace(#httpServletRequest.requestURI, '/en/','/ru/')}}">RUS</a></li>
+                <li th:classappend="(#{language} == 'en')?'active_lang':''"><a th:href="@{${#strings.replace(#httpServletRequest.requestURI, '/ru/','/en/')}}">ENG</a></li>
+            </ul>
         </ul>
     </div>
     <div id="header_block">
         <div class="logo">
-            <div id="header_left"><a href="/" title="Радиотехника"><img th:src="@{/images/logo.png}" alt="Радиотехника"
+            <div id="header_left"><a th:href="'/'+#{language}+'/'" title="Радиотехника"><img src="/images/logo.png" alt="Радиотехника"
                                                                         height="99" border="0"></a></div>
         </div>
-        <div id="header_middlie"><span>Издательство <br> <strong>РАДИОТЕХНИКА</strong></span></div>
-
-
+        <div id="header_middlie"><span th:text="#{header.pubHouse}">Издательство</span> <br> <span style="text-transform: uppercase;"><strong th:text="#{header.radiotec}">РАДИОТЕХНИКА</strong></span></div>
         <div id="header_right">
             <div class="ya-site-form ya-site-form_bg_transparent ya-site-form_inited_yes"
                  data-bem="{&quot;action&quot;:&quot;http://radiotec.ru/search.php&quot;,&quot;arrow&quot;:false,&quot;bg&quot;:&quot;transparent&quot;,&quot;fontsize&quot;:12,&quot;fg&quot;:&quot;#000000&quot;,&quot;language&quot;:&quot;ru&quot;,&quot;logo&quot;:&quot;rb&quot;,&quot;publicname&quot;:&quot;Yandex Site Search #2449644&quot;,&quot;suggest&quot;:true,&quot;target&quot;:&quot;_self&quot;,&quot;tld&quot;:&quot;ru&quot;,&quot;type&quot;:2,&quot;usebigdictionary&quot;:true,&quot;searchid&quot;:2449644,&quot;input_fg&quot;:&quot;#000000&quot;,&quot;input_bg&quot;:&quot;#ffffff&quot;,&quot;input_fontStyle&quot;:&quot;normal&quot;,&quot;input_fontWeight&quot;:&quot;normal&quot;,&quot;input_placeholder&quot;:&quot;Поиск по сайту&quot;,&quot;input_placeholderColor&quot;:&quot;#000000&quot;,&quot;input_borderColor&quot;:&quot;#7f9db9&quot;}"
@@ -61,7 +68,7 @@
                                                         <div class="ya-site-form__input"><input name="text"
                                                                                                 type="search" value=""
                                                                                                 class="ya-site-form__input-text"
-                                                                                                placeholder="Поиск по сайту"
+                                                                                                th:placeholder="#{header.searchPlaceholder}"
                                                                                                 autocomplete="off">
                                                             <div class="ya-site-suggest">
                                                                 <div class="ya-site-suggest-popup"
@@ -76,7 +83,7 @@
                                                         </div>
                                                     </td>
                                                     <td class="ya-site-form__search-input-layout-r"><input
-                                                            class="ya-site-form__submit" type="button" value="Найти">
+                                                            class="ya-site-form__submit" type="button" th:value="#{header.search}">
                                                     </td>
                                                 </tr>
                                                 </tbody>

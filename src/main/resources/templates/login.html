@@ -8,14 +8,14 @@
     <div th:replace="~{left_menu :: menu}"></div>
     <div id="main_block">
 
-       <h3 class="page_title">Авторизация</h3>
-        <form th:attr="action=@{/authenticateTheUser}" class="auth_form" method="post">
-            <label for="login">Логин</label>
+       <h3 class="page_title" th:text="#{reg.authorization}">Авторизация</h3>
+        <form th:attr="action='/authenticateTheUser'" class="auth_form" method="post">
+            <label for="login" th:text="#{reg.login}">Логин</label>
             <input id="login" name="username" type="text">
-            <label for="password">Пароль</label>
+            <label for="password" th:text="#{reg.password}">Пароль</label>
             <input id="password" name="password" type="password">
-            <input name="submit" type="submit">
-            <div id="reg_link"><a th:href="@{/register}">Регистрация</a></div>
+            <input name="submit" type="submit" th:value="#{reg.enter}">
+            <div id="reg_link"><a th:href="'/'+#{language}+'/register'" th:text="#{reg.registration}">Регистрация</a></div>
         </form>
 
     </div>

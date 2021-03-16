@@ -7,15 +7,15 @@
 <div id="content">
     <div th:replace="~{left_menu :: menu}"></div>
     <div id="main_block">
-        <div class="page_title" th:text="'Журнал '+${number.journal.name}"></div>
+        <div class="page_title" th:text="#{journal.journal}+' '+${number.journal.name}"></div>
         <div th:each="section : ${number.sections}">
             <div class="subtitle" th:text="${section.name}"></div>
             <div class="article_box" th:each="article : ${section.articles}">
-                <div class="article_box_name"><a th:text="${article.name}" th:href="@{'/article/'+${article.id}}"></a></div>
+                <div class="article_box_name"><a th:text="${article.name}" th:href="'/'+#{language}+'/article/'+${article.id}"></a></div>
                 <div class="article_box_authors" th:utext="${article.authors}"></div>
             </div>
         </div>
-        <div th:if="${#lists.isEmpty(number.sections)}">
+        <div th:if="${#lists.isEmpty(number.sections)}" th:text="#{number.empty}">
                 Данный номер не содержит статей
         </div>
     </div>

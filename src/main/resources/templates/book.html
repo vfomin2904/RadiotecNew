@@ -9,7 +9,7 @@
     <div id="main_block">
         <div class="page_title" th:text="${book.name}"></div>
         <div class="cursive_title" th:if="${book. author != ''}"><span th:utext="${book.author}"></span></div>
-        <img class="journal_img" th:src="@{'/covers/book/'+${book.coverImg}}">
+        <img class="journal_img" th:src="'/uploads/books/'+${book.coverImg}">
         <div class="jurnal_short_info">
             <p th:if="${book.description != ''}" th:utext="${book.description}"></p>
             <p th:if="${book.pages != ''}" th:text="'Количество страниц: '+${book.pages}"></p>
