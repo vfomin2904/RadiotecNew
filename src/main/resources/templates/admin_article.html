@@ -9,9 +9,10 @@
           th:attr="action=${action == 'article_add'?'/admin/article_add':'/admin/article_change'}"
           th:object="${article}">
         <input th:if="${action == 'article_change'}" th:field="*{id}" id="article_id" name="article_id" type="hidden">
-        <input th:if="${action == 'article_change'}" th:field="*{sectionId}" id="section_id" name="section_id"
-               type="section_id">
+        <input th:if="${action == 'article_change'} or ${article.sectionId > 0}" th:field="*{sectionId}" id="section_id" name="section_id"
+               type="hidden">
 
+        <div th:if="${article.sectionId <= 0}">
 
         <select class="select-css" th:if="${action == 'article_add'} or ${action == 'article_list'}"
                 id="select_journal_name" name="journal_name">
@@ -23,9 +24,6 @@
                 id="select_number_year" name="number_year">
             <option selected disabled>Год</option>
         </select>
-<!--        <script>-->
-<!--            $("#select_number_year option[value = 2021]").prop('selected', true);-->
-<!--        </script>-->
 
         <select class="select-css" name="numberId" th:if="${action == 'article_add'} or ${action == 'article_list'}"
                 id="select_number_name">
@@ -39,10 +37,11 @@
         <select class="select-css" name="id" th:if="${action == 'article_list'}" id="select_article_name">
             <option value="" th:disabled="disabled" th:selected="selected">Статья</option>
         </select>
+        </div>
 
         <div class="article_main_params  main_params" th:if="${action == 'article_add'} or ${action == 'article_change'}">
             <small class="input_error" th:each="err : ${#fields.errors('sectionId')}" th:text="${err}"></small>
-            <a th:if="${action == 'article_change'}" th:href="@{/admin/article_delete(id=${article.id})}"><img
+            <a class="remove_link" th:if="${action == 'article_change'}" th:href="@{/admin/article_delete(id=${article.id})}"><img
                     title="удалить" class="remove_img" src="/images/delete.png"></a>
 
             <div class="form__group field">
@@ -100,9 +99,26 @@
                       rows="5"></textarea>
 
             <div class="form__group field">
-                <input class="form__field" th:field="*{articleType}" id="articleType" name="articleType" placeholder="Тип статьи" type="text" >
+                <select class="select-css" name="articleType" th:field="*{articleType}" >
+                    <option th:if="${article.articleType != ''}"  th:value="${article.articleType}" th:text="${article.articleType}"></option>
+                    <option  value="">Не выбран</option>
+                    <option  value="RAR">RAR</option>
+                    <option  value="EDI">EDI</option>
+                    <option  value="BRV">BRV</option>
+                    <option  value="CNF">CNF</option>
+                    <option  value="SCO">SCO</option>
+                    <option  value="REV">REV</option>
+                    <option  value="ABS">ABS</option>
+                    <option  value="REP">REP</option>
+                    <option  value="COR">COR</option>
+                    <option  value="PER">PER</option>
+                    <option  value="MIS">MIS</option>
+                    <option  value="UNK">UNK</option>
+                </select>
+
                 <label class="form__label">Тип статьи</label>
             </div>
+
 
 
             <div class="form__group field">
@@ -139,7 +155,7 @@
             <label class="textarea_label" for="literatureEng">Литература (англ.)</label>
             <textarea th:field="*{literatureEng}" id="literatureEng" name="literatureEngdescriptEng" cols="60"
                       rows="5"></textarea>
-
+            <input type="button" class="translit" value="Транслит">
 
             <div class="form__group field">
                 <input class="form__field" th:field="*{keywordsEng}" id="keywordsEng" name="keywordsEng" placeholder="Ключевые слова (англ.)" type="text" >
@@ -181,6 +197,12 @@
                         return false;
                     }
                 );
+
+                $('.translit').click(function(){
+
+                    var literature = translit(CKEDITOR.instances["literature"].getData());
+                    CKEDITOR.instances["literatureEng"].setData(literature);
+                });
             </script>
         </div>
         <div th:if="${action == 'article_list'}" class="article_main_params main_params">

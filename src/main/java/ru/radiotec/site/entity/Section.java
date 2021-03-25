@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Entity
 @Table(name="razdel_numbers")
-public class Section {
+public class Section implements Comparable<Section>{
 
     @Id
 
@@ -28,7 +28,7 @@ public class Section {
     private int numberId;
 
     @Column(name="post")
-    private int post;
+    private int active;
 
     @Column(name="r_sort")
     private int sort;
@@ -85,12 +85,12 @@ public class Section {
         this.name = name;
     }
 
-    public int getPost() {
-        return post;
+    public int getActive() {
+        return active;
     }
 
-    public void setPost(int post) {
-        this.post = post;
+    public void setActive(int active) {
+        this.active = active;
     }
 
     public int getSort() {
@@ -107,5 +107,10 @@ public class Section {
 
     public void setNameEng(String nameEng) {
         this.nameEng = nameEng;
+    }
+
+    @Override
+    public int compareTo(Section o) {
+        return this.getSort() - o.getSort();
     }
 }

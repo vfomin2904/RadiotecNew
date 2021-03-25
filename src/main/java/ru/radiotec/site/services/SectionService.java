@@ -34,4 +34,8 @@ public class SectionService {
     public void delete(Section section){
         sectionRepository.delete(section);
     }
+
+    public List<Section> getSectionByNumber(int number) {
+        return sectionRepository.findByNumberId(number);
+    }
 }

@@ -5,18 +5,26 @@
 <div th:replace="~{header :: header_menu}"></div>
 
 <div id="content">
-    <div th:replace="~{left_menu :: menu}"></div>
     <div id="main_block">
-        <div class="page_title" th:text="#{journal.journal}+' '+${number.journal.name}"></div>
-        <div th:each="section : ${number.sections}">
-            <div class="subtitle" th:text="${section.name}"></div>
+
+        <div class="page_title padding"
+             th:text="#{journal.journal}+' '+((#{language}=='ru')?${number.journal.name}:${number.journal.nameEng})+' №'+${number.name}+' '+#{for}+' '+${number.year}+' г.'"></div>
+        <div th:each="section : ${number.sections}" th:if="${section.active == 1}">
+            <div class="section_subtitle" th:text="(#{language}=='ru')?${section.name}:${section.nameEng}"></div>
             <div class="article_box" th:each="article : ${section.articles}">
-                <div class="article_box_name"><a th:text="${article.name}" th:href="'/'+#{language}+'/article/'+${article.id}"></a></div>
-                <div class="article_box_authors" th:utext="${article.authors}"></div>
+                <div class="col1">
+                    <div class="article_box_name"><a th:text="(#{language}=='ru')?${article.name}:${article.nameEng}"
+                                                     th:href="'/'+#{language}+'/journal/'+${currentJournal.id}+'/number/'+${number.id}+'/section/'+${article.sectionId}+'/article/'+${article.id}"></a>
+                    </div>
+                    <div class="article_box_authors" th:utext="${article.authors}"></div>
+                </div>
+                <div class="col2" th:text="${article.page}">
+
+                </div>
             </div>
         </div>
         <div th:if="${#lists.isEmpty(number.sections)}" th:text="#{number.empty}">
-                Данный номер не содержит статей
+            Данный номер не содержит статей
         </div>
     </div>
 </div>

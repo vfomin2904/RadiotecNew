@@ -5,18 +5,63 @@
 <div th:replace="~{header :: header_menu}"></div>
 
 <div id="content">
-    <div th:replace="~{left_menu :: menu}"></div>
+    <div id="left_menu" th:fragment="menu">
+        <img class="journal_img" th:src="'/uploads/books/'+${currentBook.coverImg}">
+
+        <div class="left_menu_title" th:text="#{leftMenu.books}">Книги</div>
+        <ul th:each="booksec : ${booksecs}">
+            <li><a th:href="'/'+#{language}+'/booksection/'+${booksec.id}" th:text="${booksec.name}"></a></li>
+        </ul>
+
+    </div>
     <div id="main_block">
-        <div class="page_title" th:text="${book.name}"></div>
-        <div class="cursive_title" th:if="${book. author != ''}"><span th:utext="${book.author}"></span></div>
-        <img class="journal_img" th:src="'/uploads/books/'+${book.coverImg}">
-        <div class="jurnal_short_info">
-            <p th:if="${book.description != ''}" th:utext="${book.description}"></p>
-            <p th:if="${book.pages != ''}" th:text="'Количество страниц: '+${book.pages}"></p>
-            <p th:if="${book.price > 0}" th:text="'Цена: '+${book.price}"></p>
-            <p th:if="${book.isbn != ''}" th:text="'ISBN: '+${book.isbn}"></p>
+        <div class="page_title" th:text="${currentBook.name}"></div>
+
+        <div th:if="${#strings.equals(page, '')}">
+
+            <div class="cursive_title" th:if="${#strings.length(currentBook.author) > 0}"><span
+                    th:utext="${currentBook.author}"></span></div>
+            <div th:if="${#strings.length(currentBook.editionNumber) > 0}"><span th:utext="${currentBook.editionNumber}"></span></div>
+            <div class="jurnal_short_info">
+                <p th:if="${currentBook.year != null}"><span th:text="${currentBook.year}+' г.'"></span></p>
+                <p th:if="${#strings.length(currentBook.pages) > 0}"><span
+                                                            th:text="${currentBook.pages}+' стр.'"></span></p>
+                <p th:if="${#strings.length(currentBook.circulation) > 0}"><span>Тираж </span><span
+                                                            th:text="${currentBook.circulation} + ' экз.'"></span></p>
+
+                <p th:if="${currentBook.type > 0}" th:text="${currentBook.bookType.name}"></p>
+                <!--            <p th:if="${book.price > 0}" th:text="'Цена: '+${book.price}"></p>-->
+                <p th:if="${#strings.length(currentBook.size.name) > 0}"><span class="field_name">Формат </span><span
+                        th:text="${currentBook.size.name}"></span></p>
+                <p th:if="${#strings.length(currentBook.cover.name) > 0}"><span class="field_name">Обложка: </span><span
+                        th:text="${currentBook.cover.name}"></span></p>
+                <p th:if="${#strings.length(currentBook.isbn) > 0}"><span class="field_name">ISBN </span><span
+                        th:text="${currentBook.isbn}"></span></p>
+                <p th:if="${#strings.length(currentBook.bbk) > 0}"><span class="field_name">ББК </span><span
+                        th:text="${currentBook.bbk}"></span></p>
+                <p th:if="${#strings.length(currentBook.udk) > 0}"><span class="field_name">УДК </span><span
+                        th:text="${currentBook.udk}"></span></p>
+            </div>
+            <p th:if="${#strings.length(currentBook.description) > 0}" class="field_name">Аннотация</p>
+            <div th:if="${#strings.length(currentBook.description) > 0}" th:utext="${currentBook.description}"></div>
+            <p th:if="${currentBook.content != null}" class="field_name">Оглавление</p>
+            <div th:if="${#strings.length(currentBook.content) > 0}" th:utext="${currentBook.content}"></div>
         </div>
-        <p th:if="${book.content != ''}" th:utext="${book.content}"></p>
+        <div th:if="${#strings.equals(page, 'reader')}">
+            <div th:if="${#strings.length(reader) > 0}" th:utext="(#{language} == 'ru')?${reader.content}:${reader.contentEng}">
+
+            </div>
+        </div>
+        <div th:if="${#strings.equals(page, 'partner')}">
+            <div th:if="${#strings.length(partner) > 0}" th:utext="(#{language} == 'ru')?${partner.content}:${partner.contentEng}">
+
+            </div>
+        </div>
+        <div th:if="${#strings.equals(page, 'author')}">
+            <div th:if="${#strings.length(author) > 0}" th:utext="(#{language} == 'ru')?${author.content}:${author.contentEng}">
+
+            </div>
+        </div>
     </div>
 </div>
 </body>

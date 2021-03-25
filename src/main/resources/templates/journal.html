@@ -5,34 +5,185 @@
 <div th:replace="~{header :: header_menu}"></div>
 
 <div id="content">
-    <div th:replace="~{left_menu :: menu}"></div>
-    <div id="main_block">
-       <h3 class="page_title" th:text="#{journal.journal}+' '+${currentJournal.name}"></h3>
-        <div th:if="${not #lists.isEmpty(currentJournal.numbers)}"><span class="popup-open" th:text="#{journal.chooseNumber}">Выбрать номер журнала</span></div>
+    <div id="left_menu" th:fragment="menu">
+        <img class="journal_img" th:src="${'/uploads/journals/'+currentJournal.cover}">
+        <ul id="left_menu_journal">
+            <li class="popup-open"><a href="#" th:text="#{journal.submission}">Отправить статью</a></li>
+
+            <li><a th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}+'#rules'(page=about_journal)}" th:text="#{journal.guidelines}">Правила для авторов</a></li>
+            <li><a th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}+'#redkol'(page=about_journal)}" th:text="#{journal.board}">Редакционная коллегия</a></li>
+            <li><a th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}+'#review'(page=about_journal)}" th:text="#{journal.peer}">Рецензирование</a></li>
+           <li><a th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}+'#ethics'(page=about_journal)}" style="border:0;" th:text="#{journal.pubethics}">Этика публикаций</a></li>
+
+        </ul>
         <div class="popup-fade">
             <div class="popup">
                 <a class="popup-close" href="#" th:text="#{journal.close}">Закрыть</a>
-                <div class="number_list" th:if="${not #lists.isEmpty(currentJournal.numbers)}">
-                    <div class="number_line" th:each="number : ${numbersSorted}">
-                        <span class="number_year" th:text="${number.key}"></span>
-                        <div class="number_val" th:each="num : ${number.value}">
-                            <a th:href="'/'+#{language}+'/number/'+${num.id}"><span th:text="${num.name}"></span></a>
-                        </div>
+<!--                <form th:action="@{/send_article/}" enctype="multipart/form-data">-->
+<!--                    <h3 style="color:#000;">Отправить статью</h3>-->
+<!--                    <input type="file"/><br>-->
+<!--                    <input type="button" value="Отправить">-->
+<!--                </form>-->
+                <p style="color:black;">Отправка статей скоро заработает</p>
+            </div>
+        </div>
+    </div>
+    <div id="main_block">
+        <h3 class="page_title padding" th:if="#{language} == 'ru'" th:text="#{journal.journal}+' '+${currentJournal.name}"></h3>
+        <h3 class="page_title padding" th:if="#{language} == 'en'" th:text="#{journal.journal}+' '+${currentJournal.nameEng}"></h3>
+
+        <div th:if="${#strings.equals(page, 'archive')}">
+            <div class="number_list" th:if="${not #lists.isEmpty(currentJournal.numbers)}">
+                <div class="number_line" th:each="number : ${numbersSorted}">
+                    <span class="number_year" th:text="${number.key}"></span>
+                    <div class="number_val" th:each="num : ${number.value}">
+                        <a th:href="'/'+#{language}+'/journal/'+${currentJournal.id}+'/number/'+${num.id}"><span
+                                th:text="${num.name}"></span></a>
                     </div>
                 </div>
             </div>
         </div>
-        <img class="journal_img" th:src="${'/uploads/journals/'+currentJournal.cover}">
-        <div class="jurnal_short_info">
-            <div><span th:text="#{journal.editor}+': '">Редактор: </span><span th:text="${currentJournal.redaktor}"></span></div>
-            <div><span th:text="#{journal.periodicity}+': '">Периодичность: </span><span th:text="${currentJournal.num_year}"></span></div>
-            <div><span th:text="#{journal.issn}+': '">ISSN: </span><span th:text="${currentJournal.issn}"></span></div>
-            <div><span th:text="#{journal.pochta}+': '">«Пресса России» - индекс</span> <span th:text="${currentJournal.pochta}"></span></div>
+
+        <div th:if="${#strings.equals(page, '')}">
+            <div class="jurnal_short_info padding">
+                <div>
+                    <span th:text="#{journal.editor}+': '">Редактор: </span><span
+                        th:text="(#{language} == 'ru' or ${currentJournal.redaktorEng == ''})?${currentJournal.redaktor}:${currentJournal.redaktorEng}"></span>
+                </div>
+                <div><span th:text="#{journal.periodicity}+': '">Периодичность: </span><span
+                        th:text="(#{language} == 'ru' or ${currentJournal.num_yearEng == ''})?${currentJournal.num_year}:${currentJournal.num_yearEng}"></span></div>
+                <div><span th:text="#{journal.issn}+': '">ISSN: </span><span th:text="${currentJournal.issn}"></span>
+                </div>
+                <div><span th:text="#{journal.pochta}+': '">«Пресса России» - индекс</span> <span
+                        th:text="${currentJournal.pochta}"></span></div>
+            </div>
+<!--            <div th:if="${currentJournal.descript != ''}" class="subtitle" th:text="#{journal.abstract}">Аннотация</div>-->
+            <div class="padding" style="margin-top:40px;" th:if="${currentJournal.descript != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.descriptEng == ''})?${currentJournal.descript}:${currentJournal.descriptEng}"></div>
+
         </div>
-        <div th:if="${currentJournal.descript != ''}" class="subtitle" th:text="#{journal.abstract}">Аннотация</div>
-        <div th:if="${currentJournal.descript != ''}" th:utext="${currentJournal.descript}"></div>
-        <div class="subtitle" th:if="${currentJournal.redkol != ''}" th:text="#{journal.editorialBoard}">Редколлегия</div>
-        <div th:if="${currentJournal.redkol != ''}" th:utext="${currentJournal.redkol}"></div>
+
+        <div th:if="${#strings.equals(page, 'about_journal')}">
+            <p class="section_subtitle" th:text="#{journal.personalities}">Персоналии</p>
+            <div th:if="${#strings.length(currentJournal.contacts) > 0}" class="field_name margin_top padding"  th:text="#{journal.contacts}">Контакты</div>
+            <div class="padding"  th:if="${#strings.length(currentJournal.contacts) > 0}" th:utext="(#{language} == 'ru' or ${currentJournal.contactsEng == ''})?${currentJournal.contacts}:${currentJournal.contactsEng}"></div>
+
+            <div id="redkol" class="field_name margin_top padding" th:if="${currentJournal.redkol != ''}" th:text="#{journal.editorialBoard}">
+                Редколлегия
+            </div>
+            <div class="padding"  th:if="${currentJournal.redkol != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.redkolEng == ''})?${currentJournal.redkol}:${currentJournal.redkolEng}"></div>
+            <p class="section_subtitle" th:text="#{journal.politics}">Политика журнала</p>
+            <div class="field_name margin_top padding" th:if="${currentJournal.goals != ''}" th:text="#{journal.goals}">
+                Цели и задачи
+            </div>
+            <div class="padding"  th:if="${currentJournal.goals != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.goalsEng == ''})?${currentJournal.goals}:${currentJournal.goalsEng}"></div>
+
+            <div class="field_name margin_top padding" th:if="${currentJournal.journalsSections != ''}" th:text="#{journal.journalsSections}">
+                Разделы журнала
+            </div>
+            <div class="padding"  th:if="${currentJournal.journalsSections != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.journalsSectionsEng == ''})?${currentJournal.journalsSections}:${currentJournal.journalsSectionsEng}"></div>
+
+            <div id="review" class="field_name margin_top padding" th:if="${currentJournal.review != ''}" th:text="#{journal.review}">
+                Процесс рецензирования
+            </div>
+            <div class="padding"  th:if="${currentJournal.review != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.reviewEng == ''})?${currentJournal.review}:${currentJournal.reviewEng}"></div>
+
+            <div class="field_name margin_top padding" th:if="${currentJournal.freeAccess != ''}" th:text="#{journal.freeAccess}">
+                Политика свободного доступа
+            </div>
+            <div class="padding"  th:if="${currentJournal.freeAccess != ''}" th:utext="${currentJournal.freeAccess}"></div>
+
+            <div class="field_name margin_top padding" th:if="${currentJournal.archiving != ''}" th:text="#{journal.archiving}">
+                Архивация
+            </div>
+            <div class="padding"  th:if="${currentJournal.archiving != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.freeAccessEng == ''})?${currentJournal.freeAccess}:${currentJournal.freeAccessEng}"></div>
+
+
+            <div id="ethics" class="field_name margin_top padding" th:if="${currentJournal.ethics != ''}" th:text="#{journal.ethics}">
+                Этика научных публикаций
+            </div>
+            <div class="padding"  th:if="${currentJournal.ethics != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.ethicsEng == ''})?${currentJournal.ethics}:${currentJournal.ethicsEng}"></div>
+
+
+            <div class="field_name margin_top padding" th:if="${currentJournal.founder != ''}" th:text="#{journal.founder}">
+                Учредитель и издатель
+            </div>
+            <div class="padding"  th:if="${currentJournal.founder != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.founderEng == ''})?${currentJournal.founder}:${currentJournal.founderEng}"></div>
+
+
+            <div class="field_name margin_top padding" th:if="${currentJournal.publicationFee != ''}" th:text="#{journal.publicationFee}">
+                Плата за публикацию
+            </div>
+            <div class="padding"  th:if="${currentJournal.publicationFee != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.publicationFeeEng == ''})?${currentJournal.publicationFee}:${currentJournal.publicationFeeEng}"></div>
+
+            <div class="field_name margin_top padding" th:if="${currentJournal.conflicts != ''}" th:text="#{journal.conflicts}">
+                Политика раскрытия и конфликты интересов
+            </div>
+            <div class="padding"  th:if="${currentJournal.conflicts != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.conflictsEng == ''})?${currentJournal.conflicts}:${currentJournal.conflictsEng}"></div>
+
+            <div class="field_name margin_top padding" th:if="${currentJournal.plagiarism != ''}" th:text="#{journal.plagiarism}">
+                Заимствования и плагиат
+            </div>
+            <div class="padding"  th:if="${currentJournal.plagiarism != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.plagiarismEng == ''})?${currentJournal.plagiarism}:${currentJournal.plagiarismEng}"></div>
+
+
+            <div class="field_name margin_top padding" th:if="${currentJournal.print != ''}" th:text="#{journal.print}">
+                Политика размещения препринтов и постпринтов
+            </div>
+                <div class="padding"   th:if="${currentJournal.print != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.printEng == ''})?${currentJournal.print}:${currentJournal.printEng}"></div>
+
+            <p class="section_subtitle" th:text="#{journal.accepting}">Прием статей</p>
+            <div class="field_name margin_top padding" th:if="${currentJournal.sendingArticle != ''}" th:text="#{journal.sendingArticle}">
+                Отправка статей
+            </div>
+            <div class="padding"  th:if="${currentJournal.sendingArticle != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.sendingArticleEng == ''})?${currentJournal.sendingArticle}:${currentJournal.sendingArticleEng}"></div>
+
+            <div id="rules" class="field_name margin_top padding" th:if="${currentJournal.rules != ''}" th:text="#{journal.rules}">
+                Правила для авторов
+            </div>
+            <div class="padding"  th:if="${currentJournal.rules != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.rulesEng == ''})?${currentJournal.rules}:${currentJournal.rulesEng}"></div>
+
+            <div class="field_name margin_top padding" th:if="${currentJournal.copyright != ''}" th:text="#{journal.copyright}">
+                Авторские права
+            </div>
+            <div class="padding"  th:if="${currentJournal.copyright != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.copyrightEng == ''})?${currentJournal.copyright}:${currentJournal.copyrightEng}"></div>
+
+            <div class="field_name margin_top padding" th:if="${currentJournal.privacy != ''}" th:text="#{journal.privacy}">
+                Приватность
+            </div>
+            <div class="padding"  th:if="${currentJournal.privacy != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.privacyEng == ''})?${currentJournal.privacy}:${currentJournal.privacyEng}"></div>
+
+            <p class="section_subtitle" th:text="#{journal.other}">Прочее</p>
+            <div class="field_name margin_top padding" th:if="${currentJournal.sponsors != ''}" th:text="#{journal.sponsors}">
+                Издатель и спонсоры
+            </div>
+            <div class="padding"  th:if="${currentJournal.sponsors != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.sponsorsEng == ''})?${currentJournal.sponsors}:${currentJournal.sponsorsEng}"></div>
+
+            <div class="field_name margin_top padding" th:if="${currentJournal.history != ''}" th:text="#{journal.history}">
+                История журнала
+            </div>
+            <div class="padding"  th:if="${currentJournal.history != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.historyEng == ''})?${currentJournal.history}:${currentJournal.historyEng}"></div>
+
+
+        </div>
+
+        <div th:if="${#strings.equals(page, 'for_authors')}">
+            <div th:if="${#strings.length(currentJournal.guide) > 0}" class="field_name margin_top padding" th:text="#{journal.guide}">Руководство для авторов</div>
+            <div class="padding" th:if="${#strings.length(currentJournal.guide) > 0}" th:utext="(#{language} == 'ru' or ${currentJournal.guideEng == ''})?${currentJournal.guide}:${currentJournal.guideEng}"></div>
+            <div class="field_name margin_top padding" th:if="${currentJournal.pricePolicy != ''}" th:text="#{journal.pricePolicy}">
+                Ценовая политика журнала
+            </div>
+            <div class="padding" th:if="${currentJournal.pricePolicy != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.pricePolicyEng == ''})?${currentJournal.pricePolicy}:${currentJournal.pricePolicyEng}"></div>
+
+            <div class="field_name margin_top padding" th:if="${currentJournal.agreement != ''}" th:text="#{journal.agreement}">
+                Авторский договор
+            </div>
+            <div class="padding"   th:if="${currentJournal.agreement != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.agreementEng == ''})?${currentJournal.agreement}:${currentJournal.agreementEng}"></div>
+
+            <div class="field_name margin_top padding" th:if="${currentJournal.sendingMaterials != ''}"  th:text="#{journal.sendingMaterials}">
+                Отправка авторских материалов
+            </div>
+            <div class="padding"  th:if="${currentJournal.sendingMaterials != ''}" th:utext="(#{language} == 'ru' or ${currentJournal.sendingMaterialsEng == ''})?${currentJournal.sendingMaterials}:${currentJournal.sendingMaterialsEng}"></div>
+        </div>
     </div>
 </div>
 </body>

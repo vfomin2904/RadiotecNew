@@ -5,15 +5,35 @@
 <div th:if="${action == 'menu_change'}" class="relative"
      th:fragment="menu_options">
     <div class="page_title">Изменение страницы</div>
-    <form enctype="multipart/form-data" class="main_form" method="post" action=""
+
+    <ul class="menu_change_ul" th:if="${#strings.equals(type, 'main')}">
+        <li><a href="/admin/menu_change?id=1">Для авторов</a></li>
+        <li><a href="/admin/menu_change?id=1">Об издательстве</a></li>
+        <li> Новости:
+                <a href="/admin/news_add?type=0">добавить</a>
+                <a href="/admin/news_change?type=0">изменить</a>
+        </li>
+    </ul>
+
+    <ul class="menu_change_ul" th:if="${#strings.equals(type, 'book')}">
+        <li><a href="/admin/menu_change?id=3">Читателям</a></li>
+        <li><a href="/admin/menu_change?id=4">Партнерам</a></li>
+        <li><a href="/admin/menu_change?id=5">Для авторов</a></li>
+    </ul>
+
+    <form th:if="${page != null}" enctype="multipart/form-data" class="main_form" method="post" action=""
           th:object="${page}">
 
         <div class="page_main_params main_params">
 
             <input type="hidden" th:field="*{id}">
 
-            <label class="textarea_label" for="author">Содержимое страницы</label>
+            <label class="textarea_label" for="content">Содержимое страницы</label>
             <textarea th:field="*{content}" id="content" name="content" cols="60"
+                      rows="5"></textarea>
+
+            <label class="textarea_label" for="contentEng">Содержимое страницы (англ.)</label>
+            <textarea th:field="*{contentEng}" id="contentEng" name="contentEng" cols="60"
                       rows="5"></textarea>
 
             <input id="submit" value="Сохранить страницу" type="submit">
@@ -21,17 +41,17 @@
             <div class="form_message"></div>
             <script>
 
-                var textarea = ["content"];
+                var textarea = ["content", "contentEng"];
 
-                for(var i = 0; i < textarea.length;i++){
+                for (var i = 0; i < textarea.length; i++) {
                     CKEDITOR.replace(textarea[i]);
                 }
 
                 $(".ajax_submit").click(
-                    function(){
-                        for(var i = 0; i < textarea.length;i++){
+                    function () {
+                        for (var i = 0; i < textarea.length; i++) {
                             var value = CKEDITOR.instances[textarea[i]].getData();
-                            $("#"+textarea[i]).val(value);
+                            $("#" + textarea[i]).val(value);
                         }
                         var url = $(".main_form").attr("action");
                         sendAjaxForm('main_params', 'main_form', url);

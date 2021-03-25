@@ -47,6 +47,13 @@ public class Books {
     @JoinColumn(name="publisher", referencedColumnName = "id", insertable = false, updatable = false)
     private Publisher publish;
 
+    @Column(name="type")
+    private int type;
+
+    @ManyToOne
+    @JoinColumn(name="type", referencedColumnName = "id", insertable = false, updatable = false)
+    private BookType bookType;
+
     @Column(name="isbn")
     private String isbn;
 
@@ -87,6 +94,10 @@ public class Books {
 
     @Column(name="content")
     private String content;
+
+    @Column(name="circulation")
+    private String circulation;
+
 
     public Books(){
 
@@ -290,5 +301,29 @@ public class Books {
 
     public void setSize(BookSize size) {
         this.size = size;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public BookType getBookType() {
+        return bookType;
+    }
+
+    public void setBookType(BookType bookType) {
+        this.bookType = bookType;
+    }
+
+    public String getCirculation() {
+        return circulation;
+    }
+
+    public void setCirculation(String circulation) {
+        this.circulation = circulation;
     }
 }

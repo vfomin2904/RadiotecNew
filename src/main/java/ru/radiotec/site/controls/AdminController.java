@@ -52,6 +52,9 @@ public class AdminController {
     private PublisherService publisherService;
 
     @Autowired
+    private BookTypeService bookTypeService;
+
+    @Autowired
     private NewsService newsService;
 
     @GetMapping("/")
@@ -145,13 +148,13 @@ public class AdminController {
             model.addAttribute("journals", journal);
             model.addAttribute("action", "journal_change");
         } else{
-            List<Journals> journals = journalsService.getAllJournals();
+            TreeSet<Journals> journals = new TreeSet<>(journalsService.getAllJournals());
             model.addAttribute("journals", journals);
             model.addAttribute("action", "journal_list");
 
             Map<Journals, TreeMap<String, TreeSet<Number>>> numberSortedList = new HashMap<>();
             for(Journals item: journals){
-                numberSortedList.put(item, journalsService.getNumberSortedByYear(item));
+                numberSortedList.put(item, journalsService.getNumberSortedByYear(item, false));
             }
             model.addAttribute("numberSortedList", numberSortedList);
         }
@@ -159,14 +162,20 @@ public class AdminController {
     }
 
     @GetMapping("/number_add")
-    public String getAdminNumberAddPage(Model model, Number number){
+    public String getAdminNumberAddPage(Model model, Number number, @RequestParam (required = false) Integer journal_id){
         if(number == null){
             number = new Number();
         }
-        List<Journals> journals = journalsService.getAllJournals();
+        if(journal_id > 0){
+            Journals journal = journalsService.getJournalById(journal_id);
+            number.setJournalId(journal.getId());
+        }
+        else{
+            List<Journals> journals = journalsService.getAllJournals();
+            model.addAttribute("journals",journals);
+        }
         model.addAttribute("action", "number_add");
         model.addAttribute("number", number);
-        model.addAttribute("journals",journals);
         return "admin_template";
     }
 
@@ -175,10 +184,10 @@ public class AdminController {
 
         if(number.getJournalId()<1){
             bindingResult.rejectValue("journalId","","Не выбран журнал");
-            return getAdminNumberAddPage(model, number);
+            return getAdminNumberAddPage(model, number, 0);
         }
         if(bindingResult.hasErrors()){
-            return getAdminNumberAddPage(model, number);
+            return getAdminNumberAddPage(model, number, 0);
         }
 
         numberService.create(number);
@@ -201,7 +210,7 @@ public class AdminController {
 
             Map<Journals, TreeMap<String, TreeSet<Number>>> numberSortedList = new HashMap<>();
             for(Journals journal: journals){
-                numberSortedList.put(journal, journalsService.getNumberSortedByYear(journal));
+                numberSortedList.put(journal, journalsService.getNumberSortedByYear(journal, false));
             }
             model.addAttribute("numberSortedList", numberSortedList);
         }
@@ -223,14 +232,24 @@ public class AdminController {
         }
 
         numberService.update(number);
-        return "redirect:/admin/";
+        return getAdminNumberChangePage(model, number, 0);
     }
 
 
+    @GetMapping("section_list")
+    public String getSectionList(Model model, @RequestParam(required = true) int id){
+        TreeSet<Section> sections = new TreeSet<>(sectionService.getSectionByNumber(id));
+        model.addAttribute("section_list", sections);
+        return "admin_template";
+    }
+
     @GetMapping("/section_add")
-    public String getAdminSectionAddPage(Model model, Section section){
+    public String getAdminSectionAddPage(Model model, Section section, @RequestParam(required = false) int number_id){
         if(section == null || section.getId() < 0){
             section = new Section();
+        }
+        if(number_id > 0){
+            section.setNumberId(number_id);
         }
         List<Journals> journals = journalsService.getAllJournals();
         model.addAttribute("action", "section_add");
@@ -244,14 +263,24 @@ public class AdminController {
 
         if(section.getNumberId() <= 0){
             bindingResult.rejectValue("numberId","","Номер не выбран");
-            return getAdminSectionAddPage(model, section);
+            return getAdminSectionAddPage(model, section, 0);
         }
 
         if(bindingResult.hasErrors()){
             Number number = numberService.getNumberById(section.getNumberId());
             model.addAttribute("number", number);
-            return getAdminSectionAddPage(model, section);
+            return getAdminSectionAddPage(model, section, 0);
         }
+
+        // Сортировка
+        Number number = numberService.getNumberById(section.getNumberId());
+        int max = 0;
+        for(Section item: number.getSections()){
+            if(item.getSort() > max){
+                max = item.getSort();
+            }
+        }
+        section.setSort(max+1);
 
         sectionService.create(section);
         return "redirect:/admin/";
@@ -287,13 +316,23 @@ public class AdminController {
             return getAdminSectionChangePage(model, section, 0);
         }
         sectionService.update(section);
-        return "redirect:/admin/section_change";
+        return getAdminSectionChangePage(model, section, 0);
+    }
+
+    @GetMapping("article_list")
+    public String getArticleList(Model model, @RequestParam(required = true) int id){
+        List<Article> articles = articleService.getArticleBySection(id);
+        model.addAttribute("article_list", articles);
+        return "admin_template";
     }
 
     @GetMapping("/article_add")
-    public String getAdminArticleAddPage(Model model, Article article){
+    public String getAdminArticleAddPage(Model model, Article article, @RequestParam(required = false) int section_id){
         if(article == null){
             article = new Article();
+        }
+        if(section_id > 0){
+            article.setSectionId(section_id);
         }
         List<Journals> journals = journalsService.getAllJournals();
         model.addAttribute("action", "article_add");
@@ -317,7 +356,6 @@ public class AdminController {
                     article.setArticleFile(file.getOriginalFilename());
                 } catch (Exception e) {
                     System.out.println("Не удалось загрузить " + name + " => " + e.getMessage());
-
                     bindingResult.rejectValue("file","","Не удалось загрузить файл: "+e.getMessage());
                 }
 
@@ -325,10 +363,10 @@ public class AdminController {
 
         if(article.getSectionId() <=0){
             bindingResult.rejectValue("sectionId", "", "Не выбран раздел");
-            return getAdminArticleAddPage(model, article);
+            return getAdminArticleAddPage(model, article, 0);
         }
         if(bindingResult.hasErrors()){
-            return getAdminArticleAddPage(model, article);
+            return getAdminArticleAddPage(model, article, 0);
         }
         articleService.create(article);
         return "redirect:/admin/";
@@ -377,7 +415,7 @@ public class AdminController {
         }
 
         articleService.update(article);
-        return "redirect:/admin/article_change";
+        return getAdminArticleChangePage(model, article, 0);
     }
 
     @GetMapping("/article_delete")
@@ -436,7 +474,7 @@ public class AdminController {
         }
 
         bookSecService.update(booksec);
-        return "redirect:/admin/booksec_change";
+        return getAdminBookSecChangePage(model,0);
     }
 
 
@@ -453,10 +491,12 @@ public class AdminController {
         List<BookCover> bookcovers = bookCoverService.getAllBookCovers();
         List<Publisher> publishers = publisherService.getAllPublishers();
         List<BookSec> booksecs = bookSecService.getAllBookSec();
+        List<BookType> bookTypes = bookTypeService.getAllBookType();
         model.addAttribute("bookcovers", bookcovers);
         model.addAttribute("booksizes", booksizes);
         model.addAttribute("publishers", publishers);
         model.addAttribute("booksecs", booksecs);
+        model.addAttribute("bookTypes", bookTypes);
 
         if(!model.containsAttribute("books")){
             model.addAttribute("books", new Books());
@@ -519,9 +559,11 @@ public class AdminController {
             List<BookSize> booksizes = bookSizeService.getAllBookSizes();
             List<BookCover> bookcovers = bookCoverService.getAllBookCovers();
             List<Publisher> publishers = publisherService.getAllPublishers();
+            List<BookType> bookTypes = bookTypeService.getAllBookType();
             model.addAttribute("bookcovers", bookcovers);
             model.addAttribute("booksizes", booksizes);
             model.addAttribute("publishers", publishers);
+            model.addAttribute("bookTypes", bookTypes);
             model.addAttribute("action", "book_change");
         } else{
             List<BookSec> booksecs = bookSecService.getAllBookSec();
@@ -573,7 +615,7 @@ public class AdminController {
             return getAdminBookChangePage(model, 0);
         }
         bookService.update(book);
-        return "redirect:/admin/book_change";
+        return getAdminBookChangePage(model, 0);
     }
 
     @GetMapping("/book_delete")
@@ -584,42 +626,52 @@ public class AdminController {
     }
 
     @GetMapping("/news_add")
-    public String getAdminNewsPage(Model model){
+    public String getAdminNewsPage(Model model, @RequestParam(defaultValue = "0") int type){
         if(!model.containsAttribute("news")){
-            model.addAttribute("news", new News());
+            News news =  new News();
+            news.setType(type);
+            model.addAttribute("news",news);
+
         }
         model.addAttribute("action", "news_add");
         return "admin_template";
     }
     @PostMapping("/news_add")
     public String getAdminNewsAddPage(@Valid News news, BindingResult bindingResult, Model model){
+        if(news.getType() == 0){
+            if(news.getName().equals("")){
+                bindingResult.rejectValue("name", "", "Название не должно быть пустым");
+            }
+        }
         if(bindingResult.hasErrors()){
             model.addAttribute("news", news);
-            return getAdminNewsPage(model);
+            return getAdminNewsPage(model, news.getType());
         }
         newsService.create(news);
-        return "redirect:/admin/";
+        return "redirect:/admin/news_change?type="+news.getType();
     }
 
     @GetMapping("/news_delete")
     public String getAdminNewsDeletePage(@RequestParam(required = true) int id){
         News news = newsService.getNewsById(id);
         newsService.delete(news);
-        return "redirect:/admin/news_change";
+        return "redirect:/admin/news_change?type="+news.getType();
     }
 
     @GetMapping("/news_change")
-    public String getAdminNewsChangePage(Model model, @RequestParam(defaultValue = "-1") int id){
+    public String getAdminNewsChangePage(Model model, @RequestParam(defaultValue = "-1") int id, @RequestParam(defaultValue = "0") int type){
 
         if(id > 0 || model.containsAttribute("news")){
             if(!model.containsAttribute("news")){
                 News news = newsService.getNewsById(id);
+                news.setType(type);
                 model.addAttribute("news", news);
             }
             model.addAttribute("action", "news_change");
         } else{
-            List<News> news_list = newsService.getAllNews();
+            List<News> news_list = newsService.getNewsByType(type);
             model.addAttribute("news_list",news_list);
+            model.addAttribute("type",type);
             model.addAttribute("action", "news_list");
         }
 
@@ -628,19 +680,29 @@ public class AdminController {
 
     @PostMapping("/news_change")
     public String getAdminNewsChangePage(@Valid News news, BindingResult bindingResult, Model model){
+        if(news.getType() == 0){
+            if(news.getName().equals("")){
+                bindingResult.rejectValue("name", "", "Название не должно быть пустым");
+            }
+        }
         if(bindingResult.hasErrors()){
             model.addAttribute("news", news);
-            return getAdminNewsChangePage(model, 0);
+            return getAdminNewsChangePage(model, 0, news.getType());
         }
         newsService.update(news);
-        return "redirect:/admin/news_change";
+        return "redirect:/admin/news_change?type="+news.getType();
     }
 
     @GetMapping("/menu_change")
-    public String getMenuChangePage(Model model, @RequestParam(required = true) int id){
-        Page page = pageService.getPageById(id);
+    public String getMenuChangePage(Model model, @RequestParam(required = false, defaultValue = "0") int id, @RequestParam(required = false, defaultValue = "") String type){
+
+        if(id > 0) {
+            Page page = pageService.getPageById(id);
+            model.addAttribute("page", page);
+        }else if(type.length() > 0){
+            model.addAttribute("type",  type);
+        }
         model.addAttribute("action", "menu_change");
-        model.addAttribute("page", page);
         return "admin_template";
     }
 
@@ -648,6 +710,112 @@ public class AdminController {
     public String getMenuChangePostPage(Model model, Page page){
         pageService.update(page);
         return "redirect:/admin/menu_change?id="+page.getId();
+    }
+
+    @GetMapping("/field_change")
+    public String getFieldChangePage(Model model, @RequestParam(required = true) int id){
+        switch(id){
+            case 1:{
+                List<BookSize> items = bookSizeService.getAllBookSizes();
+                model.addAttribute("items", items);
+                model.addAttribute("type", "size");
+                model.addAttribute("object", new BookSize());
+                break;
+            }
+            case 2:{
+                List<BookCover> items = bookCoverService.getAllBookCovers();
+                model.addAttribute("items", items);
+                model.addAttribute("type", "cover");
+                model.addAttribute("object", new BookCover());
+                break;
+            }
+            case 3:{
+                List<BookType> items = bookTypeService.getAllBookType();
+                model.addAttribute("items", items);
+                model.addAttribute("type", "book_type");
+                model.addAttribute("object", new BookType());
+                break;
+            }
+            case 4:{
+                List<Publisher> items = publisherService.getAllPublishers();
+                model.addAttribute("items", items);
+                model.addAttribute("type", "publisher");
+                model.addAttribute("object", new Publisher());
+                break;
+            }
+        }
+        model.addAttribute("action", "field_change");
+        return "admin_template";
+    }
+
+    @PostMapping("/size_change")
+    public String getSizeChangePostPage(Model model, BookSize bookSize){
+        bookSizeService.update(bookSize);
+        return "redirect:/admin/field_change?id=1";
+    }
+
+    @GetMapping("/size_delete")
+    public String getAdminSizeDeletePage(@RequestParam(required = true) int id){
+        BookSize bookSize = bookSizeService.getBookSizeById(id);
+        bookSizeService.delete(bookSize);
+        return "redirect:/admin/field_change?id=1";
+    }
+
+    @PostMapping("/cover_change")
+    public String getSizeChangePostPage(Model model, BookCover bookCover){
+        bookCoverService.update(bookCover);
+        return "redirect:/admin/field_change?id=2";
+    }
+
+    @GetMapping("/cover_delete")
+    public String getAdminCoverDeletePage(@RequestParam(required = true) int id){
+        BookCover bookCover = bookCoverService.getBookCoverById(id);
+        bookCoverService.delete(bookCover);
+        return "redirect:/admin/field_change?id=2";
+    }
+
+    @PostMapping("/book_type_change")
+    public String getBookTypeChangePostPage(Model model, BookType bookType){
+        bookTypeService.update(bookType);
+        return "redirect:/admin/field_change?id=3";
+    }
+
+    @GetMapping("/book_type_delete")
+    public String getAdminBookTypeDeletePage(@RequestParam(required = true) int id){
+        BookType bookType = bookTypeService.getBookTypeById(id);
+        bookTypeService.delete(bookType);
+        return "redirect:/admin/field_change?id=3";
+    }
+
+    @PostMapping("/publisher_change")
+    public String getSizeChangePostPage(Model model, Publisher publisher){
+        publisherService.update(publisher);
+        return "redirect:/admin/field_change?id=4";
+    }
+
+    @GetMapping("/publisher_delete")
+    public String getAdminPublisherDeletePage(@RequestParam(required = true) int id){
+        Publisher publisher = publisherService.getPublisherById(id);
+        publisherService.delete(publisher);
+        return "redirect:/admin/field_change?id=4";
+    }
+
+
+    @PostMapping("/sort/")
+    @ResponseBody
+    public String sortEntity(@RequestParam(required = true) String type, @RequestParam(required = true) int id, @RequestParam(required = true) int num){
+        if(type.equals("section")){
+            Section section = sectionService.getSectionById(id);
+            section.setSort(num);
+            sectionService.update(section);
+        }
+        return "Ok";
+    }
+
+    @GetMapping("/other")
+    public String getOtherPage(Model model, @RequestParam(required = true) String type){
+        model.addAttribute("type", type);
+        return "admin_other";
     }
 
 
@@ -712,6 +880,8 @@ public class AdminController {
            List<BookSize> booksizes = bookSizeService.getAllBookSizes();
            List<BookCover> bookcovers = bookCoverService.getAllBookCovers();
            List<Publisher> publishers = publisherService.getAllPublishers();
+           List<BookType> bookTypes = bookTypeService.getAllBookType();
+           model.addAttribute("bookTypes", bookTypes);
            model.addAttribute("bookcovers", bookcovers);
            model.addAttribute("booksizes", booksizes);
            model.addAttribute("publishers", publishers);

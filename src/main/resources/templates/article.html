@@ -5,10 +5,17 @@
 <div th:replace="~{header :: header_menu}"></div>
 
 <div id="content">
-    <div th:replace="~{left_menu :: menu}"></div>
     <div id="main_block">
-        <div th:if="${article.keywords != ''}">
-            <span th:text="#{article.keywords}+': '">Ключевые слова: </span>
+        <div class="page_title padding"
+             th:text="#{journal.journal}+' '+((#{language}=='ru')?${currentJournal.name}:${currentJournal.nameEng})+' №'+${article.section.number.name}+' '+#{for}+' '+${article.section.number.year}+' г.'"></div>
+        <div class="subtitle_lower padding" th:text="#{article.inNumber}"></div>
+        <div class="section_subtitle bold" th:text="(#{language}=='ru')?${article.name}:${article.nameEng}"></div>
+        <div class="margin_top padding" th:if="${article.articleType != ''}"><span class="field_name" th:text="#{article.type}+': '">Тип статьи: </span><span th:text="${article.articleType}"></span></div>
+        <div class="margin_top padding" th:if="${article.doi != ''}"><span class="field_name" >DOI: </span><span th:text="${article.doi}"></span></div>
+        <div class="margin_top padding" th:if="${article.udk != ''}"><span class="field_name" th:text="#{article.udk}+': '"></span><span
+                th:text="${article.udk}"></span></div>
+        <div class="margin_top padding"  th:if="${article.keywords != ''}">
+            <span class="field_name"  th:text="#{article.keywords}+': '">Ключевые слова: </span>
             <span th:if="#{language} == 'ru'" class="keywords"
                   th:each="keyword: ${#strings.arraySplit(article.keywords, ',')}">
                 <a th:href="@{'/'+#{language}+'/keywords'(keywords = ${keyword})}" th:text="${keyword}"></a>
@@ -18,23 +25,33 @@
                 <a th:href="@{'/'+#{language}+'/keywords'(keywords = ${keyword})}" th:text="${keyword}"></a>
             </span>
         </div>
-        <div class="page_title" th:text="(#{language}=='ru')?${article.name}:${article.nameEng}"></div>
-        <div th:if="${article.udk != ''}" th:text="'УДК:"><span th:text="#{article.udk}+': '"></span><span
-                th:text="${article.udk}"></span></div>
-        <div th:if="${article.doi != ''}" th:text="'DOI: '+ ${article.doi}"></div>
-        <div th:if="${article.authors != ''}" class="subtitle" th:text="#{article.authors}">Авторы</div>
-        <div th:utext="(#{language}=='ru')? ${article.authors} : ${article.authorsEng}"></div>
-        <div th:if="${article.descript != ''}" class="subtitle" th:text="#{article.annot}">Аннотация</div>
-        <div th:utext="(#{language}=='ru')?${article.descript}:${article.descriptEng}"></div>
-        <div th:if="${article.page != ''}"><span th:text="#{article.page}+': '"></span><span
+
+        <div th:if="${article.authors != ''}" class="field_name margin_top padding" th:text="#{article.authors}+': '">Авторы</div>
+        <div class="padding" th:utext="(#{language}=='ru')? ${article.authors} : ${article.authorsEng}"></div>
+        <div th:if="${article.descript != ''}" class="field_name margin_top padding" th:text="#{article.annot}+': '">Аннотация</div>
+        <div class="padding" th:utext="(#{language}=='ru')?${article.descript}:${article.descriptEng}"></div>
+        <div class="margin_top padding" th:if="${article.page != ''}"><span class="field_name" th:text="#{article.page}+': '"></span><span
                 th:text="${article.page}"></span></div>
 
-        <div th:if="${article.citata != ''}" class="subtitle" th:text="#{article.citata}">Для цитирования</div>
-        <div th:utext="(#{language}=='ru')?${article.citata}:${article.citataEng}"></div>
+        <div th:if="${article.citata != ''}" class="field_name margin_top padding" th:text="#{article.citata}">Для цитирования</div>
+        <div class="padding" th:utext="(#{language}=='ru')?${article.citata}:${article.citataEng}"></div>
 
-        <div th:if="${article.literature != ''}" class="subtitle" th:text="#{article.literatura}">Список литературы
+        <div th:if="${article.literature != ''}" class="field_name margin_top padding" th:text="#{article.literatura}">Список литературы
         </div>
-        <div th:utext="(#{language}=='ru')?${article.literature}:${article.literatureEng}"></div>
+        <div class="padding" th:utext="(#{language}=='ru')?${article.literature}:${article.literatureEng}"></div>
+        <div th:if="${article.articleText != ''}" class="field_name margin_top padding article_text_title" th:text="#{article.text}" ></div>
+        <div th:if="${article.articleText != ''}" class="padding article_text"><p th:utext="${article.articleText}"></p></div>
+        <script>
+            $(".article_text_title").click(function(){
+                if($(".article_text").css("display") == "none"){
+                    $(".article_text").show();
+                } else{
+                    $(".article_text").hide();
+                }
+            });
+        </script>
+        <a th:if="${article.articleFile != ''}" class="download_button padding margin_top" th:text="#{article.download}" th:href="@{'/uploads/articles/'+${article.articleFile}}"></a>
+
     </div>
 
 </div>

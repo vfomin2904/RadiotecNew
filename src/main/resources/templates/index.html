@@ -7,26 +7,48 @@
 <div id="content">
     <div th:replace="~{left_menu :: menu}"></div>
     <div id="main_block">
-<!--        <ul th:each="book : ${booksnew}">-->
-<!--            <li th:text="${book.name}"></li>-->
-<!--        </ul>-->
+        <div th:if="${not #lists.isEmpty(urgentlyNews)} or ${not #lists.isEmpty(shortNews)}">
+            <div class="main_news" th:each="item: ${urgentlyNews}"
+                 th:if="(#{language} == 'ru') and ${#strings.length(item.longNews) > 0}">
+                <p th:utext="${item.longNews}"></p>
+            </div>
 
-<!--        <div class="card" style="width: 18rem;" th:each="book : ${booksnew}">-->
-<!--            <img th:src="@{'/covers/book/' + ${book.coverImg}}" class="card-img-top" th:alt="${book.name}">-->
-<!--            <div class="card-body">-->
-<!--                <p class="card-text" th:text="${book.name}"></p>-->
-<!--            </div>-->
-<!--        </div>-->
-       <h3 class="page_title" th:text="#{book.newBooks}">Новые книги</h3>
+            <div class="main_news" th:each="item: ${urgentlyNews}"
+                 th:if="(#{language} == 'en') and ${#strings.length(item.longNewsEng) > 0}">
+                <p th:utext="${item.longNewsEng}"></p>
+            </div>
+
+            <div class="short_news" th:each="item: ${shortNews}"
+                 th:if="(#{language} == 'ru') and ${#strings.length(item.longNews) > 0}">
+                <p th:utext="${item.longNews}"></p>
+            </div>
+
+            <div class="short_news" th:each="item: ${shortNews}"
+                 th:if="(#{language} == 'en') and ${#strings.length(item.longNewsEng) > 0}">
+                <p th:utext="${item.longNewsEng}"></p>
+            </div>
+        </div>
+
+        <h3 class="page_title" style="margin-left:2.5%;" th:text="#{book.newBooks}">Новые книги</h3>
         <div class="card-group">
             <div class="card" th:each="book : ${booksnew}">
-               <a th:href="'/'+#{language}+'/books/'+${book.id}"><img th:src="'/uploads/books/' + ${book.coverImg}" class="card-img-top" th:alt="${book.name}"></a>
+                <a th:href="'/'+#{language}+'/books/'+${book.id}"><img th:src="'/uploads/books/' + ${book.coverImg}"
+                                                                       class="card-img-top" th:alt="${book.name}"></a>
                 <div class="card-body">
-                    <a class="black_link"  th:href="'/'+#{language}+'/books/'+${book.id}"><h4 class="card-title" th:text="${book.name}"></h4></a>
+                    <a class="black_link" th:href="'/'+#{language}+'/books/'+${book.id}"><h4 class="card-title"
+                                                                                             th:text="${book.name}"></h4>
+                    </a>
                     <p class="card-text" th:utext="${book.author}"></p>
+                    <div class="card-text book_description" th:utext="${book.description}"></div>
                 </div>
             </div>
         </div>
+        <script>
+            for (i = 0; i < $(".book_description").length; i++) {
+                var descript = $(".book_description").eq(i).html();
+                $(".book_description").eq(i).html(descript.split(' ').slice(0, 20).join(' ')+" ...")
+            }
+        </script>
     </div>
 </div>
 </body>

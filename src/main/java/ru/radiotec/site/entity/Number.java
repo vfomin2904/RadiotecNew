@@ -41,7 +41,7 @@ public class Number implements Comparable{
     private Journals journal;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "number")
-    @OrderBy("id ASC")
+    @OrderBy("sort ASC")
     private Set<Section> sections = new HashSet<>();
 
     public Number(){

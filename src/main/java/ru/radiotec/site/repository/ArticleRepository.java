@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Integer> {
-    List<Article> findByKeywordsContaining(String keywords);
+    List<Article> findByKeywordsContainingOrKeywordsEngContaining(String keywords, String keywordsEng);
     List<Article> findBySectionId(int id);
 }

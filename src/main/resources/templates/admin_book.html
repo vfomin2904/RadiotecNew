@@ -19,7 +19,7 @@
 
         <div class="book_main_params main_params" th:if="${action == 'book_add'} or ${action == 'book_change'}">
             <small class="input_error" th:each="err : ${#fields.errors('section')}" th:text="${err}"></small>
-            <a th:if="${action == 'book_change'}" th:href="@{/admin/book_delete(id=${books.id})}"><img
+            <a class="remove_link" th:if="${action == 'book_change'}" th:href="@{/admin/book_delete(id=${books.id})}"><img
                     title="удалить" class="remove_img" src="/images/delete.png"></a>
 
 
@@ -45,6 +45,13 @@
             <small class="input_error" th:each="err : ${#fields.errors('publisher')}" th:text="${err}"></small>
 
 
+            <select class="select-css" th:field="*{type}" id="type" name="type">
+                <option selected th:value="0">Тип издания</option>
+                <option th:each="item : ${bookTypes}" th:value="${item.id}" th:text="${item.name}" th:if="${item.id>0}"></option>
+            </select>
+            <small class="input_error" th:each="err : ${#fields.errors('type')}" th:text="${err}"></small>
+
+
             <select class="select-css" th:field="*{bookcover}" id="cover" name="cover">
                 <option selected disabled th:value="0">Тип обложки</option>
                 <option th:each="bookcover : ${bookcovers}" th:value="${bookcover.id}" th:text="${bookcover.name}"></option>
@@ -67,14 +74,19 @@
                 <label class="form__label">Количество страниц</label>
             </div>
 
+            <div class="form__group field">
+                <input class="form__field" th:field="*{year}" id="year" name="year" placeholder="Год" type="text" >
+                <label class="form__label">Год</label>
+            </div>
+
             <input class="custom-checkbox active" id="checkbox_pict" type="checkbox" name="checkbox_pict">
             <label for="checkbox_pict">Иллюстрации</label>
             <input th:field="*{fpict}" class="checkbox_value"  id="fpict" name="fpict" th:value="0" type="hidden">
 
-            <div class="form__group field">
-                <input class="form__field" th:field="*{description}" id="description" name="description" placeholder="Аннотация" type="text" >
-                <label class="form__label">Аннотация</label>
-            </div>
+
+            <label class="textarea_label" for="description">Аннотация</label>
+            <textarea th:field="*{description}" id="description" name="description" cols="60"
+                      rows="5"></textarea>
 
 
             <div class="form__group field">
@@ -106,6 +118,11 @@
             <label class="textarea_label" for="content">Содержание</label>
             <textarea th:field="*{content}" id="content" name="content" cols="60"
                       rows="5"></textarea>
+
+            <div class="form__group field">
+                <input class="form__field" th:field="*{circulation}" id="circulation" name="circulation" placeholder="Тираж" type="text" >
+                <label class="form__label">Тираж</label>
+            </div>
 
             <br>
             <input class="custom-checkbox active" id="checkbox_new" type="checkbox" name="checkbox_new">

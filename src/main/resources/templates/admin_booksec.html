@@ -17,7 +17,7 @@
         </select>
 
         <div class="booksec_main_params main_params" th:if="${action == 'booksec_add'} or ${action == 'booksec_change'}">
-            <a th:if="${action == 'booksec_change'}" th:href="@{/admin/booksec_delete(id=${bookSec.id})}"><img
+            <a class="remove_link" th:if="${action == 'booksec_change'}" th:href="@{/admin/booksec_delete(id=${bookSec.id})}"><img
                     title="удалить" class="remove_img" src="/images/delete.png"></a>
 
             <input th:if="${action == 'booksec_change'}" th:field="*{id}" id="booksec_id" name="booksec_id"

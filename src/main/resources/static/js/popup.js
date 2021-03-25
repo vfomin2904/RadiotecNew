@@ -1,4 +1,5 @@
 $(document).ready(function($) {
+
     // Клик по ссылке "Закрыть".
     $('.popup-close').click(function() {
         $(this).parents('.popup-fade').fadeOut();
@@ -23,4 +24,6 @@ $(document).ready(function($) {
             $(this).fadeOut();
         }
     });
+
+    setTimeout(function(){$(".ya-site-form__submit").val("ПОИСК")}, 300);
 });

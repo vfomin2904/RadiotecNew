@@ -18,6 +18,12 @@ public class JournalsService {
         List<Journals> journals = journalRepository.findAll();
         return journals;
     }
+
+    public List<Journals> getActiveJournals() {
+        List<Journals> journals = journalRepository.findJournalsByActive(1);
+        return journals;
+    }
+
     public Journals getJournalById(int id) {
         return journalRepository.findById(id).get();
     }
@@ -36,7 +42,7 @@ public class JournalsService {
         journalRepository.save(original);
     }
 
-    public TreeMap<String, TreeSet<Number>> getNumberSortedByYear(Journals journal){
+    public TreeMap<String, TreeSet<Number>> getNumberSortedByYear(Journals journal, boolean onlyActive){
         TreeMap<String, TreeSet<Number>> numberSorted = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
@@ -46,10 +52,12 @@ public class JournalsService {
 
         journal.getNumbers().forEach((Number number) ->{
 
-                    TreeSet<Number> currentValue = numberSorted.getOrDefault(number.getYear(), new TreeSet<Number>());
+                    if(number.getActive() == 1 || !onlyActive){
+                        TreeSet<Number> currentValue = numberSorted.getOrDefault(number.getYear(), new TreeSet<Number>());
 
-                    currentValue.add(number);
-                    numberSorted.put(number.getYear(), currentValue);
+                        currentValue.add(number);
+                        numberSorted.put(number.getYear(), currentValue);
+                    }
                 }
         );
         return numberSorted;

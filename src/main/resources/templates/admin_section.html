@@ -10,8 +10,9 @@
           th:attr="action=${action == 'section_add'?'/admin/section_add':'/admin/section_change'}"
           th:object="${section}">
         <input th:if="${action == 'section_change'}" th:field="*{id}" id="section_id" name="section_id" type="hidden">
-        <input th:if="${action == 'section_change'}" th:field="*{numberId}" id="number_id" name="number_id"
+        <input th:if="${action == 'section_change'} or ${section.numberId > 0}" th:field="*{numberId}" id="number_id" name="number_id"
                type="hidden">
+        <div th:if="${section.numberId <= 0}">
         <!--        <label class="select_label"  th:if="${action == 'section_add'}" for="journal_name">Журнал</label>-->
         <select class="select-css" th:if="${action == 'section_add'} or ${action == 'section_list'}"
                 id="select_journal_name" name="journal_name">
@@ -33,15 +34,16 @@
         <select class="select-css" th:field="*{id}" name="id" th:if="${action == 'section_list'}" id="select_section_name">
             <option value="0" th:disabled="disabled" th:selected="selected">Раздел</option>
         </select>
-
+        </div>
 
         <div class="section_main_params main_params" th:if="${action == 'section_add'} or ${action == 'section_change'}">
             <small class="input_error" th:each="err : ${#fields.errors('numberId')}" th:text="${err}"></small>
             <small class="input_error" th:each="err : ${#fields.errors('id')}" th:text="${err}"></small>
 
-            <a th:if="${action == 'section_change'}" th:href="@{/admin/section_delete(id=${section.id})}"><img
+            <a class="remove_link" th:if="${action == 'section_change'}" th:href="@{/admin/section_delete(id=${section.id})}"><img
                     title="удалить" class="remove_img" src="/images/delete.png"></a>
-
+            <p class="choose_number" th:if="${action == 'section_change'}"><a th:href="@{/admin/article_add(section_id=${section.id})}">Добавить статью</a></p>
+            <p th:if="${action == 'section_change'}" class="choose_number"><a th:href="@{/admin/article_list(id=${section.id})}">Список статей</a></p>
             <div class="form__group field">
                 <input class="form__field" th:field="*{name}" id="name" name="name"
                        placeholder="Название" type="text">
@@ -57,10 +59,11 @@
             <br>
             <small class="input_error" th:each="err : ${#fields.errors('nameEng')}" th:text="${err}"></small>
 
+            <input th:if="${action == 'section_change'}" th:field="*{sort}" id="sort" name="sort" type="hidden">
 
             <input class="custom-checkbox active" id="checkbox_active" type="checkbox" name="checkbox_active">
             <label for="checkbox_active">Активировать</label>
-            <input th:field="*{post}" class="checkbox_value" id="post" name="post" th:value="0" type="hidden">
+            <input th:field="*{active}" class="checkbox_value" id="active" name="active" th:value="0" type="hidden">
             <input class="ajax_submit" th:if="${action == 'section_add'}" id="submit" value="Добавить раздел" type="button">
             <input class="ajax_submit" th:if="${action == 'section_change'}" id="submit" value="Изменить раздел" type="button">
 

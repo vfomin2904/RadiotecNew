@@ -22,7 +22,7 @@ public class ArticleService {
     }
 
     public List<Article> getArticlesByKeywords(String keywords) {
-        return articleRepository.findByKeywordsContaining(keywords);
+        return articleRepository.findByKeywordsContainingOrKeywordsEngContaining(keywords,keywords);
     }
 
     public void create(Article article) {

@@ -17,6 +17,10 @@ public class Page {
     @Column(name="content")
     private String content;
 
+
+    @Column(name="content_eng")
+    private String contentEng;
+
     public Page() {
     }
 
@@ -34,5 +38,13 @@ public class Page {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getContentEng() {
+        return contentEng;
+    }
+
+    public void setContentEng(String contentEng) {
+        this.contentEng = contentEng;
     }
 }

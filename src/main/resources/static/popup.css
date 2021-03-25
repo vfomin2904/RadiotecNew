@@ -31,13 +31,13 @@
 }
 
 .popup-open{
-    background: #59595d;
-    color:#fff;
-    border-radius: 8px;
-    padding:6px 10px;
-    margin: 6px 0;
-    display: inline-block;
-    cursor:pointer;
+    /*background: #59595d;*/
+    /*color:#fff;*/
+    /*border-radius: 8px;*/
+    /*padding:6px 10px;*/
+    /*margin: 6px 0;*/
+    /*display: inline-block;*/
+    /*cursor:pointer;*/
 }
 .popup-fade{
     display: none;
