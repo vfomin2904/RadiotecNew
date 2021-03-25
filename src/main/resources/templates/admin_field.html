@@ -1,69 +1,41 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="~{admin_template::head}">
+
+</head>
 <body>
-<div th:if="${action == 'field_change'}" class="relative"
-     th:fragment="field_options">
-    <div class="page_title">Добавление полей</div>
+<div id="admin">
+    <div th:replace="~{admin_template :: admin_menu}">
 
-    <div th:each="item: ${items}" th:if="${item.id > 0}">
-        <span class="item_field_name" th:text="${item.name}"></span>
-        <a class="remove_link" th:href="@{'/admin/'+${type}+'_delete'(id=${item.id})}"><img title="удалить"
-                                                                                            class="remove_line_img"
-                                                                                            src="/images/delete.png"></a>
     </div>
-    <form class="main_form" method="post" th:action="@{'/admin/'+${type}+'_change'}" th:object="${object}">
-        <div class="form__group field">
-            <input class="form__field" th:field="*{name}" placeholder="Название" id="name" name="name" type="text">
-            <label class="form__label">Название</label>
+    <div id="admin_content">
+        <div class="relative">
+            <div class="page_title">Добавление полей</div>
+
+            <div th:each="item: ${items}" th:if="${item.id > 0}">
+                <span class="item_field_name" th:text="${item.name}"></span>
+                <a class="remove_link" th:href="@{'/admin/'+${type}+'_delete'(id=${item.id})}"><img title="удалить"
+                                                                                                    class="remove_line_img"
+                                                                                                    src="/images/delete.png"></a>
+            </div>
+            <form class="main_form" method="post" th:action="@{'/admin/'+${type}+'_change'}" th:object="${object}">
+                <div class="form__group field">
+                    <input class="form__field" th:field="*{name}" placeholder="Название" id="name" name="name" type="text">
+                    <label class="form__label">Название</label>
+                </div>
+
+                <div class="form__group field" th:if="(${type} == 'publisher')">
+                    <input class="form__field" th:field="*{extname}" placeholder="Название полное" id="extname" name="extname" type="text">
+                    <label class="form__label">Название полное</label>
+                </div>
+
+                <input id="submit" value="Сохранить" type="submit">
+            </form>
+
         </div>
-
-        <div class="form__group field" th:if="(${type} == 'publisher')">
-            <input class="form__field" th:field="*{extname}" placeholder="Название полное" id="extname" name="extname" type="text">
-            <label class="form__label">Название полное</label>
-        </div>
-
-        <input id="submit" value="Сохранить" type="submit">
-    </form>
-
-
-    <!--    <form enctype="multipart/form-data" class="main_form" method="post" action=""-->
-    <!--          th:object="${item}">-->
-
-    <!--        <div class="field_main_params field_params">-->
-
-    <!--            <input type="hidden" th:field="*{id}">-->
-
-    <!--            <label class="textarea_label" for="author">Содержимое страницы</label>-->
-    <!--            <textarea th:field="*{content}" id="content" name="content" cols="60"-->
-    <!--                      rows="5"></textarea>-->
-
-    <!--            <input id="submit" value="Сохранить страницу" type="submit">-->
-
-    <!--            <div class="form_message"></div>-->
-    <!--            <script>-->
-
-    <!--                var textarea = ["content"];-->
-
-    <!--                for(var i = 0; i < textarea.length;i++){-->
-    <!--                    CKEDITOR.replace(textarea[i]);-->
-    <!--                }-->
-
-    <!--                $(".ajax_submit").click(-->
-    <!--                    function(){-->
-    <!--                        for(var i = 0; i < textarea.length;i++){-->
-    <!--                            var value = CKEDITOR.instances[textarea[i]].getData();-->
-    <!--                            $("#"+textarea[i]).val(value);-->
-    <!--                        }-->
-    <!--                        var url = $(".main_form").attr("action");-->
-    <!--                        sendAjaxForm('main_params', 'main_form', url);-->
-    <!--                        return false;-->
-    <!--                    }-->
-    <!--                );-->
-    <!--            </script>-->
-    <!--        </div>-->
-    <!--    </form>-->
-
+    </div>
 </div>
+
 </body>
 </html>

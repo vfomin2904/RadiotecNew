@@ -1,20 +1,30 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="~{admin_template::head}">
+
+</head>
 <body>
-<div th:if="${section_list != null}" th:fragment="section_list" class="relative">
-    <div class="title">Список разделов</div>
-    <br>
-    <input class="element_type" type="hidden" value="section">
-    <div class="article_box" th:each="section, iter : ${section_list}">
-        <div class="col1">
-            <a th:href="@{/admin/section_change(id=${section.id})}" th:text="${section.name}"></a>
-            <input class="sort_num" type="hidden" th:value="${section.sort}">
-            <input class="element_id" type="hidden" th:value="${section.id}">
-        </div>
-        <div class="col2">
-            <img class="up_arrow" title="вверх" th:if="${iter.index != 0}" th:src="@{/images/up.png}">
-            <img class="down_arrow"  title="вниз" th:if="${(iter.index+1) != (iter.size)}" th:src="@{/images/down.png}">
+<div id="admin">
+    <div th:replace="~{admin_template :: admin_menu}">
+
+    </div>
+    <div id="admin_content">
+        <div th:if="${section_list != null}" class="relative">
+            <div class="title">Список разделов</div>
+            <br>
+            <input class="element_type" type="hidden" value="section">
+            <div class="article_box" th:each="section, iter : ${section_list}">
+                <div class="col1">
+                    <a th:href="@{/admin/section_change(id=${section.id})}" th:text="${section.name}"></a>
+                    <input class="sort_num" type="hidden" th:value="${section.sort}">
+                    <input class="element_id" type="hidden" th:value="${section.id}">
+                </div>
+                <div class="col2">
+                    <img class="up_arrow" title="вверх" th:if="${iter.index != 0}" th:src="@{/images/up.png}">
+                    <img class="down_arrow"  title="вниз" th:if="${(iter.index+1) != (iter.size)}" th:src="@{/images/down.png}">
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="~{admin_template::head}">
+
+</head>
 <body>
-<div th:if="${article_list != null}" th:fragment="article_list" class="relative">
-    <div class="title">Список статей</div>
-    <br>
-    <div class="article_box" th:each="article : ${article_list}">
-        <div class="col1">
-            <div class="article_box_name"><a th:text="${article.name}"
-                                             th:href="@{/admin/article_change(id=${article.id})}"></a>
+<div id="admin">
+    <div th:replace="~{admin_template :: admin_menu}">
+
+    </div>
+    <div id="admin_content">
+        <div th:if="${article_list != null}" class="relative">
+            <div class="title">Список статей</div>
+            <br>
+            <div class="article_box" th:each="article : ${article_list}">
+                <div class="col1">
+                    <div class="article_box_name"><a th:text="${article.name}"
+                                                     th:href="@{/admin/article_change(id=${article.id})}"></a>
+                    </div>
+                    <div class="article_box_authors" th:utext="${article.authors}"></div>
+                </div>
             </div>
-            <div class="article_box_authors" th:utext="${article.authors}"></div>
         </div>
-<!--        <div class="col2">-->
-<!--            <img th:src="@{/images/up.png}">-->
-<!--            <img th:src="@{/images/down.png}">-->
-<!--        </div>-->
     </div>
 </div>
 </body>

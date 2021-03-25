@@ -67,7 +67,7 @@ public class AdminController {
     public String getAdminJournalAddPage(Model model){
         model.addAttribute("action", "journal_add");
         model.addAttribute("journals", new Journals());
-        return "admin_template";
+        return "admin_journal";
     }
 
     @GetMapping("/journal_delete")
@@ -100,7 +100,7 @@ public class AdminController {
         }
         if(bindingResult.hasErrors()){
             model.addAttribute("action", "journal_add");
-            return "admin_template";
+            return "admin_journal";
         }
         journalsService.create(journal);
         return "redirect:/admin/";
@@ -158,7 +158,7 @@ public class AdminController {
             }
             model.addAttribute("numberSortedList", numberSortedList);
         }
-        return "admin_template";
+        return "admin_journal";
     }
 
     @GetMapping("/number_add")
@@ -176,7 +176,7 @@ public class AdminController {
         }
         model.addAttribute("action", "number_add");
         model.addAttribute("number", number);
-        return "admin_template";
+        return "admin_number";
     }
 
     @PostMapping("/number_add")
@@ -214,7 +214,7 @@ public class AdminController {
             }
             model.addAttribute("numberSortedList", numberSortedList);
         }
-        return "admin_template";
+        return "admin_number";
     }
 
     @GetMapping("/number_delete")
@@ -240,7 +240,7 @@ public class AdminController {
     public String getSectionList(Model model, @RequestParam(required = true) int id){
         TreeSet<Section> sections = new TreeSet<>(sectionService.getSectionByNumber(id));
         model.addAttribute("section_list", sections);
-        return "admin_template";
+        return "admin_section_list";
     }
 
     @GetMapping("/section_add")
@@ -255,7 +255,7 @@ public class AdminController {
         model.addAttribute("action", "section_add");
         model.addAttribute("section", section);
         model.addAttribute("journals",journals);
-        return "admin_template";
+        return "admin_section";
     }
 
     @PostMapping("/section_add")
@@ -307,7 +307,7 @@ public class AdminController {
             model.addAttribute("journals", journals);
             model.addAttribute("action", "section_list");
         }
-        return "admin_template";
+        return "admin_section";
     }
 
     @PostMapping("/section_change")
@@ -323,7 +323,7 @@ public class AdminController {
     public String getArticleList(Model model, @RequestParam(required = true) int id){
         List<Article> articles = articleService.getArticleBySection(id);
         model.addAttribute("article_list", articles);
-        return "admin_template";
+        return "admin_article_list";
     }
 
     @GetMapping("/article_add")
@@ -338,7 +338,7 @@ public class AdminController {
         model.addAttribute("action", "article_add");
         model.addAttribute("article", article);
         model.addAttribute("journals",journals);
-        return "admin_template";
+        return "admin_article";
     }
 
     @PostMapping("/article_add")
@@ -386,7 +386,7 @@ public class AdminController {
             model.addAttribute("journals", journals);
             model.addAttribute("action", "article_list");
         }
-        return "admin_template";
+        return "admin_article";
     }
 
     @PostMapping("/article_change")
@@ -431,7 +431,7 @@ public class AdminController {
             model.addAttribute("bookSec", new BookSec());
         }
         model.addAttribute("action", "booksec_add");
-        return "admin_template";
+        return "admin_booksec";
     }
 
     @PostMapping("/booksec_add")
@@ -461,7 +461,7 @@ public class AdminController {
             model.addAttribute("action", "booksec_list");
         }
 
-        return "admin_template";
+        return "admin_booksec";
     }
 
     @PostMapping("/booksec_change")
@@ -503,7 +503,7 @@ public class AdminController {
         }
 
         model.addAttribute("action", "book_add");
-        return "admin_template";
+        return "admin_book";
     }
 
     @PostMapping("/book_add")
@@ -571,7 +571,7 @@ public class AdminController {
             model.addAttribute("action", "book_list");
         }
 
-        return "admin_template";
+        return "admin_book";
     }
 
     @PostMapping("/book_change")
@@ -634,7 +634,7 @@ public class AdminController {
 
         }
         model.addAttribute("action", "news_add");
-        return "admin_template";
+        return "admin_news";
     }
     @PostMapping("/news_add")
     public String getAdminNewsAddPage(@Valid News news, BindingResult bindingResult, Model model){
@@ -675,7 +675,7 @@ public class AdminController {
             model.addAttribute("action", "news_list");
         }
 
-        return "admin_template";
+        return "admin_news";
     }
 
     @PostMapping("/news_change")
@@ -702,8 +702,7 @@ public class AdminController {
         }else if(type.length() > 0){
             model.addAttribute("type",  type);
         }
-        model.addAttribute("action", "menu_change");
-        return "admin_template";
+        return "admin_menu";
     }
 
     @PostMapping("/menu_change")
@@ -745,7 +744,7 @@ public class AdminController {
             }
         }
         model.addAttribute("action", "field_change");
-        return "admin_template";
+        return "admin_field";
     }
 
     @PostMapping("/size_change")
@@ -851,7 +850,7 @@ public class AdminController {
                 Section section = sectionService.getSectionById(section_id);
                 model.addAttribute("section", section);
                 model.addAttribute("action", action);
-                return "admin_template";
+                return "admin_section";
             }
             else if(action.equals("article_change")){
                 Section section = sectionService.getSectionById(section_id);
@@ -862,14 +861,14 @@ public class AdminController {
             Article article = articleService.getArticleById(art_id);
             model.addAttribute("article", article);
             model.addAttribute("action", "article_change");
-            return "admin_template";
+            return "admin_article";
         }
         else if(booksec_id>0){
             if(action.equals("booksec_change")){
                 BookSec bookSec = bookSecService.getBookSecById(booksec_id);
                 model.addAttribute("bookSec", bookSec);
                 model.addAttribute("action", "booksec_change");
-                return "admin_template";
+                return "admin_booksec";
             } else if(action.equals("book_change")){
                 BookSec booksec = bookSecService.getBookSecById(booksec_id);
                 model.addAttribute("booksec", booksec);
@@ -887,7 +886,7 @@ public class AdminController {
            model.addAttribute("publishers", publishers);
            model.addAttribute("books", book);
            model.addAttribute("action", "book_change");
-           return "admin_template";
+           return "admin_book";
         }
         return "admin_handler";
     }

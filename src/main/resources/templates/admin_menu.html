@@ -1,67 +1,76 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="~{admin_template::head}">
+
+</head>
 <body>
-<div th:if="${action == 'menu_change'}" class="relative"
-     th:fragment="menu_options">
-    <div class="page_title">Изменение страницы</div>
+<div id="admin">
+    <div th:replace="~{admin_template :: admin_menu}">
 
-    <ul class="menu_change_ul" th:if="${#strings.equals(type, 'main')}">
-        <li><a href="/admin/menu_change?id=1">Для авторов</a></li>
-        <li><a href="/admin/menu_change?id=1">Об издательстве</a></li>
-        <li> Новости:
-                <a href="/admin/news_add?type=0">добавить</a>
-                <a href="/admin/news_change?type=0">изменить</a>
-        </li>
-    </ul>
+    </div>
+    <div id="admin_content">
+        <div class="relative">
+            <div class="page_title">Изменение страницы</div>
 
-    <ul class="menu_change_ul" th:if="${#strings.equals(type, 'book')}">
-        <li><a href="/admin/menu_change?id=3">Читателям</a></li>
-        <li><a href="/admin/menu_change?id=4">Партнерам</a></li>
-        <li><a href="/admin/menu_change?id=5">Для авторов</a></li>
-    </ul>
+            <ul class="menu_change_ul" th:if="${#strings.equals(type, 'main')}">
+                <li><a href="/admin/menu_change?id=1">Для авторов</a></li>
+                <li><a href="/admin/menu_change?id=1">Об издательстве</a></li>
+                <li> Новости:
+                    <a href="/admin/news_add?type=0">добавить</a>
+                    <a href="/admin/news_change?type=0">изменить</a>
+                </li>
+            </ul>
 
-    <form th:if="${page != null}" enctype="multipart/form-data" class="main_form" method="post" action=""
-          th:object="${page}">
+            <ul class="menu_change_ul" th:if="${#strings.equals(type, 'book')}">
+                <li><a href="/admin/menu_change?id=3">Читателям</a></li>
+                <li><a href="/admin/menu_change?id=4">Партнерам</a></li>
+                <li><a href="/admin/menu_change?id=5">Для авторов</a></li>
+            </ul>
 
-        <div class="page_main_params main_params">
+            <form th:if="${page != null}" enctype="multipart/form-data" class="main_form" method="post" action=""
+                  th:object="${page}">
 
-            <input type="hidden" th:field="*{id}">
+                <div class="page_main_params main_params">
 
-            <label class="textarea_label" for="content">Содержимое страницы</label>
-            <textarea th:field="*{content}" id="content" name="content" cols="60"
-                      rows="5"></textarea>
+                    <input type="hidden" th:field="*{id}">
 
-            <label class="textarea_label" for="contentEng">Содержимое страницы (англ.)</label>
-            <textarea th:field="*{contentEng}" id="contentEng" name="contentEng" cols="60"
-                      rows="5"></textarea>
+                    <label class="textarea_label" for="content">Содержимое страницы</label>
+                    <textarea th:field="*{content}" id="content" name="content" cols="60"
+                              rows="5"></textarea>
 
-            <input id="submit" value="Сохранить страницу" type="submit">
+                    <label class="textarea_label" for="contentEng">Содержимое страницы (англ.)</label>
+                    <textarea th:field="*{contentEng}" id="contentEng" name="contentEng" cols="60"
+                              rows="5"></textarea>
 
-            <div class="form_message"></div>
-            <script>
+                    <input id="submit" value="Сохранить страницу" type="submit">
 
-                var textarea = ["content", "contentEng"];
+                    <div class="form_message"></div>
+                    <script>
 
-                for (var i = 0; i < textarea.length; i++) {
-                    CKEDITOR.replace(textarea[i]);
-                }
+                        var textarea = ["content", "contentEng"];
 
-                $(".ajax_submit").click(
-                    function () {
                         for (var i = 0; i < textarea.length; i++) {
-                            var value = CKEDITOR.instances[textarea[i]].getData();
-                            $("#" + textarea[i]).val(value);
+                            CKEDITOR.replace(textarea[i]);
                         }
-                        var url = $(".main_form").attr("action");
-                        sendAjaxForm('main_params', 'main_form', url);
-                        return false;
-                    }
-                );
-            </script>
-        </div>
-    </form>
 
+                        $(".ajax_submit").click(
+                            function () {
+                                for (var i = 0; i < textarea.length; i++) {
+                                    var value = CKEDITOR.instances[textarea[i]].getData();
+                                    $("#" + textarea[i]).val(value);
+                                }
+                                var url = $(".main_form").attr("action");
+                                sendAjaxForm('main_params', 'main_form', url);
+                                return false;
+                            }
+                        );
+                    </script>
+                </div>
+            </form>
+
+        </div>
+    </div>
 </div>
 </body>
 </html>

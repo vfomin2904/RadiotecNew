@@ -1,461 +1,471 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="~{admin_template::head}">
+
+</head>
 <body>
-<div th:if="${action == 'journal_change'} or ${action == 'journal_list'} or ${action == 'journal_add'}" th:fragment="journal_options">
-    <div class="title" th:if="${action == 'journal_add'}">Добавление журнала</div>
-    <div class="page_title" th:if="${action == 'journal_change'} or ${action == 'journal_list'}">Изменение журнала</div>
-    <form enctype="multipart/form-data" method="post" th:if="${action == 'journal_add'} or ${action == 'journal_change'}" th:attr="action=${action == 'journal_add'?'/admin/journal_add':'/admin/journal_change'}" th:object="${journals}">
-        <input th:field="*{id}" id="journ_id" name="journ_id" type="hidden">
-        <div class="form__group field">
-            <input class="form__field" th:field="*{name}" id="journ_name" placeholder="Название журнала" required name="journ_name" type="text" >
-            
-            <label class="form__label">Название журанала</label>
-        </div>
-        <small class="input_error" th:each="err : ${#fields.errors('name')}" th:text="${err}"></small>
-
-        <div class="form__group field">
-            <input class="form__field" th:field="*{menuName}" id="menuName" name="menuName" placeholder="Название для меню"  type="text" >
-            
-            <label class="form__label">Название для меню</label>
-        </div>
-        <small class="input_error" th:each="err : ${#fields.errors('menuName')}" th:text="${err}"></small>
-
-        <select class="select-css" th:field="*{type}" id="publisher" name="publisher">
-            <option th:selected="selected" readonly th:value="null">Тип журнала</option>
-            <option th:value="Журнал">Журнал</option>
-            <option th:value="Ежегодник">Ежегодник</option>
-        </select>
-        <small class="input_error" th:each="err : ${#fields.errors('type')}" th:text="${err}"></small>
-
-        <div class="form__group field">
-            <input class="form__field" th:field="*{redaktor}" id="redaktor" name="redaktor" placeholder="Редактор" type="text" >
-            
-            <label class="form__label">Редактор</label>
-        </div>
-
-        <label class="textarea_label" for="descript">Аннотация</label>
-        <textarea th:field="*{descript}" id="descript" name="descript" cols="60"
-                  rows="5"></textarea>
-
-
-
-        <div class="form__group field">
-            <input class="form__field" th:field="*{num_year}" id="num_year" placeholder="Периодичность" name="num_year" type="text" >
-            <label for="num_year" class="form__label">Периодичность</label>
-        </div>
-
-        <div class="form__group field">
-            <select class="select-css" name="komplect" th:field="*{komplect}" >
-                <option  value="">Не выбран</option>
-                <option  value="Без приложения">Без приложения</option>
-                <option  value="С приложением">С приложением</option>
-            </select>
-
-            <label class="form__label">Выходит в комплекте</label>
-        </div>
-
-        <div class="form__group field">
-            <input class="form__field" th:field="*{undercover}" placeholder="Под обложкой" id="undercover" name="undercover" type="text" >
-            
-            <label class="form__label">Под обложкой</label>
-        </div>
-
-        <div class="form__group field">
-            <input class="form__field" th:field="*{vak}" placeholder="Место в ВАК" id="vak" name="vak" type="text" >
-            
-            <label class="form__label">Место в ВАК</label>
-        </div>
-
-        <div class="form__group field">
-            <input class="form__field" th:field="*{rospech}" placeholder="Роспечать" id="rospech" name="rospech" type="text" >
-            
-            <label class="form__label">Роспечать</label>
-        </div>
-
-        <div class="form__group field">
-            <input class="form__field" th:field="*{pochta}" placeholder="Почта" id="pochta" name="pochta" type="text" >
-            
-            <label class="form__label">Почта</label>
-        </div>
-
-        <div class="form__group field">
-            <input class="form__field" th:field="*{issn}" placeholder="ISSN" id="issn" name="issn" type="text" >
-            
-            <label class="form__label">ISSN</label>
-        </div>
-
-        <div class="form__group field">
-            <input class="form__field" th:field="*{keywords}" placeholder="Ключевые слова" id="keywords" name="keywords" type="text" >
-            
-            <label class="form__label">Ключевые слова</label>
-        </div>
-
-        <p class="admin_fields_section">О журнале</p>
-
-        <label class="textarea_label" for="redkol">Контакты</label>
-        <textarea th:field="*{contacts}" id="contacts" name="contacts" cols="60"
-                  rows="5"></textarea>
-
-        <label class="textarea_label" for="redkol">Редколлегия</label>
-        <textarea th:field="*{redkol}" id="redkol" name="redkol" cols="60"
-                  rows="5"></textarea>
-
-        <label class="textarea_label" for="goals">Цели и задачи</label>
-        <textarea th:field="*{goals}" id="goals" name="goals" cols="60"
-                  rows="5"></textarea>
+<div id="admin">
+    <div th:replace="~{admin_template :: admin_menu}">
 
-        <label class="textarea_label" for="journalsSections">Разделы журнала</label>
-        <textarea th:field="*{journalsSections}" id="journalsSections" name="journalsSections" cols="60"
-                  rows="5"></textarea>
+    </div>
+    <div id="admin_content">
+        <div th:if="${action == 'journal_change'} or ${action == 'journal_list'} or ${action == 'journal_add'}">
+            <div class="title" th:if="${action == 'journal_add'}">Добавление журнала</div>
+            <div class="page_title" th:if="${action == 'journal_change'} or ${action == 'journal_list'}">Изменение журнала</div>
+            <form enctype="multipart/form-data" method="post" th:if="${action == 'journal_add'} or ${action == 'journal_change'}" th:attr="action=${action == 'journal_add'?'/admin/journal_add':'/admin/journal_change'}" th:object="${journals}">
+                <input th:field="*{id}" id="journ_id" name="journ_id" type="hidden">
+                <div class="form__group field">
+                    <input class="form__field" th:field="*{name}" id="journ_name" placeholder="Название журнала" required name="journ_name" type="text" >
 
-        <label class="textarea_label" for="review">Процесс рецензирования</label>
-        <textarea th:field="*{review}" id="review" name="review" cols="60"
-                  rows="5"></textarea>
+                    <label class="form__label">Название журанала</label>
+                </div>
+                <small class="input_error" th:each="err : ${#fields.errors('name')}" th:text="${err}"></small>
 
-        <label class="textarea_label" for="freeAccess">Политика свободного доступа</label>
-        <textarea th:field="*{freeAccess}" id="freeAccess" name="freeAccess" cols="60"
-                  rows="5"></textarea>
+                <div class="form__group field">
+                    <input class="form__field" th:field="*{menuName}" id="menuName" name="menuName" placeholder="Название для меню"  type="text" >
 
-        <label class="textarea_label" for="archiving">Архивация</label>
-        <textarea th:field="*{archiving}" id="archiving" name="archiving" cols="60"
-                  rows="5"></textarea>
+                    <label class="form__label">Название для меню</label>
+                </div>
+                <small class="input_error" th:each="err : ${#fields.errors('menuName')}" th:text="${err}"></small>
 
-        <label class="textarea_label" for="ethics">Этика научных публикаций</label>
-        <textarea th:field="*{ethics}" id="ethics" name="ethics" cols="60"
-                  rows="5"></textarea>
+                <select class="select-css" th:field="*{type}" id="publisher" name="publisher">
+                    <option th:selected="selected" readonly th:value="null">Тип журнала</option>
+                    <option th:value="Журнал">Журнал</option>
+                    <option th:value="Ежегодник">Ежегодник</option>
+                </select>
+                <small class="input_error" th:each="err : ${#fields.errors('type')}" th:text="${err}"></small>
 
-        <label class="textarea_label" for="founder">Учредитель и издатель</label>
-        <textarea th:field="*{founder}" id="founder" name="founder" cols="60"
-                  rows="5"></textarea>
+                <div class="form__group field">
+                    <input class="form__field" th:field="*{redaktor}" id="redaktor" name="redaktor" placeholder="Редактор" type="text" >
 
-        <label class="textarea_label" for="publicationFee">Плата за публикацию</label>
-        <textarea th:field="*{publicationFee}" id="publicationFee" name="publicationFee" cols="60"
-                  rows="5"></textarea>
+                    <label class="form__label">Редактор</label>
+                </div>
 
-        <label class="textarea_label" for="conflicts">Политика раскрытия и конфликты интересов</label>
-        <textarea th:field="*{conflicts}" id="conflicts" name="conflicts" cols="60"
-                  rows="5"></textarea>
+                <label class="textarea_label" for="descript">Аннотация</label>
+                <textarea th:field="*{descript}" id="descript" name="descript" cols="60"
+                          rows="5"></textarea>
 
-        <label class="textarea_label" for="plagiarism">Заимствования и плагиат</label>
-        <textarea th:field="*{plagiarism}" id="plagiarism" name="plagiarism" cols="60"
-                  rows="5"></textarea>
 
-        <label class="textarea_label" for="print">Политика размещения препринтов и постпринтов</label>
-        <textarea th:field="*{print}" id="print" name="print" cols="60"
-                  rows="5"></textarea>
 
+                <div class="form__group field">
+                    <input class="form__field" th:field="*{num_year}" id="num_year" placeholder="Периодичность" name="num_year" type="text" >
+                    <label for="num_year" class="form__label">Периодичность</label>
+                </div>
 
-        <label class="textarea_label" for="sendingArticle">Отправка статей</label>
-        <textarea th:field="*{sendingArticle}" id="sendingArticle" name="sendingArticle" cols="60"
-                  rows="5"></textarea>
+                <div class="form__group field">
+                    <select class="select-css" name="komplect" th:field="*{komplect}" >
+                        <option  value="">Не выбран</option>
+                        <option  value="Без приложения">Без приложения</option>
+                        <option  value="С приложением">С приложением</option>
+                    </select>
 
-        <label class="textarea_label" for="copyright">Авторские права</label>
-        <textarea th:field="*{copyright}" id="copyright" name="copyright" cols="60"
-                  rows="5"></textarea>
+                    <label class="form__label">Выходит в комплекте</label>
+                </div>
 
-        <label class="textarea_label" for="rules">Правила для авторов</label>
-        <textarea th:field="*{rules}" id="rules" name="rules" cols="60"
-                  rows="5"></textarea>
+                <div class="form__group field">
+                    <input class="form__field" th:field="*{undercover}" placeholder="Под обложкой" id="undercover" name="undercover" type="text" >
 
-        <label class="textarea_label" for="privacy">Приватность</label>
-        <textarea th:field="*{privacy}" id="privacy" name="privacy" cols="60"
-                  rows="5"></textarea>
+                    <label class="form__label">Под обложкой</label>
+                </div>
 
-        <label class="textarea_label" for="sponsors">Издатель и спонсоры</label>
-        <textarea th:field="*{sponsors}" id="sponsors" name="sponsors" cols="60"
-                  rows="5"></textarea>
+                <div class="form__group field">
+                    <input class="form__field" th:field="*{vak}" placeholder="Место в ВАК" id="vak" name="vak" type="text" >
 
-        <label class="textarea_label" for="history">История журнала</label>
-        <textarea th:field="*{history}" id="history" name="history" cols="60"
-                  rows="5"></textarea>
+                    <label class="form__label">Место в ВАК</label>
+                </div>
 
-        <p class="admin_fields_section">Для авторов</p>
+                <div class="form__group field">
+                    <input class="form__field" th:field="*{rospech}" placeholder="Роспечать" id="rospech" name="rospech" type="text" >
 
-        <label class="textarea_label" for="guide">Руководство для авторов</label>
-        <textarea th:field="*{guide}" id="guide" name="guide" cols="60"
-                  rows="5"></textarea>
+                    <label class="form__label">Роспечать</label>
+                </div>
 
-        <label class="textarea_label" for="pricePolicy">Ценовая политика журнала</label>
-        <textarea th:field="*{pricePolicy}" id="pricePolicy" name="pricePolicy" cols="60"
-                  rows="5"></textarea>
+                <div class="form__group field">
+                    <input class="form__field" th:field="*{pochta}" placeholder="Почта" id="pochta" name="pochta" type="text" >
 
+                    <label class="form__label">Почта</label>
+                </div>
 
-        <label class="textarea_label" for="agreement">Авторский договор</label>
-        <textarea th:field="*{agreement}" id="agreement" name="agreement" cols="60"
-                  rows="5"></textarea>
+                <div class="form__group field">
+                    <input class="form__field" th:field="*{issn}" placeholder="ISSN" id="issn" name="issn" type="text" >
 
-        <label class="textarea_label" for="sendingMaterials">Отправка авторских материалов</label>
-        <textarea th:field="*{sendingMaterials}" id="sendingMaterials" name="sendingMaterials" cols="60"
-                  rows="5"></textarea>
+                    <label class="form__label">ISSN</label>
+                </div>
 
+                <div class="form__group field">
+                    <input class="form__field" th:field="*{keywords}" placeholder="Ключевые слова" id="keywords" name="keywords" type="text" >
 
-        <p class="admin_fields_section">Английская версия</p>
+                    <label class="form__label">Ключевые слова</label>
+                </div>
 
-        <div class="form__group field">
-            <input class="form__field" th:field="*{nameEng}" id="journ_name_eng" placeholder="Название журнала (англ.)" required name="journ_name_eng" type="text" >
+                <p class="admin_fields_section">О журнале</p>
 
-            <label class="form__label">Название журанала (англ.)</label>
-        </div>
-        <small class="input_error" th:each="err : ${#fields.errors('nameEng')}" th:text="${err}"></small>
+                <label class="textarea_label" for="redkol">Контакты</label>
+                <textarea th:field="*{contacts}" id="contacts" name="contacts" cols="60"
+                          rows="5"></textarea>
 
-        <div class="form__group field">
-            <input class="form__field" th:field="*{menuNameEng}" id="menuNameEng" name="menuNameEng" placeholder="Название для меню (англ.)"  type="text" >
+                <label class="textarea_label" for="redkol">Редколлегия</label>
+                <textarea th:field="*{redkol}" id="redkol" name="redkol" cols="60"
+                          rows="5"></textarea>
 
-            <label class="form__label">Название для меню (англ.)</label>
-        </div>
-        <small class="input_error" th:each="err : ${#fields.errors('menuNameEng')}" th:text="${err}"></small>
+                <label class="textarea_label" for="goals">Цели и задачи</label>
+                <textarea th:field="*{goals}" id="goals" name="goals" cols="60"
+                          rows="5"></textarea>
 
-        <select class="select-css" th:field="*{typeEng}" id="typeEng" name="typeEng">
-            <option th:selected="selected" readonly th:value="null">Тип журнала (англ.)</option>
-            <option th:value="Journal">Journal</option>
-            <option th:value="Yearbook">Yearbook</option>
-        </select>
-        <small class="input_error" th:each="err : ${#fields.errors('typeEng')}" th:text="${err}"></small>
+                <label class="textarea_label" for="journalsSections">Разделы журнала</label>
+                <textarea th:field="*{journalsSections}" id="journalsSections" name="journalsSections" cols="60"
+                          rows="5"></textarea>
 
+                <label class="textarea_label" for="review">Процесс рецензирования</label>
+                <textarea th:field="*{review}" id="review" name="review" cols="60"
+                          rows="5"></textarea>
 
-        <div class="form__group field">
-            <input class="form__field" th:field="*{num_yearEng}" id="num_yearEng" placeholder="Периодичность (англ.)" name="num_yearEng" type="text" >
-            <label for="num_yearEng" class="form__label">Периодичность</label>
-        </div>
-        <div class="form__group field">
-            <input class="form__field" th:field="*{redaktorEng}" id="redaktorEng" name="redaktorEng" placeholder="Редактор (англ.)" type="text" >
+                <label class="textarea_label" for="freeAccess">Политика свободного доступа</label>
+                <textarea th:field="*{freeAccess}" id="freeAccess" name="freeAccess" cols="60"
+                          rows="5"></textarea>
 
-            <label class="form__label">Редактор (англ.)</label>
-        </div>
+                <label class="textarea_label" for="archiving">Архивация</label>
+                <textarea th:field="*{archiving}" id="archiving" name="archiving" cols="60"
+                          rows="5"></textarea>
 
-        <label class="textarea_label" for="descript">Аннотация (англ.)</label>
-        <textarea th:field="*{descriptEng}" id="descriptEng" name="descriptEng" cols="60"
-                  rows="5"></textarea>
+                <label class="textarea_label" for="ethics">Этика научных публикаций</label>
+                <textarea th:field="*{ethics}" id="ethics" name="ethics" cols="60"
+                          rows="5"></textarea>
 
+                <label class="textarea_label" for="founder">Учредитель и издатель</label>
+                <textarea th:field="*{founder}" id="founder" name="founder" cols="60"
+                          rows="5"></textarea>
 
-        <div class="form__group field">
-            <input th:field="*{komplectEng}" type="text" class="form__field" placeholder="Комплект (англ.)" name="komplectEng" id='komplectEng'  />
-            <label for="komplectEng" class="form__label">Комплект (англ.)</label>
-        </div>
+                <label class="textarea_label" for="publicationFee">Плата за публикацию</label>
+                <textarea th:field="*{publicationFee}" id="publicationFee" name="publicationFee" cols="60"
+                          rows="5"></textarea>
 
-        <div class="form__group field">
-            <input class="form__field" th:field="*{undercoverEng}" placeholder="Под обложкой (англ.)" id="undercoverEng" name="undercoverEng" type="text" >
+                <label class="textarea_label" for="conflicts">Политика раскрытия и конфликты интересов</label>
+                <textarea th:field="*{conflicts}" id="conflicts" name="conflicts" cols="60"
+                          rows="5"></textarea>
 
-            <label class="form__label">Под обложкой (англ.)</label>
-        </div>
+                <label class="textarea_label" for="plagiarism">Заимствования и плагиат</label>
+                <textarea th:field="*{plagiarism}" id="plagiarism" name="plagiarism" cols="60"
+                          rows="5"></textarea>
 
-        <div class="form__group field">
-            <input class="form__field" th:field="*{keywordsEng}" placeholder="Ключевые слова (англ.)" id="keywordsEng" name="keywordsEng" type="text" >
+                <label class="textarea_label" for="print">Политика размещения препринтов и постпринтов</label>
+                <textarea th:field="*{print}" id="print" name="print" cols="60"
+                          rows="5"></textarea>
 
-            <label class="form__label">Ключевые слова (англ.)</label>
-        </div>
 
-        <p class="admin_fields_section">О журнале (англ.)</p>
+                <label class="textarea_label" for="sendingArticle">Отправка статей</label>
+                <textarea th:field="*{sendingArticle}" id="sendingArticle" name="sendingArticle" cols="60"
+                          rows="5"></textarea>
 
-        <label class="textarea_label" for="redkolEng">Контакты (англ.)</label>
-        <textarea th:field="*{contactsEng}" id="contactsEng" name="contactsEng" cols="60"
-                  rows="5"></textarea>
+                <label class="textarea_label" for="copyright">Авторские права</label>
+                <textarea th:field="*{copyright}" id="copyright" name="copyright" cols="60"
+                          rows="5"></textarea>
 
-        <label class="textarea_label" for="redkolEng">Редколлегия (англ.)</label>
-        <textarea th:field="*{redkolEng}" id="redkolEng" name="redkolEng" cols="60"
-                  rows="5"></textarea>
+                <label class="textarea_label" for="rules">Правила для авторов</label>
+                <textarea th:field="*{rules}" id="rules" name="rules" cols="60"
+                          rows="5"></textarea>
 
-        <label class="textarea_label" for="goalsEng">Цели и задачи (англ.)</label>
-        <textarea th:field="*{goalsEng}" id="goalsEng" name="goalsEng" cols="60"
-                  rows="5"></textarea>
+                <label class="textarea_label" for="privacy">Приватность</label>
+                <textarea th:field="*{privacy}" id="privacy" name="privacy" cols="60"
+                          rows="5"></textarea>
 
-        <label class="textarea_label" for="journalsSections">Разделы журнала (англ.)</label>
-        <textarea th:field="*{journalsSectionsEng}" id="journalsSectionsEng" name="journalsSectionsEng" cols="60"
-                  rows="5"></textarea>
+                <label class="textarea_label" for="sponsors">Издатель и спонсоры</label>
+                <textarea th:field="*{sponsors}" id="sponsors" name="sponsors" cols="60"
+                          rows="5"></textarea>
 
-        <label class="textarea_label" for="reviewEng">Процесс рецензирования (англ.)</label>
-        <textarea th:field="*{reviewEng}" id="reviewEng" name="reviewEng" cols="60"
-                  rows="5"></textarea>
+                <label class="textarea_label" for="history">История журнала</label>
+                <textarea th:field="*{history}" id="history" name="history" cols="60"
+                          rows="5"></textarea>
 
-        <label class="textarea_label" for="freeAccessEng">Политика свободного доступа (англ.)</label>
-        <textarea th:field="*{freeAccessEng}" id="freeAccessEng" name="freeAccessEng" cols="60"
-                  rows="5"></textarea>
+                <p class="admin_fields_section">Для авторов</p>
 
-        <label class="textarea_label" for="archivingEng">Архивация (англ.)</label>
-        <textarea th:field="*{archivingEng}" id="archivingEng" name="archivingEng" cols="60"
-                  rows="5"></textarea>
+                <label class="textarea_label" for="guide">Руководство для авторов</label>
+                <textarea th:field="*{guide}" id="guide" name="guide" cols="60"
+                          rows="5"></textarea>
 
-        <label class="textarea_label" for="ethics">Этика научных публикаций (англ.)</label>
-        <textarea th:field="*{ethicsEng}" id="ethicsEng" name="ethicsEng" cols="60"
-                  rows="5"></textarea>
+                <label class="textarea_label" for="pricePolicy">Ценовая политика журнала</label>
+                <textarea th:field="*{pricePolicy}" id="pricePolicy" name="pricePolicy" cols="60"
+                          rows="5"></textarea>
 
-        <label class="textarea_label" for="founderEng">Учредитель и издатель (англ.)</label>
-        <textarea th:field="*{founderEng}" id="founderEng" name="founderEng" cols="60"
-                  rows="5"></textarea>
 
-        <label class="textarea_label" for="publicationFeeEng">Плата за публикацию (англ.)</label>
-        <textarea th:field="*{publicationFeeEng}" id="publicationFeeEng" name="publicationFeeEng" cols="60"
-                  rows="5"></textarea>
+                <label class="textarea_label" for="agreement">Авторский договор</label>
+                <textarea th:field="*{agreement}" id="agreement" name="agreement" cols="60"
+                          rows="5"></textarea>
 
-        <label class="textarea_label" for="conflictsEng">Политика раскрытия и конфликты интересов (англ.)</label>
-        <textarea th:field="*{conflictsEng}" id="conflictsEng" name="conflictsEng" cols="60"
-                  rows="5"></textarea>
+                <label class="textarea_label" for="sendingMaterials">Отправка авторских материалов</label>
+                <textarea th:field="*{sendingMaterials}" id="sendingMaterials" name="sendingMaterials" cols="60"
+                          rows="5"></textarea>
 
-        <label class="textarea_label" for="plagiarismEng">Заимствования и плагиат (англ.)</label>
-        <textarea th:field="*{plagiarismEng}" id="plagiarismEng" name="plagiarismEng" cols="60"
-                  rows="5"></textarea>
 
-        <label class="textarea_label" for="printEng">Политика размещения препринтов и постпринтов (англ.)</label>
-        <textarea th:field="*{printEng}" id="printEng" name="printEng" cols="60"
-                  rows="5"></textarea>
+                <p class="admin_fields_section">Английская версия</p>
 
+                <div class="form__group field">
+                    <input class="form__field" th:field="*{nameEng}" id="journ_name_eng" placeholder="Название журнала (англ.)" required name="journ_name_eng" type="text" >
 
-        <label class="textarea_label" for="sendingArticleEng">Отправка статей (англ.)</label>
-        <textarea th:field="*{sendingArticleEng}" id="sendingArticleEng" name="sendingArticleEng" cols="60"
-                  rows="5"></textarea>
+                    <label class="form__label">Название журанала (англ.)</label>
+                </div>
+                <small class="input_error" th:each="err : ${#fields.errors('nameEng')}" th:text="${err}"></small>
 
-        <label class="textarea_label" for="copyrightEng">Авторские права (англ.)</label>
-        <textarea th:field="*{copyrightEng}" id="copyrightEng" name="copyrightEng" cols="60"
-                  rows="5"></textarea>
+                <div class="form__group field">
+                    <input class="form__field" th:field="*{menuNameEng}" id="menuNameEng" name="menuNameEng" placeholder="Название для меню (англ.)"  type="text" >
 
-        <label class="textarea_label" for="rulesEng">Правила для авторов (англ.)</label>
-        <textarea th:field="*{rulesEng}" id="rulesEng" name="rulesEng" cols="60"
-                  rows="5"></textarea>
+                    <label class="form__label">Название для меню (англ.)</label>
+                </div>
+                <small class="input_error" th:each="err : ${#fields.errors('menuNameEng')}" th:text="${err}"></small>
 
-        <label class="textarea_label" for="privacyEng">Приватность (англ.)</label>
-        <textarea th:field="*{privacyEng}" id="privacyEng" name="privacyEng" cols="60"
-                  rows="5"></textarea>
+                <select class="select-css" th:field="*{typeEng}" id="typeEng" name="typeEng">
+                    <option th:selected="selected" readonly th:value="null">Тип журнала (англ.)</option>
+                    <option th:value="Journal">Journal</option>
+                    <option th:value="Yearbook">Yearbook</option>
+                </select>
+                <small class="input_error" th:each="err : ${#fields.errors('typeEng')}" th:text="${err}"></small>
 
-        <label class="textarea_label" for="sponsorsEng">Издатель и спонсоры (англ.)</label>
-        <textarea th:field="*{sponsorsEng}" id="sponsorsEng" name="sponsorsEng" cols="60"
-                  rows="5"></textarea>
 
-        <label class="textarea_label" for="historyEng">История журнала (англ.)</label>
-        <textarea th:field="*{historyEng}" id="historyEng" name="historyEng" cols="60"
-                  rows="5"></textarea>
+                <div class="form__group field">
+                    <input class="form__field" th:field="*{num_yearEng}" id="num_yearEng" placeholder="Периодичность (англ.)" name="num_yearEng" type="text" >
+                    <label for="num_yearEng" class="form__label">Периодичность</label>
+                </div>
+                <div class="form__group field">
+                    <input class="form__field" th:field="*{redaktorEng}" id="redaktorEng" name="redaktorEng" placeholder="Редактор (англ.)" type="text" >
 
-        <p class="admin_fields_section">Для авторов (англ.)</p>
+                    <label class="form__label">Редактор (англ.)</label>
+                </div>
 
-        <label class="textarea_label" for="guideEng">Руководство для авторов (англ.)</label>
-        <textarea th:field="*{guideEng}" id="guideEng" name="guideEng" cols="60"
-                  rows="5"></textarea>
+                <label class="textarea_label" for="descript">Аннотация (англ.)</label>
+                <textarea th:field="*{descriptEng}" id="descriptEng" name="descriptEng" cols="60"
+                          rows="5"></textarea>
 
-        <label class="textarea_label" for="pricePolicyEng">Ценовая политика журнала (англ.)</label>
-        <textarea th:field="*{pricePolicyEng}" id="pricePolicyEng" name="pricePolicyEng" cols="60"
-                  rows="5"></textarea>
 
-
-        <label class="textarea_label" for="agreementEng">Авторский договор (англ.)</label>
-        <textarea th:field="*{agreementEng}" id="agreementEng" name="agreementEng" cols="60"
-                  rows="5"></textarea>
-
-        <label class="textarea_label" for="sendingMaterialsEng">Отправка авторских материалов (англ.)</label>
-        <textarea th:field="*{sendingMaterialsEng}" id="sendingMaterialsEng" name="sendingMaterialsEng" cols="60"
-                  rows="5"></textarea>
-
-
-
-
-        <div class="form__group field">
-            <input type="file" name="file">
-            <label class="form__label">Обложка</label>
-        </div>
-        <input type="hidden" th:field="*{cover}">
-        <small class="input_error" th:each="err : ${#fields.errors('cover')}" th:text="${err}"></small>
-        <p th:if="${journals.cover != null} and ${#strings.length(journals.cover) > 0}"><img th:src="@{'/uploads/journals/'+${journals.cover}}"></img></p>
-
-
-
-        <br>
-        <input class="custom-checkbox active" id="checkbox_active" type="checkbox" name="checkbox_active">
-        <label for="checkbox_active">Активировать</label>
-        <input th:field="*{active}" class="checkbox_value"  id="active" name="active" th:value="0" type="hidden">
-
-
-
-        <input id="submit" th:if="${action == 'journal_add'}" value="Добавить журнал" type="submit">
-        <input id="submit" th:if="${action == 'journal_change'}" value="Сохранить журнал" type="submit">
-        <!--                <label for="jr_active">Активировать</label>-->
-        <!--                <input th:field="*{jr_active}"  id="jr_active" name="jr_active" type="checkbox">-->
-        <script>
-
-            CKEDITOR.replace( 'redkol' );
-            CKEDITOR.replace( 'descript' );
-            CKEDITOR.replace( 'guide' );
-            CKEDITOR.replace( 'pricePolicy' );
-            CKEDITOR.replace( 'agreement' );
-            CKEDITOR.replace( 'sendingMaterials' );
-
-            CKEDITOR.replace( 'contacts' );
-            CKEDITOR.replace( 'goals' );
-            CKEDITOR.replace( 'journalsSections' );
-            CKEDITOR.replace( 'review' );
-            CKEDITOR.replace( 'freeAccess' );
-            CKEDITOR.replace( 'archiving' );
-            CKEDITOR.replace( 'ethics' );
-            CKEDITOR.replace( 'founder' );
-            CKEDITOR.replace( 'publicationFee' );
-            CKEDITOR.replace( 'conflicts' );
-            CKEDITOR.replace( 'plagiarism' );
-            CKEDITOR.replace( 'print' );
-            CKEDITOR.replace( 'sendingArticle' );
-            CKEDITOR.replace( 'rules' );
-            CKEDITOR.replace( 'copyright' );
-            CKEDITOR.replace( 'privacy' );
-            CKEDITOR.replace( 'sponsors' );
-            CKEDITOR.replace( 'history' );
-
-            CKEDITOR.replace( 'redkolEng' );
-            CKEDITOR.replace( 'descriptEng' );
-            CKEDITOR.replace( 'guideEng' );
-            CKEDITOR.replace( 'pricePolicyEng' );
-            CKEDITOR.replace( 'agreementEng' );
-            CKEDITOR.replace( 'sendingMaterialsEng' );
-
-            CKEDITOR.replace( 'contactsEng' );
-            CKEDITOR.replace( 'goalsEng' );
-            CKEDITOR.replace( 'journalsSectionsEng' );
-            CKEDITOR.replace( 'reviewEng' );
-            CKEDITOR.replace( 'freeAccessEng' );
-            CKEDITOR.replace( 'archivingEng' );
-            CKEDITOR.replace( 'ethicsEng' );
-            CKEDITOR.replace( 'founderEng' );
-            CKEDITOR.replace( 'publicationFeeEng' );
-            CKEDITOR.replace( 'conflictsEng' );
-            CKEDITOR.replace( 'plagiarismEng' );
-            CKEDITOR.replace( 'printEng' );
-            CKEDITOR.replace( 'sendingArticleEng' );
-            CKEDITOR.replace( 'rulesEng' );
-            CKEDITOR.replace( 'copyrightEng' );
-            CKEDITOR.replace( 'privacyEng' );
-            CKEDITOR.replace( 'sponsorsEng' );
-            CKEDITOR.replace( 'historyEng' );
-            init_checkbox();
-
-        </script>
-    </form>
-
-    <div th:if="${journals != null} and ${action == 'journal_list'}" th:each="journal : ${journals}">
-        <div class="admin_card_item">
-            <a class="remove_link" th:href="@{/admin/journal_delete(id=${journal.id})}"><img title="удалить" class="remove_card_img" src="/images/delete.png"></a>
-            <div><a class="black_link" th:href="@{/admin/journal_change(id=${journal.id})}" th:text="${journal.name}"></a></div>
-            <div><img class="journal_img" th:if="${journal.cover != null and #strings.length(journal.cover) > 0}" th:src="@{'/uploads/journals/'+${journal.cover}}">
-                <div class="jurnal_short_info">
-                    <div>
-                        <p class="choose_number"><a th:href="@{/admin/number_add(journal_id=${journal.id})}">Добавить номер</a></p>
-                        <span th:if="${not #lists.isEmpty(journal.numbers)}" class="popup-open choose_number">Выбрать номер журнала</span>
-                    </div>
-                    <div class="popup-fade">
-                        <div class="popup">
-                            <a class="popup-close" href="#">Закрыть</a>
-                            <div class="number_line" th:each="number : ${numberSortedList.get(journal)}">
-                                <span class="number_year" th:text="${number.key}+': '"></span>
-                                <div class="number_val" th:each="num : ${number.value}">
-                                    <a th:href="@{/admin/number_change(id=${num.id})}"><span
-                                            th:text="${num.name}"></span></a>
+                <div class="form__group field">
+                    <input th:field="*{komplectEng}" type="text" class="form__field" placeholder="Комплект (англ.)" name="komplectEng" id='komplectEng'  />
+                    <label for="komplectEng" class="form__label">Комплект (англ.)</label>
+                </div>
+
+                <div class="form__group field">
+                    <input class="form__field" th:field="*{undercoverEng}" placeholder="Под обложкой (англ.)" id="undercoverEng" name="undercoverEng" type="text" >
+
+                    <label class="form__label">Под обложкой (англ.)</label>
+                </div>
+
+                <div class="form__group field">
+                    <input class="form__field" th:field="*{keywordsEng}" placeholder="Ключевые слова (англ.)" id="keywordsEng" name="keywordsEng" type="text" >
+
+                    <label class="form__label">Ключевые слова (англ.)</label>
+                </div>
+
+                <p class="admin_fields_section">О журнале (англ.)</p>
+
+                <label class="textarea_label" for="redkolEng">Контакты (англ.)</label>
+                <textarea th:field="*{contactsEng}" id="contactsEng" name="contactsEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="redkolEng">Редколлегия (англ.)</label>
+                <textarea th:field="*{redkolEng}" id="redkolEng" name="redkolEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="goalsEng">Цели и задачи (англ.)</label>
+                <textarea th:field="*{goalsEng}" id="goalsEng" name="goalsEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="journalsSections">Разделы журнала (англ.)</label>
+                <textarea th:field="*{journalsSectionsEng}" id="journalsSectionsEng" name="journalsSectionsEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="reviewEng">Процесс рецензирования (англ.)</label>
+                <textarea th:field="*{reviewEng}" id="reviewEng" name="reviewEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="freeAccessEng">Политика свободного доступа (англ.)</label>
+                <textarea th:field="*{freeAccessEng}" id="freeAccessEng" name="freeAccessEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="archivingEng">Архивация (англ.)</label>
+                <textarea th:field="*{archivingEng}" id="archivingEng" name="archivingEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="ethics">Этика научных публикаций (англ.)</label>
+                <textarea th:field="*{ethicsEng}" id="ethicsEng" name="ethicsEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="founderEng">Учредитель и издатель (англ.)</label>
+                <textarea th:field="*{founderEng}" id="founderEng" name="founderEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="publicationFeeEng">Плата за публикацию (англ.)</label>
+                <textarea th:field="*{publicationFeeEng}" id="publicationFeeEng" name="publicationFeeEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="conflictsEng">Политика раскрытия и конфликты интересов (англ.)</label>
+                <textarea th:field="*{conflictsEng}" id="conflictsEng" name="conflictsEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="plagiarismEng">Заимствования и плагиат (англ.)</label>
+                <textarea th:field="*{plagiarismEng}" id="plagiarismEng" name="plagiarismEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="printEng">Политика размещения препринтов и постпринтов (англ.)</label>
+                <textarea th:field="*{printEng}" id="printEng" name="printEng" cols="60"
+                          rows="5"></textarea>
+
+
+                <label class="textarea_label" for="sendingArticleEng">Отправка статей (англ.)</label>
+                <textarea th:field="*{sendingArticleEng}" id="sendingArticleEng" name="sendingArticleEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="copyrightEng">Авторские права (англ.)</label>
+                <textarea th:field="*{copyrightEng}" id="copyrightEng" name="copyrightEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="rulesEng">Правила для авторов (англ.)</label>
+                <textarea th:field="*{rulesEng}" id="rulesEng" name="rulesEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="privacyEng">Приватность (англ.)</label>
+                <textarea th:field="*{privacyEng}" id="privacyEng" name="privacyEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="sponsorsEng">Издатель и спонсоры (англ.)</label>
+                <textarea th:field="*{sponsorsEng}" id="sponsorsEng" name="sponsorsEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="historyEng">История журнала (англ.)</label>
+                <textarea th:field="*{historyEng}" id="historyEng" name="historyEng" cols="60"
+                          rows="5"></textarea>
+
+                <p class="admin_fields_section">Для авторов (англ.)</p>
+
+                <label class="textarea_label" for="guideEng">Руководство для авторов (англ.)</label>
+                <textarea th:field="*{guideEng}" id="guideEng" name="guideEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="pricePolicyEng">Ценовая политика журнала (англ.)</label>
+                <textarea th:field="*{pricePolicyEng}" id="pricePolicyEng" name="pricePolicyEng" cols="60"
+                          rows="5"></textarea>
+
+
+                <label class="textarea_label" for="agreementEng">Авторский договор (англ.)</label>
+                <textarea th:field="*{agreementEng}" id="agreementEng" name="agreementEng" cols="60"
+                          rows="5"></textarea>
+
+                <label class="textarea_label" for="sendingMaterialsEng">Отправка авторских материалов (англ.)</label>
+                <textarea th:field="*{sendingMaterialsEng}" id="sendingMaterialsEng" name="sendingMaterialsEng" cols="60"
+                          rows="5"></textarea>
+
+
+
+
+                <div class="form__group field">
+                    <input type="file" name="file">
+                    <label class="form__label">Обложка</label>
+                </div>
+                <input type="hidden" th:field="*{cover}">
+                <small class="input_error" th:each="err : ${#fields.errors('cover')}" th:text="${err}"></small>
+                <p th:if="${journals.cover != null} and ${#strings.length(journals.cover) > 0}"><img th:src="@{'/uploads/journals/'+${journals.cover}}"></img></p>
+
+
+
+                <br>
+                <input class="custom-checkbox active" id="checkbox_active" type="checkbox" name="checkbox_active">
+                <label for="checkbox_active">Активировать</label>
+                <input th:field="*{active}" class="checkbox_value"  id="active" name="active" th:value="0" type="hidden">
+
+
+
+                <input id="submit" th:if="${action == 'journal_add'}" value="Добавить журнал" type="submit">
+                <input id="submit" th:if="${action == 'journal_change'}" value="Сохранить журнал" type="submit">
+                <!--                <label for="jr_active">Активировать</label>-->
+                <!--                <input th:field="*{jr_active}"  id="jr_active" name="jr_active" type="checkbox">-->
+                <script>
+
+                    CKEDITOR.replace( 'redkol' );
+                    CKEDITOR.replace( 'descript' );
+                    CKEDITOR.replace( 'guide' );
+                    CKEDITOR.replace( 'pricePolicy' );
+                    CKEDITOR.replace( 'agreement' );
+                    CKEDITOR.replace( 'sendingMaterials' );
+
+                    CKEDITOR.replace( 'contacts' );
+                    CKEDITOR.replace( 'goals' );
+                    CKEDITOR.replace( 'journalsSections' );
+                    CKEDITOR.replace( 'review' );
+                    CKEDITOR.replace( 'freeAccess' );
+                    CKEDITOR.replace( 'archiving' );
+                    CKEDITOR.replace( 'ethics' );
+                    CKEDITOR.replace( 'founder' );
+                    CKEDITOR.replace( 'publicationFee' );
+                    CKEDITOR.replace( 'conflicts' );
+                    CKEDITOR.replace( 'plagiarism' );
+                    CKEDITOR.replace( 'print' );
+                    CKEDITOR.replace( 'sendingArticle' );
+                    CKEDITOR.replace( 'rules' );
+                    CKEDITOR.replace( 'copyright' );
+                    CKEDITOR.replace( 'privacy' );
+                    CKEDITOR.replace( 'sponsors' );
+                    CKEDITOR.replace( 'history' );
+
+                    CKEDITOR.replace( 'redkolEng' );
+                    CKEDITOR.replace( 'descriptEng' );
+                    CKEDITOR.replace( 'guideEng' );
+                    CKEDITOR.replace( 'pricePolicyEng' );
+                    CKEDITOR.replace( 'agreementEng' );
+                    CKEDITOR.replace( 'sendingMaterialsEng' );
+
+                    CKEDITOR.replace( 'contactsEng' );
+                    CKEDITOR.replace( 'goalsEng' );
+                    CKEDITOR.replace( 'journalsSectionsEng' );
+                    CKEDITOR.replace( 'reviewEng' );
+                    CKEDITOR.replace( 'freeAccessEng' );
+                    CKEDITOR.replace( 'archivingEng' );
+                    CKEDITOR.replace( 'ethicsEng' );
+                    CKEDITOR.replace( 'founderEng' );
+                    CKEDITOR.replace( 'publicationFeeEng' );
+                    CKEDITOR.replace( 'conflictsEng' );
+                    CKEDITOR.replace( 'plagiarismEng' );
+                    CKEDITOR.replace( 'printEng' );
+                    CKEDITOR.replace( 'sendingArticleEng' );
+                    CKEDITOR.replace( 'rulesEng' );
+                    CKEDITOR.replace( 'copyrightEng' );
+                    CKEDITOR.replace( 'privacyEng' );
+                    CKEDITOR.replace( 'sponsorsEng' );
+                    CKEDITOR.replace( 'historyEng' );
+                    init_checkbox();
+
+                </script>
+            </form>
+
+            <div th:if="${journals != null} and ${action == 'journal_list'}" th:each="journal : ${journals}">
+                <div class="admin_card_item">
+                    <a class="remove_link" th:href="@{/admin/journal_delete(id=${journal.id})}"><img title="удалить" class="remove_card_img" src="/images/delete.png"></a>
+                    <div><a class="black_link" th:href="@{/admin/journal_change(id=${journal.id})}" th:text="${journal.name}"></a></div>
+                    <div><img class="journal_img" th:if="${journal.cover != null and #strings.length(journal.cover) > 0}" th:src="@{'/uploads/journals/'+${journal.cover}}">
+                        <div class="jurnal_short_info">
+                            <div>
+                                <p class="choose_number"><a th:href="@{/admin/number_add(journal_id=${journal.id})}">Добавить номер</a></p>
+                                <span th:if="${not #lists.isEmpty(journal.numbers)}" class="popup-open choose_number">Выбрать номер журнала</span>
+                            </div>
+                            <div class="popup-fade">
+                                <div class="popup">
+                                    <a class="popup-close" href="#">Закрыть</a>
+                                    <div class="number_line" th:each="number : ${numberSortedList.get(journal)}">
+                                        <span class="number_year" th:text="${number.key}+': '"></span>
+                                        <div class="number_val" th:each="num : ${number.value}">
+                                            <a th:href="@{/admin/number_change(id=${num.id})}"><span
+                                                    th:text="${num.name}"></span></a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            <!--                    <div th:if="${journal.redaktor != null and #strings.length(journal.redaktor) > 0}">Редактор: <span th:text="${journal.redaktor}"></span></div>-->
+                            <!--                    <div th:if="${journal.num_year != null and #strings.length(journal.num_year) > 0}">Периодичность: <span th:text="${journal.num_year}"></span></div>-->
+                            <!--                    <div th:if="${journal.issn != null and #strings.length(journal.issn) > 0}">ISSN: <span th:text="${journal.issn}"></span></div>-->
+                            <!--                    <div th:if="${journal.pochta > 0}" >«Пресса России» - индекс <span th:text="${journal.pochta}"></span></div>-->
+                            <div th:if="${journal.descript != null and #strings.length(journal.descript) > 0}" >Аннотация:<br><span th:utext="${journal.descript}"></span></div>
                         </div>
                     </div>
-<!--                    <div th:if="${journal.redaktor != null and #strings.length(journal.redaktor) > 0}">Редактор: <span th:text="${journal.redaktor}"></span></div>-->
-<!--                    <div th:if="${journal.num_year != null and #strings.length(journal.num_year) > 0}">Периодичность: <span th:text="${journal.num_year}"></span></div>-->
-<!--                    <div th:if="${journal.issn != null and #strings.length(journal.issn) > 0}">ISSN: <span th:text="${journal.issn}"></span></div>-->
-<!--                    <div th:if="${journal.pochta > 0}" >«Пресса России» - индекс <span th:text="${journal.pochta}"></span></div>-->
-                    <div th:if="${journal.descript != null and #strings.length(journal.descript) > 0}" >Аннотация:<br><span th:utext="${journal.descript}"></span></div>
+
                 </div>
             </div>
-
         </div>
     </div>
 </div>
