@@ -5,24 +5,81 @@
 <div th:replace="~{header :: header_menu}"></div>
 
 <div id="content">
-    <div id="main_block">
+    <div id="main_block" class="relative">
 
-        <div class="page_title padding"
-             th:text="#{journal.journal}+' '+((#{language}=='ru')?${number.journal.name}:${number.journal.nameEng})+' №'+${number.name}+' '+#{for}+' '+${number.year}+' г.'"></div>
+        <div class="right_cart_block" th:if="${number.price > 0}">
+            <div class="price_book" th:text="${number.price}"></div>
+            <div class="cart_block">
+                <div class="cart_line">
+                    <img class="cart_img" th:src="@{/images/cart_white.png}">
+                    <input type="button" class="cart_button add_cart" th:classappend="(${cartActive})?'hidden':''"  th:value="#{cart.add}">
+                    <input type="button" class="cart_button delete_cart" th:classappend="(${cartActive})?'':'hidden'"  th:value="#{cart.delete}">
+                </div>
+            </div>
+        </div>
+
+        <div style="width:700px" class="page_title padding"
+             th:text="#{journal.journal}+' '+((#{language}=='ru')?${number.journal.name}:${number.journal.nameEng})+' №'+${number.name}+' '+#{for}+' '+${number.year}+' '+#{book.year}"></div>
+        <div style="width:700px" class="page_title padding gray_font"
+             th:text="((#{language} == 'ru') or (${number.descriptEng} == null))?${number.descript}:${number.descriptEng}"></div>
+
+
+        <script>
+            $(".add_cart").click(function () {
+                var cart = $(this);
+                if (cart.hasClass("add_cart")) {
+                    $.ajax({
+                        url: "/cart_add",
+                        type: "POST", //метод отправки
+                        data: {
+                            type: "number",
+                            product: [[${number.id}]],
+                            count: "1"
+                        },
+                        success: function (response) {
+                            $(cart).hide();
+                            $(cart).next("input").show();
+                        },
+                        error: function (response) {
+                        }
+                    });
+                }
+            });
+            $(".delete_cart").click(function () {
+                var cart = $(this);
+                if (cart.hasClass("delete_cart")) {
+                    $.ajax({
+                        url: "/cart_delete",
+                        type: "POST", //метод отправки
+                        data: {
+                            type: "number",
+                            product: [[${number.id}]]
+                        },
+                        success: function (response) {
+                            $(cart).hide();
+                            $(cart).prev("input").show();
+                        },
+                        error: function (response) {
+                        }
+                    });
+                }
+            });
+        </script>
         <div th:each="section : ${number.sections}" th:if="${section.active == 1}">
-            <div class="section_subtitle" th:text="(#{language}=='ru')?${section.name}:${section.nameEng}"></div>
+            <div class="section_subtitle" th:text="((#{language}=='ru') or ${section.nameEng == null})?${section.name}:${section.nameEng}"></div>
             <div class="article_box" th:each="article : ${section.articles}">
                 <div class="col1">
                     <div class="article_box_name"><a th:text="(#{language}=='ru')?${article.name}:${article.nameEng}"
                                                      th:href="'/'+#{language}+'/journal/'+${currentJournal.id}+'/number/'+${number.id}+'/section/'+${article.sectionId}+'/article/'+${article.id}"></a>
                     </div>
-                    <div class="article_box_authors" th:utext="${article.authors}"></div>
+                    <div class="article_box_authors" th:utext="((#{language} == 'ru') or (${article.authorsEng} == ''))?${article.authors}:${article.authorsEng}"></div>
                 </div>
                 <div class="col2" th:text="${article.page}">
 
                 </div>
             </div>
         </div>
+        <a th:if="${number.numberFile != null}" class="download_button padding margin_top" th:text="#{article.download}" th:href="@{'/uploads/numbers/'+${number.numberFile}}"></a>
         <div th:if="${#lists.isEmpty(number.sections)}" th:text="#{number.empty}">
             Данный номер не содержит статей
         </div>

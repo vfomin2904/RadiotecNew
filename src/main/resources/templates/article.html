@@ -5,18 +5,74 @@
 <div th:replace="~{header :: header_menu}"></div>
 
 <div id="content">
-    <div id="main_block">
+    <div id="main_block" class="relative">
+        <div class="right_cart_block" th:if="${article.price > 0}">
+            <div class="price_book" th:text="${article.price}"></div>
+            <div class="cart_block">
+                <div class="cart_line">
+                    <img class="cart_img" th:src="@{/images/cart_white.png}">
+                    <input type="button" class="cart_button add_cart" th:classappend="(${cartActive})?'hidden':''"  th:value="#{cart.add}">
+                    <input type="button" class="cart_button delete_cart" th:classappend="(${cartActive})?'':'hidden'"  th:value="#{cart.delete}">
+                </div>
+            </div>
+        </div>
+        <script>
+            $(".add_cart").click(function () {
+                var cart = $(this);
+                if (cart.hasClass("add_cart")) {
+                    $.ajax({
+                        url: "/cart_add",
+                        type: "POST", //метод отправки
+                        data: {
+                            type: "article",
+                            product: [[${article.id}]],
+                            count: "1"
+                        },
+                        success: function (response) {
+                            $(cart).hide();
+                            $(cart).next("input").show();
+                        },
+                        error: function (response) {
+                        }
+                    });
+                }
+            });
+
+
+            $(".delete_cart").click(function () {
+                var cart = $(this);
+                if (cart.hasClass("delete_cart")) {
+                    $.ajax({
+                        url: "/cart_delete",
+                        type: "POST", //метод отправки
+                        data: {
+                            type: "article",
+                            product: [[${article.id}]]
+                        },
+                        success: function (response) {
+                            $(cart).hide();
+                            $(cart).prev("input").show();
+                        },
+                        error: function (response) {
+                        }
+                    });
+                }
+            });
+        </script>
         <div class="page_title padding"
              th:text="#{journal.journal}+' '+((#{language}=='ru')?${currentJournal.name}:${currentJournal.nameEng})+' №'+${article.section.number.name}+' '+#{for}+' '+${article.section.number.year}+' г.'"></div>
         <div class="subtitle_lower padding" th:text="#{article.inNumber}"></div>
-        <div class="section_subtitle bold" th:text="(#{language}=='ru')?${article.name}:${article.nameEng}"></div>
-        <div class="margin_top padding" th:if="${article.articleType != ''}"><span class="field_name" th:text="#{article.type}+': '">Тип статьи: </span><span th:text="${article.articleType}"></span></div>
+        <div class="section_subtitle bold" th:text="((#{language}=='ru') or ${article.nameEng} == null)?${article.name}:${article.nameEng}"></div>
+        <div class="margin_top padding" th:if="${article.articleType != null and article.articleType.id > 0}">
+            <span class="field_name" th:text="#{article.type}+': '">Тип статьи: </span>
+            <span th:text="(#{language} == 'ru' or ${article.articleType.nameEng} == '')?${article.articleType.name}:${article.articleType.nameEng}"></span>
+        </div>
         <div class="margin_top padding" th:if="${article.doi != ''}"><span class="field_name" >DOI: </span><span th:text="${article.doi}"></span></div>
         <div class="margin_top padding" th:if="${article.udk != ''}"><span class="field_name" th:text="#{article.udk}+': '"></span><span
                 th:text="${article.udk}"></span></div>
         <div class="margin_top padding"  th:if="${article.keywords != ''}">
             <span class="field_name"  th:text="#{article.keywords}+': '">Ключевые слова: </span>
-            <span th:if="#{language} == 'ru'" class="keywords"
+            <span th:if="(#{language} == 'ru') and ${keyword != ''}" class="keywords"
                   th:each="keyword: ${#strings.arraySplit(article.keywords, ',')}">
                 <a th:href="@{'/'+#{language}+'/keywords'(keywords = ${keyword})}" th:text="${keyword}"></a>
             </span>
@@ -27,18 +83,18 @@
         </div>
 
         <div th:if="${article.authors != ''}" class="field_name margin_top padding" th:text="#{article.authors}+': '">Авторы</div>
-        <div class="padding" th:utext="(#{language}=='ru')? ${article.authors} : ${article.authorsEng}"></div>
+        <div class="padding" th:utext="((#{language}=='ru') or ${article.authorsEng == ''})? ${article.authors} : ${article.authorsEng}"></div>
         <div th:if="${article.descript != ''}" class="field_name margin_top padding" th:text="#{article.annot}+': '">Аннотация</div>
-        <div class="padding" th:utext="(#{language}=='ru')?${article.descript}:${article.descriptEng}"></div>
+        <div class="padding" th:utext="((#{language}=='ru') or ${article.descriptEng} == '')?${article.descript}:${article.descriptEng}"></div>
         <div class="margin_top padding" th:if="${article.page != ''}"><span class="field_name" th:text="#{article.page}+': '"></span><span
                 th:text="${article.page}"></span></div>
 
         <div th:if="${article.citata != ''}" class="field_name margin_top padding" th:text="#{article.citata}">Для цитирования</div>
-        <div class="padding" th:utext="(#{language}=='ru')?${article.citata}:${article.citataEng}"></div>
+        <div class="padding" th:utext="((#{language}=='ru') or ${article.citataEng == ''})?${article.citata}:${article.citataEng}"></div>
 
         <div th:if="${article.literature != ''}" class="field_name margin_top padding" th:text="#{article.literatura}">Список литературы
         </div>
-        <div class="padding" th:utext="(#{language}=='ru')?${article.literature}:${article.literatureEng}"></div>
+        <div class="padding" th:utext="((#{language}=='ru') or ${article.literatureEng == ''})?${article.literature}:${article.literatureEng}"></div>
         <div th:if="${article.articleText != ''}" class="field_name margin_top padding article_text_title" th:text="#{article.text}" ></div>
         <div th:if="${article.articleText != ''}" class="padding article_text"><p th:utext="${article.articleText}"></p></div>
         <script>

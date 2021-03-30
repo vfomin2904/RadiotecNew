@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{header :: head}"></head>
+<body>
+<div th:replace="~{header :: header_menu}"></div>
+
+<div id="content">
+    <div id="main_block" class="relative">
+        <h3 th:text="#{cart.cart}"></h3>
+        <p class="padding gray_font"
+           th:classappend="(${#lists.isEmpty(numbers)} and ${#lists.isEmpty(articles)} and ${#lists.isEmpty(books)})?'':'hidden'"
+           th:text="#{cart.empty}"></p>
+        <p class="padding gray_font" th:if="not ${#lists.isEmpty(books)}" th:text="#{book.books}">Книги</p>
+        <div class="card-group cart_box" th:if="not ${#lists.isEmpty(books)}">
+            <div class="card cart_box_line" th:each="book : ${books}">
+                <div class="cart_box_cell cart_box_img">
+                    <a th:href="'/'+#{language}+'/books/'+${book.id}"><img th:src="'/uploads/books/' + ${book.coverImg}"
+                                                                           class="card-img-top"
+                                                                           th:alt="((#{language} == 'ru') or (${book.nameEng} == ''))?${book.name}:${book.nameEng}"></a>
+
+                </div>
+                <div class="card-body cart_box_cell">
+                    <a class="black_link" th:href="'/'+#{language}+'/books/'+${book.id}"><h4 class="card-title"
+                                                                                             th:text="((#{language} == 'ru') or (${book.nameEng} == ''))?${book.name}:${book.nameEng}"></h4>
+                    </a>
+                    <p class="card-text"
+                       th:utext="((#{language} == 'ru') or (${book.authorEng} == ''))?${book.author}:${book.authorEng}"></p>
+                    <div class="card-text book_description"
+                         th:utext="((#{language} == 'ru') or (${book.descriptionEng} == ''))?${book.description}:${book.descriptionEng}"></div>
+                </div>
+                <div class="card-price cart_box_cell cart_box_price">
+                    <a class="remove_link"
+                       th:href="'/cart_delete?type=book&product='+${book.id}"><img
+                            title="удалить" class="remove_img" src="/images/delete.png"></a>
+                    <p>
+                        <span th:text="#{price.price}+': '"></span>
+                        <span class="item_price" th:text="${book.price}"></span>
+                        <span th:text="' '+#{price.rub}"></span>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <p class="padding gray_font" th:if="not ${#lists.isEmpty(articles)}" th:text="#{article.articles}">Статьи</p>
+
+        <div class="card-group cart_box" th:if="not ${#lists.isEmpty(articles)}">
+            <div class="card cart_box_line" th:each="article : ${articles}">
+                <div class="cart_box_cell cart_box_img">
+                    <a th:href="'/'+#{language}+'/journal/'+${article.section.number.journal.id}+'/number/'+${article.section.number.id}+'/section/'+${article.section.id}+'/article/'+${article.id}"><img
+                            th:src="'/uploads/journals/' + ${article.section.number.journal.cover}"
+                            class="card-img-top"
+                            th:alt="((#{language} == 'ru') or (${article.nameEng} == ''))?${article.name}:${article.nameEng}"></a>
+
+                </div>
+                <div class="card-body cart_box_cell">
+                    <a class="black_link"
+                       th:href="'/'+#{language}+'/journal/'+${article.section.number.journal.id}+'/number/'+${article.section.number.id}+'/section/'+${article.section.id}+'/article/'+${article.id}">
+                        <h4 class="card-title"
+                            th:text="((#{language} == 'ru') or (${article.nameEng} == ''))?${article.name}:${article.nameEng}"></h4>
+                    </a>
+                    <p class="card-text"
+                       th:utext="((#{language} == 'ru') or (${article.authorsEng} == ''))?${article.authors}:${article.authorsEng}"></p>
+                    <div class="card-text book_description"
+                         th:utext="((#{language} == 'ru') or (${article.descriptEng} == ''))?${article.descript}:${article.descriptEng}"></div>
+                </div>
+                <div class="card-price cart_box_cell cart_box_price">
+                    <a class="remove_link"
+                       th:href="'/cart_delete?type=article&product='+${article.id}"><img
+                            title="удалить" class="remove_img" src="/images/delete.png"></a>
+                    <p>
+                        <span th:text="#{price.price}+': '"></span>
+                        <span class="item_price" th:text="${article.price}"></span>
+                        <span th:text="' '+#{price.rub}"></span>
+                    </p></div>
+
+            </div>
+        </div>
+
+
+        <p class="padding gray_font" th:if="not ${#lists.isEmpty(numbers)}" th:text="#{leftMenu.journals}">Журналы</p>
+
+        <div class="card-group cart_box" th:if="not ${#lists.isEmpty(numbers)}">
+            <div class="card cart_box_line" th:each="number : ${numbers}">
+                <div class="cart_box_cell cart_box_img">
+                    <a th:href="'/'+#{language}+'/journal/'+${number.journal.id}+'/number/'+${number.id}"><img
+                            th:src="'/uploads/journals/' + ${number.journal.cover}"
+                            class="card-img-top"
+                            th:alt="#{journal.journal}+' '+((#{language}=='ru')?${number.journal.name}:${number.journal.nameEng})+' №'+${number.name}+' '+#{for}+' '+${number.year}+' '+#{book.year}"></a>
+
+                </div>
+                <div class="card-body cart_box_cell">
+                    <a class="black_link"
+                       th:href="'/'+#{language}+'/journal/'+${number.journal.id}+'/number/'+${number.id}"><h4
+                            class="card-title"
+                            th:text="#{journal.journal}+' '+((#{language}=='ru')?${number.journal.name}:${number.journal.nameEng})+' №'+${number.name}+' '+#{for}+' '+${number.year}+' '+#{book.year}"></h4>
+                    </a>
+                </div>
+                <div class="card-price cart_box_cell cart_box_price">
+                    <a class="remove_link"
+                       th:href="'/cart_delete?type=number&product='+${number.id}"><img
+                            title="удалить" class="remove_img" src="/images/delete.png"></a>
+                    <p>
+                        <span th:text="#{price.price}+': '"></span>
+                        <span class="item_price" th:text="${number.price}"></span>
+                        <span th:text="' '+#{price.rub}"></span>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+
+        <p class="total_price"
+           th:if="not ${#lists.isEmpty(numbers)} or not ${#lists.isEmpty(articles)} or not ${#lists.isEmpty(books)}">
+            <span th:text="#{price.total}+': '"></span><span class="total_price_sum"
+                                                             th:text="${totalPrice}"></span><span
+                th:text="' '+#{price.rub}"></span></p>
+
+        <br>
+        <form method="post" action="/order_cart" class="user_form"  th:if="not ${#lists.isEmpty(numbers)} or not ${#lists.isEmpty(articles)} or not ${#lists.isEmpty(books)}"
+              type="button" th:value="#{book.order}" th:object="${order}">
+            <label for="fio" th:text="#{form.fio}+' *'">Фамилия, Имя, Отчество (полностью)*</label>
+            <input th:field="*{fio}" type="text" id="fio" name="fio" class="required" required>
+
+            <label for="phone" th:text="#{form.phone}+' *'">Контактный телефон *</label>
+            <input th:field="*{phone}" type="text" name="phone" id="phone" required class="required">
+
+            <label for="email">E-Mail *</label>
+            <input th:field="*{email}" required class="required" type="email" name="email" id="email">
+            <input class="cart_order_input"
+                                     type="submit" th:value="#{book.order}">
+            <div class="form_message">
+
+            </div>
+        </form>
+
+    </div>
+
+</div>
+</div>
+<script>
+    $(".remove_link").click(function (e) {
+        e.preventDefault();
+
+        if (confirm("Вы уверены, что хотите удалить товар из корзины?")) {
+            var url = $(this).attr("href");
+            var type = getAllUrlParams(url).type;
+            var product = getAllUrlParams(url).product;
+            var link = $(this);
+            $.ajax({
+                url: "/cart_delete",
+                type: "POST", //метод отправки
+                data: {
+                    type: type,
+                    product: product,
+                },
+                success: function () {
+                    var cart = $(link).parent().parent(".cart_box_line");
+                    var cart_box = $(cart).parent(".cart_box");
+                    if ($(cart_box).find(".cart_box_line").length == 1) {
+                        $(cart_box).prev(".gray_font").remove();
+                        $(cart_box).remove();
+                        if ($(".cart_box").length == 0) {
+                            $(".user_form").remove();
+                            $(".total_price").remove();
+                            $(".hidden").show();
+                        } else {
+                            var sum = 0;
+                            for (var i = 0; i < $(".item_price").length; i++) {
+                                sum += Number.parseInt($(".item_price").text());
+                            }
+                            $(".total_price_sum").text(sum);
+                        }
+                    } else {
+                        $(link).parent().parent(".cart_box_line").remove();
+                    }
+                },
+                error: function () {
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

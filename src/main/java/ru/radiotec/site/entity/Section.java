@@ -1,5 +1,8 @@
 package ru.radiotec.site.entity;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -11,7 +14,6 @@ import java.util.Set;
 public class Section implements Comparable<Section>{
 
     @Id
-
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="razd_id")
     private int id;
@@ -46,6 +48,9 @@ public class Section implements Comparable<Section>{
     }
     public void setArticles(Set<Article> articles) {
         this.articles = articles;
+    }
+
+    public Section() {
     }
 
     public void addArticle(Article article) {

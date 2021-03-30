@@ -235,11 +235,16 @@
                 <label class="textarea_label" for="descript">Аннотация (англ.)</label>
                 <textarea th:field="*{descriptEng}" id="descriptEng" name="descriptEng" cols="60"
                           rows="5"></textarea>
-
+                
 
                 <div class="form__group field">
-                    <input th:field="*{komplectEng}" type="text" class="form__field" placeholder="Комплект (англ.)" name="komplectEng" id='komplectEng'  />
-                    <label for="komplectEng" class="form__label">Комплект (англ.)</label>
+                    <select class="select-css" name="komplectEng" th:field="*{komplectEng}" >
+                        <option  value="">Не выбран</option>
+                        <option  value="Без приложения">Without the app</option>
+                        <option  value="С приложением">With the app</option>
+                    </select>
+
+                    <label class="form__label">Выходит в комплекте (англ.)</label>
                 </div>
 
                 <div class="form__group field">

@@ -2,14 +2,18 @@
 <html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
 
     <div id="left_menu" th:fragment="menu">
+        <div th:fragment="journals_menu">
         <div class="left_menu_title" th:text="#{leftMenu.journals}">Журналы</div>
 
         <ul th:each="journal : ${journals}">
            <li><a th:href="'/'+#{language}+'/journal/'+${journal.id}" th:text="((#{language} == 'ru') or (${journal.menuNameEng} == ''))?${journal.menuName}:${journal.menuNameEng}"></a></li>
         </ul>
+        </div>
+        <div th:fragment="books_menu">
         <div class="left_menu_title" th:text="#{leftMenu.books}">Книги</div>
         <ul th:each="booksec : ${booksecs}">
-            <li><a th:href="'/'+#{language}+'/booksection/'+${booksec.id}" th:text="${booksec.name}"></a></li>
+            <li><a th:href="'/'+#{language}+'/booksection/'+${booksec.id}" th:text="((#{language} == 'ru') or (${booksec.nameEng} == ''))?${booksec.name}:${booksec.nameEng}"></a></li>
         </ul>
+        </div>
     </div>
 </html>

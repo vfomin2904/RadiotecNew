@@ -28,12 +28,21 @@ public class Number implements Comparable{
     @Column(name="num_descript")
     private String descript;
 
+    @Column(name="num_descript_eng")
+    private String descriptEng;
+
     @NotEmpty
     @Column(name="num_year")
     private String year;
 
     @Column(name="num_act")
     private int active;
+
+    @Column(name="price")
+    private int price;
+
+    @Column(name="file")
+    private String numberFile;
 
 
     @ManyToOne
@@ -132,5 +141,29 @@ public class Number implements Comparable{
     @Override
     public String toString() {
         return this.getYear()+" : "+this.getName();
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public String getNumberFile() {
+        return numberFile;
+    }
+
+    public void setNumberFile(String numberFile) {
+        this.numberFile = numberFile;
+    }
+
+    public String getDescriptEng() {
+        return descriptEng;
+    }
+
+    public void setDescriptEng(String descriptEng) {
+        this.descriptEng = descriptEng;
     }
 }

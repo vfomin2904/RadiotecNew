@@ -7,10 +7,10 @@
 <div id="content">
     <div th:replace="~{left_menu :: menu}"></div>
     <div id="main_block">
-        <div class="page_title" th:text="'Статьи по ключевому слову '+${keywords}"></div>
-        <div class="article_box" th:each="article : ${articles}">
-            <div class="article_box_name"><a th:text="${article.name}" th:href="'/'+#{language}+'/article/'+${article.id}"></a></div>
-            <div class="article_box_authors" th:utext="${article.authors}"></div>
+        <div class="page_title" th:text="#{keywords.title}+' '+${keywords}"></div>
+        <div class="article_box" style="margin-bottom:10px;padding:8px;" th:each="article : ${articles}">
+            <div class="article_box_name"><a th:text="((#{language} == 'ru') or (${article.nameEng} == ''))?${article.name}:${article.nameEng}" th:href="'/'+#{language}+'/article/'+${article.id}"></a></div>
+            <div class="article_box_authors" th:utext="((#{language} == 'ru') or (${article.authorsEng} == ''))?${article.authors}:${article.authorsEng}"></div>
         </div>
     </div>
 </div>

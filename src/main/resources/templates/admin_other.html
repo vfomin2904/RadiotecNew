@@ -17,17 +17,8 @@
                 <li><a th:href="@{/admin/field_change(id=2)}">Тип обложки</a></li>
                 <li><a th:href="@{/admin/field_change(id=3)}">Тип издания</a></li>
                 <li><a th:href="@{/admin/field_change(id=4)}">Издательство</a></li>
+                <li><a th:href="@{/admin/field_change(id=5)}">Тип статьи</a></li>
             </ul>
-        </div>
-
-        <div th:if="${#strings.equals(type, 'cart')}">
-            <div class="title">Корзина</div>
-        </div>
-        <div th:if="${#strings.equals(type, 'order')}">
-            <div class="title">Заказ книг</div>
-        </div>
-        <div th:if="${#strings.equals(type, 'subscribe')}">
-            <div class="title">Подписка</div>
         </div>
     </div>
 </div>

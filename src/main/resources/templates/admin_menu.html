@@ -15,7 +15,7 @@
 
             <ul class="menu_change_ul" th:if="${#strings.equals(type, 'main')}">
                 <li><a href="/admin/menu_change?id=1">Для авторов</a></li>
-                <li><a href="/admin/menu_change?id=1">Об издательстве</a></li>
+                <li><a href="/admin/menu_change?id=2">Об издательстве</a></li>
                 <li> Новости:
                     <a href="/admin/news_add?type=0">добавить</a>
                     <a href="/admin/news_change?type=0">изменить</a>
@@ -26,6 +26,13 @@
                 <li><a href="/admin/menu_change?id=3">Читателям</a></li>
                 <li><a href="/admin/menu_change?id=4">Партнерам</a></li>
                 <li><a href="/admin/menu_change?id=5">Для авторов</a></li>
+                <li><a href="/admin/menu_change?id=7">Заказ книг</a></li>
+                <li><a href="/admin/menu_change?id=10">Страница книг</a></li>
+            </ul>
+
+            <ul class="menu_change_ul" th:if="${#strings.equals(type, 'journal')}">
+                <li><a href="/admin/menu_change?id=8">Подписка</a></li>
+                <li><a href="/admin/menu_change?id=9">Страница журналов</a></li>
             </ul>
 
             <form th:if="${page != null}" enctype="multipart/form-data" class="main_form" method="post" action=""

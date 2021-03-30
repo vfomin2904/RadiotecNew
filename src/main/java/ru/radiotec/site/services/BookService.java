@@ -19,11 +19,14 @@ public class BookService {
     }
 
     public List<Books> getNewBooks(){
-        return bookRepository.findBooksByBookNew("on");
+        return bookRepository.findBooksByBookNew("1");
     }
 
     public Books getBookById(int id){
         return bookRepository.findById(id).get();
+    }
+    public int getBookWithMaxId(){
+        return bookRepository.findBooksWithMaxId();
     }
 
     public void create(Books book) {

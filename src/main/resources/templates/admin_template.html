@@ -24,7 +24,7 @@
     <div th:fragment="admin_menu" id="left_menu_column">
         <ul class="accordion-menu">
             <li>
-                <div class="dropdownlink"><i class="fa fa-road" aria-hidden="true"></i> Журнал
+                <div class="dropdownlink"><i class="fa fa-road" aria-hidden="true"></i> Журналы
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                 </div>
                 <ul class="submenuItems">
@@ -33,7 +33,7 @@
                 </ul>
             </li>
             <li>
-                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Книжный раздел
+                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Книжные разделы
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                 </div>
                 <ul class="submenuItems">
@@ -42,12 +42,13 @@
                 </ul>
             </li>
             <li>
-                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Книга
+                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Книги
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                 </div>
                 <ul class="submenuItems">
                     <li><a href="/admin/book_add">Добавить</a></li>
                     <li><a href="/admin/book_change">Изменить</a></li>
+                    <li><a href="/admin/book_sort">Сортировка новых книг</a></li>
                 </ul>
             </li>
             <li>
@@ -57,6 +58,7 @@
                 <ul class="submenuItems">
                     <li><a th:href="@{/admin/menu_change(type=main)}">Главное меню</a></li>
                     <li><a th:href="@{/admin/menu_change(type=book)}">Книги</a></li>
+                    <li><a th:href="@{/admin/menu_change(type=journal)}">Журналы</a></li>
                 </ul>
             </li>
             <li>
@@ -74,9 +76,9 @@
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                 </div>
                 <ul class="submenuItems">
-                    <li><a href="/admin/other?type=cart">Корзина</a></li>
-                    <li><a href="/admin/other?type=order">Заказ книг</a></li>
-                    <li><a href="/admin/other?type=subscribe">Подписка</a></li>
+                    <li><a href="/admin/cart">Корзина</a></li>
+                    <li><a th:href="@{/admin/subscribes(type=book)}">Заказ книг</a></li>
+                    <li><a th:href="@{/admin/subscribes(type=journal)}">Подписка</a></li>
                     <li><a th:href="@{/admin/menu_change(id=6)}">Надпись на фоне</a></li>
                     <li><a href="/admin/other?type=fields">Настройка полей</a></li>
                 </ul>

@@ -201,10 +201,6 @@ $(document).ready(function () {
 
         sort(type, current_id, next_num);
         sort(type, next_id, current_num);
-        console.log(current_id);
-        console.log(next_num);
-        console.log(next_id);
-        console.log(current_num);
     });
 
     init_checkbox();
@@ -227,8 +223,6 @@ function sendAjaxForm(result_form, ajax_form, url) {
         contentType: false,
         cache: false,
         success: function (response) { //Данные отправлены успешно
-            // result = $.parseJSON(response);
-            console.log(response);
             var response = $(response);
             if (response.find('.main_params').html() != undefined) {
 
@@ -271,7 +265,7 @@ function init_checkbox() {
 
 function delete_img_activate() {
     $(".remove_link").on("click", function (e) {
-        e.preventDefault(); //отменяем переход по ссылке
+        e.preventDefault();
 
         if (confirm("Вы уверены, что хотите удалить объект?")) {
             location.href = $(this).attr('href');

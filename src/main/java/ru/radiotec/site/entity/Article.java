@@ -65,15 +65,8 @@ public class Article {
     @Column(name="article_text")
     private String articleText;
 
-
-    @Column(name="article_type")
-    private String articleType;
-
-    @Column(name="art_pdf")
+    @Column(name="file")
     private String articleFile;
-
-    @Column(name="razd_id")
-    private int sectionId;
 
     @Column(name="data_recieved")
     private String dataRecieved;
@@ -84,11 +77,25 @@ public class Article {
     @Column(name="data_accepted")
     private String dataAccepted;
 
+    @Column(name="price")
+    private int price;
+
+    @Column(name="razd_id")
+    private int sectionId;
 
     @ManyToOne
     @JoinColumn(name = "razd_id", referencedColumnName = "razd_id", insertable = false, updatable = false)
     private Section section;
 
+    @Column(name="article_type")
+    private int type;
+
+    @ManyToOne
+    @JoinColumn(name="article_type", referencedColumnName = "id", insertable = false, updatable = false)
+    private ArticleType articleType;
+
+    public Article() {
+    }
 
     public int getId() {
         return id;
@@ -190,13 +197,6 @@ public class Article {
         return literatureEng;
     }
 
-    public String getArticleType() {
-        return articleType;
-    }
-
-    public void setArticleType(String articleType) {
-        this.articleType = articleType;
-    }
 
     public void setLiteratureEng(String literatureEng) {
         this.literatureEng = literatureEng;
@@ -290,4 +290,27 @@ public class Article {
         this.section = section;
     }
 
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public ArticleType getArticleType() {
+        return articleType;
+    }
+
+    public void setArticleType(ArticleType articleType) {
+        this.articleType = articleType;
+    }
 }

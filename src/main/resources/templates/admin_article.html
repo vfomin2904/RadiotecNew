@@ -17,37 +17,39 @@
                   th:attr="action=${action == 'article_add'?'/admin/article_add':'/admin/article_change'}"
                   th:object="${article}">
                 <input th:if="${action == 'article_change'}" th:field="*{id}" id="article_id" name="article_id" type="hidden">
-                <input th:if="${action == 'article_change'} or ${article.sectionId > 0}" th:field="*{sectionId}" id="section_id" name="section_id"
-                       type="hidden">
 
-                <div th:if="${article.sectionId <= 0}">
+<!--                <div th:if="${article.sectionId <= 0}">-->
 
-                    <select class="select-css" th:if="${action == 'article_add'} or ${action == 'article_list'}"
-                            id="select_journal_name" name="journal_name">
-                        <option selected disabled>Журнал</option>
-                        <option th:each="journal : ${journals}" th:value="${journal.id}" th:text="${journal.name}"></option>
-                    </select>
+<!--                    <select class="select-css" th:if="${action == 'article_add'} or ${action == 'article_list'}"-->
+<!--                            id="select_journal_name" name="journal_name">-->
+<!--                        <option selected disabled>Журнал</option>-->
+<!--                        <option th:each="journal : ${journals}" th:value="${journal.id}" th:text="${journal.name}"></option>-->
+<!--                    </select>-->
 
-                    <select class="select-css" th:if="${action == 'article_add'} or ${action == 'article_list'}"
-                            id="select_number_year" name="number_year">
-                        <option selected disabled>Год</option>
-                    </select>
+<!--                    <select class="select-css" th:if="${action == 'article_add'} or ${action == 'article_list'}"-->
+<!--                            id="select_number_year" name="number_year">-->
+<!--                        <option selected disabled>Год</option>-->
+<!--                    </select>-->
 
-                    <select class="select-css" name="numberId" th:if="${action == 'article_add'} or ${action == 'article_list'}"
-                            id="select_number_name">
-                        <option value="" th:disabled="disabled" th:selected="selected">Номер</option>
-                    </select>
+<!--                    <select class="select-css" name="numberId" th:if="${action == 'article_add'} or ${action == 'article_list'}"-->
+<!--                            id="select_number_name">-->
+<!--                        <option value="" th:disabled="disabled" th:selected="selected">Номер</option>-->
+<!--                    </select>-->
 
-                    <select class="select-css" name="sectionId" th:if="${action == 'article_list'} or ${action == 'article_add'}" id="select_section_name">
-                        <option value="" th:disabled="disabled" th:selected="selected">Раздел</option>
-                    </select>
+<!--                    <select class="select-css" name="sectionId" th:if="${action == 'article_list'} or ${action == 'article_add'}" id="select_section_name">-->
+<!--                        <option value="" th:disabled="disabled" th:selected="selected">Раздел</option>-->
+<!--                    </select>-->
 
-                    <select class="select-css" name="id" th:if="${action == 'article_list'}" id="select_article_name">
-                        <option value="" th:disabled="disabled" th:selected="selected">Статья</option>
-                    </select>
-                </div>
+<!--                    <select class="select-css" name="id" th:if="${action == 'article_list'}" id="select_article_name">-->
+<!--                        <option value="" th:disabled="disabled" th:selected="selected">Статья</option>-->
+<!--                    </select>-->
+<!--                </div>-->
 
                 <div class="article_main_params  main_params" th:if="${action == 'article_add'} or ${action == 'article_change'}">
+
+                    <input th:if="${action == 'article_change'} or ${article.sectionId > 0}" th:field="*{sectionId}" id="section_id" name="section_id"
+                           type="hidden">
+
                     <small class="input_error" th:each="err : ${#fields.errors('sectionId')}" th:text="${err}"></small>
                     <a class="remove_link" th:if="${action == 'article_change'}" th:href="@{/admin/article_delete(id=${article.id})}"><img
                             title="удалить" class="remove_img" src="/images/delete.png"></a>
@@ -77,7 +79,6 @@
                     <textarea th:field="*{literature}" id="literature" name="literature" cols="60"
                               rows="5"></textarea>
 
-
                     <div class="form__group field">
                         <input class="form__field" th:field="*{keywords}" id="keywords" name="keywords" placeholder="Ключевые слова" type="text" >
                         <label class="form__label">Ключевые слова</label>
@@ -106,22 +107,31 @@
                     <textarea th:field="*{articleText}" id="articleText" name="articleText" cols="60"
                               rows="5"></textarea>
 
+<!--                    <div class="form__group field">-->
+<!--                        <select class="select-css" name="articleType" th:field="*{articleType}" >-->
+<!--                            <option th:if="${article.articleType != ''}"  th:value="${article.articleType}" th:text="${article.articleType}"></option>-->
+<!--                            <option  value="">Не выбран</option>-->
+<!--                            <option  value="RAR">RAR</option>-->
+<!--                            <option  value="EDI">EDI</option>-->
+<!--                            <option  value="BRV">BRV</option>-->
+<!--                            <option  value="CNF">CNF</option>-->
+<!--                            <option  value="SCO">SCO</option>-->
+<!--                            <option  value="REV">REV</option>-->
+<!--                            <option  value="ABS">ABS</option>-->
+<!--                            <option  value="REP">REP</option>-->
+<!--                            <option  value="COR">COR</option>-->
+<!--                            <option  value="PER">PER</option>-->
+<!--                            <option  value="MIS">MIS</option>-->
+<!--                            <option  value="UNK">UNK</option>-->
+<!--                        </select>-->
+
+<!--                        <label class="form__label">Тип статьи</label>-->
+<!--                    </div>-->
+
+
                     <div class="form__group field">
-                        <select class="select-css" name="articleType" th:field="*{articleType}" >
-                            <option th:if="${article.articleType != ''}"  th:value="${article.articleType}" th:text="${article.articleType}"></option>
-                            <option  value="">Не выбран</option>
-                            <option  value="RAR">RAR</option>
-                            <option  value="EDI">EDI</option>
-                            <option  value="BRV">BRV</option>
-                            <option  value="CNF">CNF</option>
-                            <option  value="SCO">SCO</option>
-                            <option  value="REV">REV</option>
-                            <option  value="ABS">ABS</option>
-                            <option  value="REP">REP</option>
-                            <option  value="COR">COR</option>
-                            <option  value="PER">PER</option>
-                            <option  value="MIS">MIS</option>
-                            <option  value="UNK">UNK</option>
+                        <select class="select-css" th:field="*{type}" >
+                            <option th:each="type : ${types}" th:text="${type.name}" th:value="${type.id}"></option>
                         </select>
 
                         <label class="form__label">Тип статьи</label>
@@ -176,7 +186,11 @@
 
                     <div class="form__group field">
                         <input type="file" name="file">
-                        <label class="form__label">Статья</label>
+                        <label class="form__label">Файл</label>
+                    </div>
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{price}" id="price" name="price" placeholder="Цена" type="text" >
+                        <label class="form__label">Цена</label>
                     </div>
                     <input type="hidden" th:field="*{articleFile}">
                     <p th:if="${article.articleFile != null} and ${#strings.length(article.articleFile) > 0}"><a target="_blank" th:href="@{'/uploads/articles/'+${article.articleFile}}">Текущая версия статьи</a></p>

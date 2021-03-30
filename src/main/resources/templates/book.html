@@ -1,40 +1,108 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head th:replace="~{header :: head}"></head>
 <body>
 <div th:replace="~{header :: header_menu}"></div>
 
 <div id="content">
     <div id="left_menu" th:fragment="menu">
-        <img class="journal_img" th:src="'/uploads/books/'+${currentBook.coverImg}">
+        <img class="journal_img" th:src="'/uploads/books/'+${currentBook.coverImg}"
+             th:if="${#strings.equals(page, '')}">
 
+        <div th:if="${currentBook.price > 0 and #strings.equals(page, '')}">
+            <div class="price_book" th:text="${currentBook.price}"></div>
+            <div class="cart_block">
+                <div class="cart_line">
+                    <img class="cart_img" th:src="@{/images/cart_white.png}">
+                    <input type="button" class="cart_button add_cart" th:classappend="(${cartActive})?'hidden':''"
+                           th:value="#{cart.add}">
+                    <input type="button" class="cart_button delete_cart" th:classappend="(${cartActive})?'':'hidden'"
+                           th:value="#{cart.delete}">
+                </div>
+            </div>
+        </div>
+        <script>
+            $(".add_cart").click(function () {
+                var cart = $(this);
+                if (cart.hasClass("add_cart")) {
+                    $.ajax({
+                        url: "/cart_add",
+                        type: "POST", //метод отправки
+                        data: {
+                            type: "book",
+                            product: [[${currentBook.id}]],
+                            count: "1"
+                        },
+                        success: function (response) {
+                            $(cart).hide();
+                            $(cart).next("input").show();
+                        },
+                        error: function (response) {
+                        }
+                    });
+                }
+            });
+            $(".delete_cart").click(function () {
+                var cart = $(this);
+                if (cart.hasClass("delete_cart")) {
+                    $.ajax({
+                        url: "/cart_delete",
+                        type: "POST", //метод отправки
+                        data: {
+                            type: "book",
+                            product: [[${currentBook.id}]]
+                        },
+                        success: function (response) {
+                            $(cart).hide();
+                            $(cart).prev("input").show();
+                        },
+                        error: function (response) {
+                        }
+                    });
+                }
+            });
+        </script>
         <div class="left_menu_title" th:text="#{leftMenu.books}">Книги</div>
         <ul th:each="booksec : ${booksecs}">
-            <li><a th:href="'/'+#{language}+'/booksection/'+${booksec.id}" th:text="${booksec.name}"></a></li>
+            <li><a th:href="'/'+#{language}+'/booksection/'+${booksec.id}"
+                   th:text="((#{language} == 'ru') or (${booksec.nameEng} == ''))?${booksec.name}:${booksec.nameEng}"></a>
+            </li>
         </ul>
 
     </div>
     <div id="main_block">
-        <div class="page_title" th:text="${currentBook.name}"></div>
+        <div class="page_title"
+             th:text="((#{language} == 'ru') or (${currentBook.nameEng} == ''))?${currentBook.name}:${currentBook.nameEng}"></div>
 
         <div th:if="${#strings.equals(page, '')}">
 
             <div class="cursive_title" th:if="${#strings.length(currentBook.author) > 0}"><span
-                    th:utext="${currentBook.author}"></span></div>
-            <div th:if="${#strings.length(currentBook.editionNumber) > 0}"><span th:utext="${currentBook.editionNumber}"></span></div>
+                    th:utext="((#{language} == 'ru') or (${currentBook.authorEng} == ''))?${currentBook.author}:${currentBook.authorEng}"></span>
+            </div>
+            <div th:if="${#strings.length(currentBook.editionNumber) > 0}"><span
+                    th:utext="((#{language} == 'ru') or (${currentBook.editionNumberEng} == null))?${currentBook.editionNumber}:${currentBook.editionNumberEng}"></span>
+            </div>
             <div class="jurnal_short_info">
-                <p th:if="${currentBook.year != null}"><span th:text="${currentBook.year}+' г.'"></span></p>
+                <p th:if="${currentBook.year != null and currentBook.year != ''}"><span
+                        th:text="${currentBook.year}+' '+#{book.year}"></span></p>
                 <p th:if="${#strings.length(currentBook.pages) > 0}"><span
-                                                            th:text="${currentBook.pages}+' стр.'"></span></p>
-                <p th:if="${#strings.length(currentBook.circulation) > 0}"><span>Тираж </span><span
-                                                            th:text="${currentBook.circulation} + ' экз.'"></span></p>
+                        th:text="${currentBook.pages}+' '+#{book.pages}"></span></p>
+                <p th:if="${#strings.length(currentBook.circulation) > 0}"><span
+                        th:text="#{book.circulation}+' '">Тираж </span><span
+                        th:text="((#{language} == 'ru') or (${currentBook.circulationEng} == ''))?${currentBook.circulation}:${currentBook.circulationEng}"></span>
+                </p>
 
-                <p th:if="${currentBook.type > 0}" th:text="${currentBook.bookType.name}"></p>
+                <p th:if="${currentBook.type > 0}"
+                   th:text="((#{language} == 'ru') or (${currentBook.bookType.nameEng} == ''))?${currentBook.bookType.name}:${currentBook.bookType.nameEng}"></p>
                 <!--            <p th:if="${book.price > 0}" th:text="'Цена: '+${book.price}"></p>-->
-                <p th:if="${#strings.length(currentBook.size.name) > 0}"><span class="field_name">Формат </span><span
+                <p th:if="${#strings.length(currentBook.size.name) > 0}"><span class="field_name"
+                                                                               th:text="#{book.format}+' '">Формат </span><span
                         th:text="${currentBook.size.name}"></span></p>
-                <p th:if="${#strings.length(currentBook.cover.name) > 0}"><span class="field_name">Обложка: </span><span
-                        th:text="${currentBook.cover.name}"></span></p>
+                <p th:if="${#strings.length(currentBook.cover.name) > 0}"><span class="field_name"
+                                                                                th:text="#{book.cover}+': '">Обложка: </span><span
+                        th:text="((#{language} == 'ru') or (${currentBook.cover.nameEng} == ''))?${currentBook.cover.name}:${currentBook.cover.nameEng}"></span>
+                </p>
                 <p th:if="${#strings.length(currentBook.isbn) > 0}"><span class="field_name">ISBN </span><span
                         th:text="${currentBook.isbn}"></span></p>
                 <p th:if="${#strings.length(currentBook.bbk) > 0}"><span class="field_name">ББК </span><span
@@ -42,25 +110,72 @@
                 <p th:if="${#strings.length(currentBook.udk) > 0}"><span class="field_name">УДК </span><span
                         th:text="${currentBook.udk}"></span></p>
             </div>
-            <p th:if="${#strings.length(currentBook.description) > 0}" class="field_name">Аннотация</p>
-            <div th:if="${#strings.length(currentBook.description) > 0}" th:utext="${currentBook.description}"></div>
-            <p th:if="${currentBook.content != null}" class="field_name">Оглавление</p>
-            <div th:if="${#strings.length(currentBook.content) > 0}" th:utext="${currentBook.content}"></div>
+            <p th:if="${currentBook.description != ''}" class="field_name" th:text="#{book.annot}">Аннотация</p>
+            <div th:if="${currentBook.description != ''}"
+                 th:utext="((#{language} == 'ru') or (${currentBook.descriptionEng} == ''))?${currentBook.description}:${currentBook.descriptionEng}"></div>
+            <p th:if="${currentBook.content != null}" class="field_name" th:text="#{book.content}">Оглавление</p>
+            <div th:if="${currentBook.content != null}"
+                 th:utext="((#{language} == 'ru') or (${currentBook.contentEng} == null))?${currentBook.content}:${currentBook.contentEng}"></div>
+            <a th:if="${currentBook.bookFile != ''}" class="download_button padding margin_top"
+               th:text="#{article.download}" th:href="@{'/uploads/books/files/'+${currentBook.bookFile}}"></a>
+
         </div>
         <div th:if="${#strings.equals(page, 'reader')}">
-            <div th:if="${#strings.length(reader) > 0}" th:utext="(#{language} == 'ru')?${reader.content}:${reader.contentEng}">
+            <div th:if="${#strings.length(reader) > 0}"
+                 th:utext="(#{language} == 'ru')?${reader.content}:${reader.contentEng}">
 
             </div>
         </div>
         <div th:if="${#strings.equals(page, 'partner')}">
-            <div th:if="${#strings.length(partner) > 0}" th:utext="(#{language} == 'ru')?${partner.content}:${partner.contentEng}">
+            <div th:if="${partner != ''}" th:utext="(#{language} == 'ru')?${partner.content}:${partner.contentEng}">
 
             </div>
         </div>
         <div th:if="${#strings.equals(page, 'author')}">
-            <div th:if="${#strings.length(author) > 0}" th:utext="(#{language} == 'ru')?${author.content}:${author.contentEng}">
+            <div th:if="${author != ''}" th:utext="(#{language} == 'ru')?${author.content}:${author.contentEng}">
 
             </div>
+        </div>
+
+        <div th:if="${#strings.equals(page, 'order')}"
+             th:utext="(#{language} == 'ru' or ${orderPage.contentEng == ''})?${orderPage.content}:${orderPage.contentEng}">
+
+        </div>
+        <div th:if="${#strings.equals(page, 'order')}">
+            <form class="user_form" th:object="${subscribe}" method="post" th:action="@{/subscribe}">
+                <label for="fio" th:text="#{form.fio}+' *'">Фамилия, Имя, Отчество (полностью)*</label>
+                <input th:field="*{fio}" type="text" id="fio" name="fio" class="required" required>
+
+                <label for="company" th:text="#{form.company}">Организация</label>
+                <input th:field="*{company}" type="text" name="company" id="company">
+
+                <label class="textarea_label" for="address" th:text="#{form.address}+' *'">Адрес доставки (страна,
+                    индекс, населенный пункт,
+                    область, республика, дом, квартира, офис)*</label>
+                <textarea th:field="*{address}" required class="required" id="address" name="address" cols="60"
+                          rows="2"></textarea>
+
+                <input th:field="*{product}" type="hidden" name="product" id="product" th:value="${currentBook.id}">
+                <input th:field="*{type}" type="hidden" name="type" id="type" value="book">
+                <input th:field="*{userId}" type="hidden" name="user" id="user">
+
+
+                <label for="count" th:text="#{form.count}">Количество комплектов</label>
+                <input th:field="*{count}" type="text" name="count" id="count">
+
+                <label for="phone" th:text="#{form.phone}+' *'">Контактный телефон *</label>
+                <input th:field="*{phone}" type="text" name="phone" id="phone" required class="required">
+
+                <label for="time" th:text="#{form.time}">Удобное время для звонка</label>
+                <input th:field="*{time}" type="text" name="time" id="time">
+
+                <label for="email">E-Mail *</label>
+                <input th:field="*{email}" required class="required" type="email" name="email" id="email">
+                <input class="subscribe_button" type="button" th:value="#{book.order}">
+                <div class="form_message">
+
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -5,7 +5,12 @@
 <div th:replace="~{header :: header_menu}"></div>
 
 <div id="content">
-    <div th:replace="~{left_menu :: menu}"></div>
+<!--    <div th:replace="~{left_menu :: menu}"></div>-->
+    <div id="left_menu">
+        <a th:href="@{'/'+#{language}+'/journals_info'}"><div th:classappend="(#{language} == 'ru')?'journals_info_ru':'journals_info_en'" id="journals_info_link"></div></a>
+        <a th:href="@{'/'+#{language}+'/books_info'}"><div th:classappend="(#{language} == 'ru')?'books_info_ru':'books_info_en'" id="books_info_link"></div></a>
+    </div>
+
     <div id="main_block">
         <div th:if="${not #lists.isEmpty(urgentlyNews)} or ${not #lists.isEmpty(shortNews)}">
             <div class="main_news" th:each="item: ${urgentlyNews}"
@@ -33,13 +38,13 @@
         <div class="card-group">
             <div class="card" th:each="book : ${booksnew}">
                 <a th:href="'/'+#{language}+'/books/'+${book.id}"><img th:src="'/uploads/books/' + ${book.coverImg}"
-                                                                       class="card-img-top" th:alt="${book.name}"></a>
+                                                                       class="card-img-top" th:alt="((#{language} == 'ru') or (${book.nameEng} == ''))?${book.name}:${book.nameEng}"></a>
                 <div class="card-body">
                     <a class="black_link" th:href="'/'+#{language}+'/books/'+${book.id}"><h4 class="card-title"
-                                                                                             th:text="${book.name}"></h4>
+                                                                                             th:text="((#{language} == 'ru') or (${book.nameEng} == ''))?${book.name}:${book.nameEng}"></h4>
                     </a>
-                    <p class="card-text" th:utext="${book.author}"></p>
-                    <div class="card-text book_description" th:utext="${book.description}"></div>
+                    <p class="card-text" th:utext="((#{language} == 'ru') or (${book.authorEng} == ''))?${book.author}:${book.authorEng}"></p>
+                    <div class="card-text book_description" th:utext="((#{language} == 'ru') or (${book.descriptionEng} == ''))?${book.description}:${book.descriptionEng}"></div>
                 </div>
             </div>
         </div>

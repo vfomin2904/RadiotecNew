@@ -13,20 +13,27 @@
         <div th:if="${action == 'number_change'} or ${action == 'number_list'} or ${action == 'number_add'}"
              class="relative">
             <div class="title" th:if="${action == 'number_add'}">Добавление номера</div>
-            <div class="page_title" th:if="${action == 'number_change'} or ${action == 'number_list'}">Изменение номера</div>
-            <form class="main_form"  method="post" th:if="${action == 'number_add'} or ${action == 'number_change'}"
-                  th:attr="action=${action == 'number_add'?'/admin/number_add':'/admin/number_change'}" th:object="${number}">
+            <div class="page_title" th:if="${action == 'number_change'} or ${action == 'number_list'}">Изменение
+                номера
+            </div>
+            <form class="main_form" method="post" th:if="${action == 'number_add'} or ${action == 'number_change'}"
+                  th:attr="action=${action == 'number_add'?'/admin/number_add':'/admin/number_change'}"
+                  th:object="${number}">
                 <a class="remove_link" th:if="${action == 'number_change'}"
                    th:href="@{/admin/number_delete(id=${number.id})}"><img title="удалить" class="remove_img"
                                                                            src="/images/delete.png"></a>
-                <input th:if="${action == 'number_change'}" th:field="*{id}" id="number_id" name="number_id" type="hidden">
-                <input th:if="${action == 'number_change'} or ${number.journalId > 0}" th:field="*{journalId}" id="journal_id"
+                <input th:if="${action == 'number_change'}" th:field="*{id}" id="number_id" name="number_id"
+                       type="hidden">
+                <input th:if="${action == 'number_change'} or ${number.journalId > 0}" th:field="*{journalId}"
+                       id="journal_id"
                        name="journal_id" type="hidden">
                 <div th:if="${number.journalId <= 0}">
                     <label th:if="${action == 'number_add'}" for="journal_name">Журнал</label>
-                    <select class="select-css" th:if="${action == 'number_add'}" name="journal_name" id="journal_name" th:field="*{journalId}">
+                    <select class="select-css" th:if="${action == 'number_add'}" name="journal_name" id="journal_name"
+                            th:field="*{journalId}">
                         <option th:selected="selected" readonly th:value="0">Журнал</option>
-                        <option th:each="journal : ${journals}" th:value="${journal.id}" th:text="${journal.name}"></option>
+                        <option th:each="journal : ${journals}" th:value="${journal.id}"
+                                th:text="${journal.name}"></option>
                     </select>
                     <small class="input_error" th:each="err : ${#fields.errors('journalId')}" th:text="${err}"></small>
                 </div>
@@ -40,29 +47,57 @@
                      th:if="${action == 'number_add'} or ${action == 'number_change'}">
 
                     <div class="form__group field">
-                        <input class="form__field" th:field="*{name}" placeholder="Название" id="name" name="name" type="text">
-                        <label class="form__label">Название</label>
+                        <input class="form__field" th:field="*{name}" placeholder="№ (например, 5-6)" id="name"
+                               name="name" type="text">
+                        <label class="form__label">№ (например, 5-6)</label>
                     </div>
                     <small class="input_error" th:each="err : ${#fields.errors('name')}" th:text="${err}"></small>
 
                     <div class="form__group field">
-                        <input class="form__field" th:field="*{descript}" placeholder="Описание" id="descript" name="descript"
+                        <input class="form__field" th:field="*{descript}" placeholder="Описание" id="descript"
+                               name="descript"
                                type="text">
                         <label class="form__label">Описание</label>
                     </div>
                     <small class="input_error" th:each="err : ${#fields.errors('descript')}" th:text="${err}"></small>
 
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{descriptEng}" placeholder="Описание (англ.)" id="descriptEng"
+                               name="descriptEng"
+                               type="text">
+                        <label class="form__label">Описание (англ.)</label>
+                    </div>
+                    <small class="input_error" th:each="err : ${#fields.errors('descriptEng')}" th:text="${err}"></small>
+
 
                     <div class="form__group field">
-                        <input class="form__field" th:field="*{year}" placeholder="Год" id="year" name="year" type="text">
+                        <input class="form__field" th:field="*{year}" placeholder="Год" id="year" name="year"
+                               type="text">
                         <label class="form__label">Год</label>
                     </div>
                     <small class="input_error" th:each="err : ${#fields.errors('year')}" th:text="${err}"></small>
 
                     <input class="custom-checkbox active" id="checkbox_active" type="checkbox" name="checkbox_active">
                     <label for="checkbox_active">Активировать</label>
-                    <input th:field="*{active}" class="checkbox_value" id="active" name="active" th:value="0" type="hidden">
+                    <input th:field="*{active}" class="checkbox_value" id="active" name="active" th:value="0"
+                           type="hidden">
 
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{price}" id="price" name="price" placeholder="Цена"
+                               type="text">
+                        <label class="form__label">Цена</label>
+                    </div>
+
+                    <input type="hidden" th:field="*{numberFile}">
+                    <p th:if="${number.numberFile != null} and ${#strings.length(number.numberFile) > 0}"><a
+                            target="_blank" th:href="@{'/uploads/numbers/'+${number.numberFile}}">Текущая версия
+                        номера</a></p>
+                    <small class="input_error" th:each="err : ${#fields.errors('numberFile')}" th:text="${err}"></small>
+
+                    <div class="form__group field">
+                        <input type="file" name="file">
+                        <label class="form__label">Файл</label>
+                    </div>
 
                     <input class="ajax_submit" th:if="${action == 'number_add'}" id="submit" value="Добавить номер"
                            type="button">
@@ -85,26 +120,6 @@
 
                 </div>
             </form>
-
-            <!--    <div th:if="${journals != null} and ${action == 'number_list'}" th:each="journal : ${journals}">-->
-            <!--        <div class="admin_card_item">-->
-            <!--            <a class="remove_link" th:href="@{/admin/journal_delete(id=${journal.id})}"><img title="удалить" class="remove_img" src="/images/delete.png"></a>-->
-            <!--            <div><a class="black_link" th:href="@{/admin/journal_change(id=${journal.id})}" th:text="${journal.name}"></a></div>-->
-            <!--            <div><img class="journal_img" th:if="${journal.cover != null and #strings.length(journal.cover) > 0}" th:src="'/covers/'+${journal.cover}">-->
-            <!--                <div class="jurnal_short_info">-->
-            <!--                    <div class="number_line" th:each="number : ${numberSortedList.get(journal)}">-->
-            <!--                        <span class="number_year" th:text="${number.key}+': '"></span>-->
-            <!--                        <div class="number_val" th:each="num : ${number.value}">-->
-            <!--                            <a th:href="@{/admin/number_change(id=${num.id})}"><span-->
-            <!--                                    th:text="${num.name}"></span></a>-->
-            <!--                        </div>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
-
-
-            <!--        </div>-->
-            <!--    </div>-->
         </div>
 
     </div>

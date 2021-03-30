@@ -14,7 +14,8 @@
             <div class="page_title">Добавление полей</div>
 
             <div th:each="item: ${items}" th:if="${item.id > 0}">
-                <span class="item_field_name" th:text="${item.name}"></span>
+
+                <span class="item_field_name" th:text="${item.name}"></span><span th:if="${type} != 'size' and ${type != 'publisher'}" th:text="' ('+${item.nameEng}+')'"></span>
                 <a class="remove_link" th:href="@{'/admin/'+${type}+'_delete'(id=${item.id})}"><img title="удалить"
                                                                                                     class="remove_line_img"
                                                                                                     src="/images/delete.png"></a>
@@ -24,11 +25,15 @@
                     <input class="form__field" th:field="*{name}" placeholder="Название" id="name" name="name" type="text">
                     <label class="form__label">Название</label>
                 </div>
-
-                <div class="form__group field" th:if="(${type} == 'publisher')">
-                    <input class="form__field" th:field="*{extname}" placeholder="Название полное" id="extname" name="extname" type="text">
-                    <label class="form__label">Название полное</label>
+                <div class="form__group field" th:if="${type != 'size'} and ${type != 'publisher'}">
+                    <input class="form__field" th:field="*{nameEng}" placeholder="Название (англ.)" id="namEng" name="nameEng" type="text">
+                    <label class="form__label">Название (англ.)</label>
                 </div>
+
+<!--                <div class="form__group field" th:if="(${type} == 'publisher')">-->
+<!--                    <input class="form__field" th:field="*{extname}" placeholder="Название полное" id="extname" name="extname" type="text">-->
+<!--                    <label class="form__label">Название полное</label>-->
+<!--                </div>-->
 
                 <input id="submit" value="Сохранить" type="submit">
             </form>

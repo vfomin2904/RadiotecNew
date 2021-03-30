@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="book_type")
-public class BookType {
+@Table(name="articles_type")
+public class ArticleType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,10 +19,10 @@ public class BookType {
     @Column(name = "name_eng")
     private String nameEng;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "type")
-    private Set<Books> books = new HashSet<>();
+    @OneToMany(mappedBy = "articleType")
+    private Set<Article> articles = new HashSet<>();
 
-    public BookType() {
+    public ArticleType() {
     }
 
     public int getId() {
@@ -41,14 +41,6 @@ public class BookType {
         this.name = name;
     }
 
-    public Set<Books> getBooks() {
-        return books;
-    }
-
-    public void setBooks(Set<Books> books) {
-        this.books = books;
-    }
-
     public String getNameEng() {
         return nameEng;
     }
@@ -56,4 +48,13 @@ public class BookType {
     public void setNameEng(String nameEng) {
         this.nameEng = nameEng;
     }
+
+    public Set<Article> getArticles() {
+        return articles;
+    }
+
+    public void setArticles(Set<Article> articles) {
+        this.articles = articles;
+    }
+
 }

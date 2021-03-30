@@ -5,11 +5,12 @@
 <div th:replace="~{header :: header_menu}"></div>
 
 <div id="content">
-<!--    <div th:replace="~{left_menu :: menu}"></div>-->
-    <div id="main_block" style="width:auto;">
-        <div id="custom_content" th:utext="(#{language} == 'ru' or ${page.contentEng == ''})?${page.content}:${page.contentEng}">
+    <div id="left_menu">
+        <div th:replace="~{left_menu :: books_menu}">
 
         </div>
+    </div>    <div id="main_block" th:utext="(#{language} == 'ru' or ${page.contentEng} == '')?${page.content}:${page.contentEng}">
+
     </div>
 </div>
 </body>

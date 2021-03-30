@@ -30,6 +30,8 @@
                     <input th:if="${action == 'booksec_change'}" th:field="*{id}" id="booksec_id" name="booksec_id"
                            type="hidden">
 
+                    <div class="page_title" th:if="${action == 'booksec_change'}"><a th:href="@{/admin/book_sort(id=${bookSec.id})}">Сортировка книг</a></div>
+
                     <div class="form__group field">
                         <input class="form__field" th:field="*{name}" id="name" name="name" placeholder="Название" type="text" >
                         <label class="form__label">Название</label>
@@ -44,6 +46,23 @@
                     <div class="form__group field">
                         <input class="form__field" th:field="*{keywords}" id="keywords" name="keywords" placeholder="Ключевые слова" type="text" >
                         <label class="form__label">Ключевые слова</label>
+                    </div>
+                    <p class="admin_fields_section">Английская версия</p>
+
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{nameEng}" id="nameEng" name="nameEng" placeholder="Название (англ.)" type="text" >
+                        <label class="form__label">Название (англ.)</label>
+                    </div>
+                    <small class="input_error" th:each="err : ${#fields.errors('nameEng')}" th:text="${err}"></small>
+
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{redaktorEng}" id="redaktorEng" name="redaktorEng" placeholder="Редактор серии (англ.)" type="text" >
+                        <label class="form__label">Редактор серии</label>
+                    </div>
+
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{keywordsEng}" id="keywordsEng" name="keywordsEng" placeholder="Ключевые слова (англ.)" type="text" >
+                        <label class="form__label">Ключевые слова (англ.)</label>
                     </div>
 
                     <input class="ajax_submit"  id="submit" th:if="${action == 'booksec_add'}" value="Добавить книжный раздел" type="button">
@@ -65,9 +84,6 @@
                 <div th:if="${action == 'booksec_list'}" class="booksec_main_params main_params">
 
                 </div>
-                <!--        <div id="booksec_options" class="change_options">-->
-
-                <!--        </div>-->
 
             </form>
         </div>
