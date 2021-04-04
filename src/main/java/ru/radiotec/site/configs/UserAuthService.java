@@ -28,4 +28,6 @@ public class UserAuthService implements UserDetailsService {
                 Collections.singleton(new SimpleGrantedAuthority(user.getGroup().getName()))
         )).orElseThrow(()->new UsernameNotFoundException("Пользователь не найден"));
     }
+
+
 }

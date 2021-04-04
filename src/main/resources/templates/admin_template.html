@@ -21,79 +21,78 @@
 </head>
 <body>
 <div id="admin">
-    <div id="left_menu_column">
+    <div th:fragment="admin_menu" id="left_menu_column">
         <ul class="accordion-menu">
             <li>
-                <div class="dropdownlink"><i class="fa fa-road" aria-hidden="true"></i> Журнал
+                <div class="dropdownlink"><i class="fa fa-road" aria-hidden="true"></i> Журналы
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                 </div>
                 <ul class="submenuItems">
-                    <li><a href="/admin/journal_add">Добавить</a></li>
+                    <li sec:authorize="hasAuthority('ADMIN')"><a href="/admin/journal_add">Добавить</a></li>
                     <li><a href="/admin/journal_change">Изменить</a></li>
                 </ul>
             </li>
             <li>
-                <div class="dropdownlink"><i class="fa fa-paper-plane" aria-hidden="true"></i> Номер
+                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Книжные разделы
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                 </div>
                 <ul class="submenuItems">
-                    <li><a href="/admin/number_add">Добавить</a></li>
-                    <li><a href="/admin/number_change">Изменить</a></li>
-                </ul>
-            </li>
-            <li>
-                <div class="dropdownlink"><i class="fa fa-quote-left" aria-hidden="true"></i> Раздел
-                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
-                </div>
-                <ul class="submenuItems">
-                    <li><a href="/admin/section_add">Добавить</a></li>
-                    <li><a href="/admin/section_change">Изменить</a></li>
-                </ul>
-            </li>
-            <li>
-                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Статья
-                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
-                </div>
-                <ul class="submenuItems">
-                    <li><a href="/admin/article_add">Добавить</a></li>
-                    <li><a href="/admin/article_change">Изменить</a></li>
-                </ul>
-            </li>
-            <li>
-                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Книжный раздел
-                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
-                </div>
-                <ul class="submenuItems">
-                    <li><a href="/admin/booksec_add">Добавить</a></li>
+                    <li sec:authorize="hasAuthority('ADMIN')"><a href="/admin/booksec_add">Добавить</a></li>
                     <li><a href="/admin/booksec_change">Изменить</a></li>
                 </ul>
             </li>
             <li>
-                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Книга
+                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Книги
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                 </div>
                 <ul class="submenuItems">
-                    <li><a href="/admin/book_add">Добавить</a></li>
+                    <li sec:authorize="hasAuthority('ADMIN')"><a href="/admin/book_add">Добавить</a></li>
                     <li><a href="/admin/book_change">Изменить</a></li>
+                    <li><a href="/admin/book_sort">Сортировка новых книг</a></li>
                 </ul>
             </li>
-            <li>
-                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Новости
-                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
-                </div>
-                <ul class="submenuItems">
-                    <li><a href="/admin/news_add">Добавить</a></li>
-                    <li><a href="/admin/news_change">Изменить</a></li>
-                </ul>
-            </li>
-            <li>
+            <li sec:authorize="hasAuthority('ADMIN')">
                 <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Меню
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                 </div>
                 <ul class="submenuItems">
-                    <li><a th:href="@{/admin/menu_change(id=1)}">Для авторов</a></li>
-                    <li><a th:href="@{/admin/menu_change(id=2)}">Об издательстве</a></li>
+                    <li><a th:href="@{/admin/menu_change(type=main)}">Главное меню</a></li>
+                    <li><a th:href="@{/admin/menu_change(type=book)}">Книги</a></li>
+                    <li><a th:href="@{/admin/menu_change(type=journal)}">Журналы</a></li>
                 </ul>
+            </li>
+            <li sec:authorize="hasAuthority('ADMIN')">
+                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Сообщения
+                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                </div>
+                <ul class="submenuItems">
+                    <li><a href="/admin/news_change?type=1">Срочное</a></li>
+                    <li><a href="/admin/news_change?type=2">Короткое</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Разное
+                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                </div>
+                <ul class="submenuItems">
+                    <li sec:authorize="hasAuthority('ADMIN')"><a href="/admin/cart">Корзина</a></li>
+                    <li sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/admin/subscribes(type=book_section)}">Заказ книг</a></li>
+                    <li sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/admin/subscribes(type=journal)}">Подписка</a></li>
+                    <li sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/admin/menu_change(id=6)}">Надпись на фоне</a></li>
+                    <li><a href="/admin/other?type=fields">Настройка полей</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> <a href="/ru/">На главную страницу сайта</a>
+                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                </div>
+            </li>
+            <li>
+                <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> <a href="/logout">Выход из админки</a>
+                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                </div>
             </li>
         </ul>
         <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
@@ -101,14 +100,7 @@
         <script src="/admin_menu/js/index.js"></script>
     </div>
     <div id="admin_content">
-            <div th:replace="~{admin_journal :: journal_options}"></div>
-            <div th:replace="~{admin_number :: number_options}"></div>
-            <div th:replace="~{admin_section :: section_options}"></div>
-            <div th:replace="~{admin_article :: article_options}"></div>
-            <div th:replace="~{admin_booksec :: booksec_options}"></div>
-            <div th:replace="~{admin_book :: book_options}"></div>
-            <div th:replace="~{admin_news :: news_options}"></div>
-            <div th:replace="~{admin_menu :: menu_options}"></div>
+
     </div>
 </div>
 </body>

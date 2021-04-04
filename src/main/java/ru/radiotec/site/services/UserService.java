@@ -3,12 +3,9 @@ package ru.radiotec.site.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.radiotec.site.entity.Number;
 import ru.radiotec.site.entity.User;
-import ru.radiotec.site.repository.NumberRepository;
 import ru.radiotec.site.repository.UserRepository;
 
-import java.util.List;
 
 @Service
 public class UserService {
@@ -27,5 +24,9 @@ public class UserService {
         user.setLogin(userRepo.getLogin());
         user.setPassword(passwordEncoder.encode(userRepo.getPassword()));
         userRepository.save(user);
+    }
+
+    public User getUserByLogin(String login){
+        return userRepository.findByLogin(login).get();
     }
 }

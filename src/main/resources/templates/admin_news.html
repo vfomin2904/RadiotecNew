@@ -1,78 +1,126 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="~{admin_template::head}">
+
+</head>
 <body>
-<div th:if="${action == 'news_change'}  or ${action == 'news_add'} or ${action == 'news_list'}" class="relative"
-     th:fragment="news_options">
-    <div class="title" th:if="${action == 'news_add'}">Добавление новости</div>
-    <div class="page_title" th:if="${action == 'news_list'} or ${action == 'news_change'}">Изменение новости</div>
-    <form class="main_form" method="post" th:attr="action=${action == 'news_add'?'/admin/news_add':'/admin/news_change'}"
-          th:object="${news}">
+<div id="admin">
+    <div th:replace="~{admin_template :: admin_menu}">
 
-        <div class="news_main_params main_params" th:if="${action == 'news_add'} or ${action == 'news_change'}">
-            <a th:if="${action == 'news_change'}" th:href="@{/admin/news_delete(id=${news.id})}"><img
-                    title="удалить" class="remove_img" src="/images/delete.png"></a>
+    </div>
+    <div id="admin_content">
+        <nav th:if="${action == 'news_add'} and ${news.type == 0}"  class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><a href="/admin/menu_change?type=main">Изменение главного меню</a><span class="path_arrow"> > </span><span>Добавление новости</span></nav>
+        <nav th:if="(${action == 'news_change'} or ${action == 'news_list'}) and ${type == 0}"  class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><a href="/admin/menu_change?type=main">Изменение главного меню</a><span class="path_arrow"> > </span><span>Изменение новостей</span></nav>
+        <nav th:if="(${action == 'news_change'} or ${action == 'news_list'}) and ${type == 1}"  class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><span>Изменение срочных сообщений</span></nav>
+        <nav th:if="${action == 'news_add'} and ${type == 1}"  class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><span>Добавление срочного сообщения</span></nav>
 
-
-            <input th:if="${action == 'news_change'}" th:field="*{id}" id="news_id" name="news_id"
-                   type="hidden">
+        <nav th:if="(${action == 'news_change'} or ${action == 'news_list'}) and ${type == 2}"  class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><span>Изменение коротких сообщений</span></nav>
+        <nav th:if="${action == 'news_add'} and ${type == 2}"  class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><span>Добавление короткого сообщения</span></nav>
 
 
-            <div class="form__group field">
-                <input class="form__field" th:field="*{name}" id="name" name="name" placeholder="Название" type="text" >
-                <label class="form__label">Название</label>
-            </div>
-            <small class="input_error" th:each="err : ${#fields.errors('name')}" th:text="${err}"></small>
+        <div th:if="${action == 'news_change'}  or ${action == 'news_add'} or ${action == 'news_list'}" class="relative">
+            <div class="title" th:if="${action == 'news_add'} and ${news.type == 0}">Добавление новости</div>
+            <div class="title" th:if="${action == 'news_add'} and ${news.type == 1}">Добавление срочного сообщения</div>
+            <div class="title" th:if="${action == 'news_add'} and ${news.type == 2}">Добавление короткого сообщения</div>
+            <div class="page_title" th:if="(${action == 'news_change'}) and ${news.type == 0}">Изменение новости</div>
+            <div class="page_title" th:if="(${action == 'news_change'}) and ${news.type == 1}">Изменение срочного сообщения</div>
+            <div class="page_title" th:if="(${action == 'news_change'}) and ${news.type == 2}">Изменение короткого сообщения</div>
+            <div class="page_title" th:if="(${action == 'news_list'}) and ${type == 0}">Список новостей</div>
+            <div class="page_title" th:if="(${action == 'news_list'}) and ${type == 1}">Список срочных сообщений</div>
+            <div class="page_title" th:if="(${action == 'news_list'}) and ${type == 2}">Список коротких сообщений</div>
+            <div class="page_title" th:if="(${action == 'news_list'}) and ${type == 1}"><a href="/admin/news_add?type=1">Добавить срочное сообщение</a></div>
+            <div class="page_title" th:if="(${action == 'news_list'}) and ${type== 2}"><a href="/admin/news_add?type=2">Добавить короткое сообщение</a></div>
+            <form class="main_form" method="post" th:attr="action=${action == 'news_add'?'/admin/news_add':'/admin/news_change'}"
+                  th:object="${news}">
+
+                <div class="news_main_params main_params" th:if="${action == 'news_add'} or ${action == 'news_change'}">
+                    <a class="remove_link" th:if="${action == 'news_change'}" th:href="@{/admin/news_delete(id=${news.id})}"><img
+                            title="удалить" class="remove_img" src="/images/delete.png"></a>
 
 
-            <label class="textarea_label" for="longNews">Новость</label>
-            <textarea th:field="*{longNews}" id="longNews" name="content" cols="60"
-                      rows="5"></textarea>
-            <small class="input_error" th:each="err : ${#fields.errors('longNews')}" th:text="${err}"></small>
+                    <input th:if="${action == 'news_change'}" th:field="*{id}" id="news_id" name="news_id"
+                           type="hidden">
 
 
-            <div class="form__group field">
-                <input class="form__field" th:field="*{date}" id="date" name="date" placeholder="Дата" type="text" >
-                <label class="form__label">Дата</label>
-            </div>
-            <small class="input_error" th:each="err : ${#fields.errors('date')}" th:text="${err}"></small>
+                    <div class="form__group field" th:if="${news.type == 0}">
+                        <input class="form__field" th:field="*{name}" id="name" name="name" placeholder="Название" type="text" >
+                        <label class="form__label">Название</label>
+                    </div>
+                    <small class="input_error" th:each="err : ${#fields.errors('name')}" th:text="${err}"></small>
 
 
-            <input class="ajax_submit"  id="submit" th:if="${action == 'news_add'}" value="Добавить новость" type="button">
-            <input class="ajax_submit"  id="submit" th:if="${action == 'news_change'}" value="Сохранить новость" type="button">
-            <div class="form_message"></div>
-            <script>
+                    <label class="textarea_label" for="longNews" th:if="${news.type == 0}">Новость</label>
+                    <label class="textarea_label" for="longNews" th:if="${news.type != 0}">Сообщение</label>
+                    <textarea th:field="*{longNews}" id="longNews" name="content" cols="60"
+                              rows="5"></textarea>
+                    <small class="input_error" th:each="err : ${#fields.errors('longNews')}" th:text="${err}"></small>
 
-                var textarea = ["longNews"];
 
-                for(var i = 0; i < textarea.length;i++){
-                    CKEDITOR.replace(textarea[i]);
-                }
+                    <p class="admin_fields_section">Английская версия</p>
 
-                $(".ajax_submit").click(
-                    function(){
+
+                    <div class="form__group field" th:if="${news.type == 0}">
+                        <input class="form__field" th:field="*{nameEng}" id="nameEng" name="nameEng" placeholder="Название (англ)" type="text" >
+                        <label class="form__label">Название (англ)</label>
+                    </div>
+                    <small class="input_error" th:each="err : ${#fields.errors('nameEng')}" th:text="${err}"></small>
+
+
+                    <label class="textarea_label" for="longNewsEng" th:if="${news.type == 0}">Новость (англ.)</label>
+                    <label class="textarea_label" for="longNews" th:if="${news.type != 0}">Сообщение (англ.)</label>
+                    <textarea th:field="*{longNewsEng}" id="longNewsEng" name="longNewsEng" cols="60"
+                              rows="5"></textarea>
+                    <small class="input_error" th:each="err : ${#fields.errors('longNewsEng')}" th:text="${err}"></small>
+
+
+                    <div class="form__group field" th:if="${news.type == 0}">
+                        <input class="form__field" th:field="*{date}" id="date" name="date" placeholder="Дата" type="text" >
+                        <label class="form__label">Дата</label>
+                    </div>
+                    <small class="input_error" th:each="err : ${#fields.errors('date')}" th:text="${err}"></small>
+
+
+                    <input th:field="*{type}"  id="type" name="type" type="hidden">
+
+                    <input  id="submit" th:if="${action == 'news_add'}" value="Добавить" type="submit">
+                    <input id="submit" th:if="${action == 'news_change'}" value="Сохранить" type="submit">
+                    <div class="form_message"></div>
+                    <script>
+
+                        var textarea = ["longNews", "longNewsEng"];
+
                         for(var i = 0; i < textarea.length;i++){
-                            var value = CKEDITOR.instances[textarea[i]].getData();
-                            $("#"+textarea[i]).val(value);
+                            CKEDITOR.replace(textarea[i]);
                         }
-                        var url = $(".main_form").attr("action");
-                        sendAjaxForm('main_params', 'main_form', url);
-                        return false;
-                    }
-                );
-            </script>
-            <div th:if="${action == 'news_list'}" class="news_main_params main_params" id="news_options">
 
+                        $(".ajax_submit").click(
+                            function(){
+                                for(var i = 0; i < textarea.length;i++){
+                                    var value = CKEDITOR.instances[textarea[i]].getData();
+                                    $("#"+textarea[i]).val(value);
+                                }
+                                var url = $(".main_form").attr("action");
+                                sendAjaxForm('main_params', 'main_form', url);
+                                return false;
+                            }
+                        );
+                        init_checkbox();
+                    </script>
+                    <div th:if="${action == 'news_list'}" class="news_main_params main_params" id="news_options">
+
+                    </div>
+                </div>
+            </form>
+            <!--    <div class="page_title" th:if="${action == 'news_list'}">Изменение новости</div>-->
+            <div id="news_list" th:if="${action == 'news_list'} and not ${#lists.isEmpty(news_list)}" class="change_options">
+                <div class="admin_card_item" th:each="news : ${news_list}">
+                    <a class="remove_link" th:href="@{/admin/news_delete(id=${news.id})}"><img title="удалить" class="remove_card_img" src="/images/delete.png"></a>
+                    <div><a class="black_link" th:href="@{/admin/news_change(id=${news.id}, type=${type})}" th:utext="(${type == 0})?${news.name}:${news.longNews}"></a></div>
+                    <div th:if="${type == 0}" th:utext="${news.longNews}"></div>
+                    <div th:if="${type == 0}" th:text="${news.date}"></div>
+                </div>
             </div>
-        </div>
-    </form>
-    <div class="page_title" th:if="${action == 'news_list'}">Изменение новости</div>
-    <div id="news_list" th:if="${action == 'news_list'} and not ${#lists.isEmpty(news_list)}" class="change_options">
-        <div class="admin_card_item" th:each="news : ${news_list}">
-            <a th:href="@{/admin/news_delete(id=${news.id})}"><img title="удалить" class="remove_card_img" src="/images/delete.png"></a>
-            <div><a class="black_link" th:href="@{/admin/news_change(id=${news.id}" th:text="${news.name}"></a></div>
-            <div th:utext="${news.longNews}"></div>
-            <div th:text="${news.date}"></div>
         </div>
     </div>
 </div>

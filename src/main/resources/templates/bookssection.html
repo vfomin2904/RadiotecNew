@@ -5,28 +5,40 @@
 <div th:replace="~{header :: header_menu}"></div>
 
 <div id="content">
-    <div th:replace="~{left_menu :: menu}"></div>
-    <div id="main_block">
-        <h3 class="page_title" th:text="${section.name}"></h3>
-        <div class="card-group">
-
-
-            <div class="card" th:each="i : ${#numbers.sequence(start, end, 1)}">
-                <a th:href="'/'+#{language}+'/books/'+${section.books[i].id}"><img th:src="'/uploads/books/' + ${section.books[i].coverImg}"
-                                                         class="card-img-top" th:alt="${section.books[i].name}"></a>
-                <div class="card-body">
-                    <a class="black_link" th:href="'/'+#{language}+'/books/'+${section.books[i].id}"><h4 class="card-title"
-                                                                               th:text="${section.books[i].name}"></h4></a>
-                    <p class="card-text" th:utext="${section.books[i].author}"></p>
-                </div>
-            </div>
-            <div class="paginator">
-                <span th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder)}" th:each="page : ${#numbers.sequence(1, totalPages, 1)}">
-                    <a th:href="${urlBuilder.fromCurrentRequest().replaceQueryParam('page', page).toUriString()}" th:text="${page}"></a>
-                </span>
-            </div>
+    <div id="left_menu">
+        <div th:replace="~{left_menu :: books_menu}">
 
         </div>
+    </div>
+    <div id="main_block">
+        <nav class="current_path"><a th:href="@{'/'+#{language}+'/'}" th:text="#{header.main}">Главная</a> <span class="path_arrow"> > </span><a th:href="@{'/'+#{language}+'/books_info'}" th:text="#{book.books}">Книги</a><span class="path_arrow"> > </span><span th:text="(#{language} == 'ru' or ${currentBookSection.nameEng} == '')?${currentBookSection.name}:${currentBookSection.nameEng}"></span></nav>
+        <h3 class="page_title"
+            th:text="((#{language} == 'ru') or (${currentBookSection.nameEng} == ''))?${currentBookSection.name}:${currentBookSection.nameEng}"></h3>
+            <div class="card-group">
+                <div class="card" th:each="i : ${#numbers.sequence(start, end, 1)}">
+                    <a th:href="'/'+#{language}+'/books/'+${currentBookSection.books[i].id}"><img
+                            th:src="'/uploads/books/' + ${currentBookSection.books[i].coverImg}"
+                            class="card-img-top"
+                            th:alt="((#{language} == 'ru') or (${currentBookSection.books[i].nameEng} == ''))?${currentBookSection.books[i].name}:${currentBookSection.books[i].nameEng}"></a>
+                    <div class="card-body">
+                        <a class="black_link" th:href="'/'+#{language}+'/books/'+${currentBookSection.books[i].id}"><h4
+                                class="card-title"
+                                th:text="((#{language} == 'ru') or (${currentBookSection.books[i].nameEng} == ''))?${currentBookSection.books[i].name}:${currentBookSection.books[i].nameEng}"></h4>
+                        </a>
+                        <p class="card-text"
+                           th:utext="((#{language} == 'ru') or (${currentBookSection.books[i].authorEng} == ''))?${currentBookSection.books[i].author}:${currentBookSection.books[i].authorEng}"></p>
+                    </div>
+                </div>
+                <div class="paginator">
+                <span th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder)}"
+                      th:each="page : ${#numbers.sequence(1, totalPages, 1)}">
+                    <a th:href="${urlBuilder.fromCurrentRequest().replaceQueryParam('page', page).toUriString()}"
+                       th:text="${page}"></a>
+                </span>
+                </div>
+
+            </div>
+
     </div>
 </div>
 </body>

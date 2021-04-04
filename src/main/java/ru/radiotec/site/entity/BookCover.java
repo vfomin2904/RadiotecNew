@@ -16,7 +16,10 @@ public class BookCover {
     @Column(name="name")
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "publish")
+    @Column(name="name_eng")
+    private String nameEng;
+
+    @OneToMany(mappedBy = "cover")
     private Set<Books> books = new HashSet<>();
 
     public BookCover(){
@@ -45,5 +48,13 @@ public class BookCover {
 
     public void setBooks(Set<Books> books) {
         this.books = books;
+    }
+
+    public String getNameEng() {
+        return nameEng;
+    }
+
+    public void setNameEng(String nameEng) {
+        this.nameEng = nameEng;
     }
 }

@@ -1,5 +1,8 @@
 package ru.radiotec.site.entity;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -8,10 +11,9 @@ import java.util.Set;
 
 @Entity
 @Table(name="razdel_numbers")
-public class Section {
+public class Section implements Comparable<Section>{
 
     @Id
-
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="razd_id")
     private int id;
@@ -28,7 +30,7 @@ public class Section {
     private int numberId;
 
     @Column(name="post")
-    private int post;
+    private int active;
 
     @Column(name="r_sort")
     private int sort;
@@ -46,6 +48,9 @@ public class Section {
     }
     public void setArticles(Set<Article> articles) {
         this.articles = articles;
+    }
+
+    public Section() {
     }
 
     public void addArticle(Article article) {
@@ -85,12 +90,12 @@ public class Section {
         this.name = name;
     }
 
-    public int getPost() {
-        return post;
+    public int getActive() {
+        return active;
     }
 
-    public void setPost(int post) {
-        this.post = post;
+    public void setActive(int active) {
+        this.active = active;
     }
 
     public int getSort() {
@@ -107,5 +112,10 @@ public class Section {
 
     public void setNameEng(String nameEng) {
         this.nameEng = nameEng;
+    }
+
+    @Override
+    public int compareTo(Section o) {
+        return this.getSort() - o.getSort();
     }
 }

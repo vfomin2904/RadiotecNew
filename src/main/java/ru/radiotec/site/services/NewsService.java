@@ -30,4 +30,8 @@ public class NewsService {
     public void delete(News news) {
         newsRepository.delete(news);
     }
+
+    public List<News> getNewsByType(int type) {
+        return newsRepository.findNewsByType(type);
+    }
 }

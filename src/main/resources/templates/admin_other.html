@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="~{admin_template::head}">
+
+</head>
+<body>
+<div id="admin">
+    <div th:replace="~{admin_template :: admin_menu}">
+
+    </div>
+    <div id="admin_content">
+        <nav class="current_path"><a href="/admin/">Главная</a><span class="path_arrow"> > </span><span>Настройка полей</span></nav>
+        <div th:if="${#strings.equals(type, 'fields')}">
+            <div class="title">Настройка полей</div>
+            <ul class="admin_list">
+                <li><a th:href="@{/admin/field_change(id=1)}">Размер обложки</a></li>
+                <li><a th:href="@{/admin/field_change(id=2)}">Тип обложки</a></li>
+                <li><a th:href="@{/admin/field_change(id=3)}">Тип издания</a></li>
+                <li><a th:href="@{/admin/field_change(id=4)}">Издательство</a></li>
+                <li><a th:href="@{/admin/field_change(id=5)}">Тип статьи</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

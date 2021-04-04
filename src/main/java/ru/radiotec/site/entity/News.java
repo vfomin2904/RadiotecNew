@@ -12,17 +12,24 @@ public class News {
     @Column(name="id_news")
     private int id;
 
-    @NotEmpty
     @Column(name="date_news")
     private String date;
 
-    @NotEmpty
     @Column(name="shortnews")
     private String name;
 
     @NotEmpty
     @Column(name="longnews")
     private String longNews;
+
+    @Column(name="shortnews_eng")
+    private String nameEng;
+
+    @Column(name="longnews_eng")
+    private String longNewsEng;
+
+    @Column(name="type")
+    private int type;
 
     public int getId() {
         return id;
@@ -54,5 +61,29 @@ public class News {
 
     public void setLongNews(String longNews) {
         this.longNews = longNews;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getNameEng() {
+        return nameEng;
+    }
+
+    public void setNameEng(String nameEng) {
+        this.nameEng = nameEng;
+    }
+
+    public String getLongNewsEng() {
+        return longNewsEng;
+    }
+
+    public void setLongNewsEng(String longNewsEng) {
+        this.longNewsEng = longNewsEng;
     }
 }

@@ -1,22 +1,123 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head th:replace="~{header :: head}"></head>
 <body>
 <div th:replace="~{header :: header_menu}"></div>
 
 <div id="content">
-    <div th:replace="~{left_menu :: menu}"></div>
-    <div id="main_block">
-        <div class="page_title" th:text="${book.name}"></div>
-        <div class="cursive_title" th:if="${book. author != ''}"><span th:utext="${book.author}"></span></div>
-        <img class="journal_img" th:src="'/uploads/books/'+${book.coverImg}">
-        <div class="jurnal_short_info">
-            <p th:if="${book.description != ''}" th:utext="${book.description}"></p>
-            <p th:if="${book.pages != ''}" th:text="'Количество страниц: '+${book.pages}"></p>
-            <p th:if="${book.price > 0}" th:text="'Цена: '+${book.price}"></p>
-            <p th:if="${book.isbn != ''}" th:text="'ISBN: '+${book.isbn}"></p>
+    <div id="left_menu" th:fragment="menu">
+        <img class="journal_img" th:src="'/uploads/books/'+${currentBook.coverImg}">
+
+        <div>
+            <div class="price_book" th:if="${currentBook.price > 0}" th:text="${currentBook.price} +' '+#{price.rub}"></div>
+            <div class="cart_block" th:if="${currentBook.price > 0}">
+                <div class="cart_line">
+                    <img class="cart_img" th:src="@{/images/cart_white.png}">
+                    <input type="button" class="cart_button add_cart" th:classappend="(${cartActive})?'hidden':''"
+                           th:value="#{cart.add}">
+                    <input type="button" class="cart_button delete_cart" th:classappend="(${cartActive})?'':'hidden'"
+                           th:value="#{cart.delete}">
+                </div>
+            </div>
         </div>
-        <p th:if="${book.content != ''}" th:utext="${book.content}"></p>
+        <script>
+            $(".add_cart").click(function () {
+                var cart = $(this);
+                if (cart.hasClass("add_cart")) {
+                    $.ajax({
+                        url: "/cart_add",
+                        type: "POST", //метод отправки
+                        data: {
+                            type: "book",
+                            product: [[${currentBook.id}]],
+                            count: "1"
+                        },
+                        success: function (response) {
+                            $(cart).hide();
+                            $(cart).next("input").show();
+                        },
+                        error: function (response) {
+                        }
+                    });
+                }
+            });
+            $(".delete_cart").click(function () {
+                var cart = $(this);
+                if (cart.hasClass("delete_cart")) {
+                    $.ajax({
+                        url: "/cart_delete",
+                        type: "POST", //метод отправки
+                        data: {
+                            type: "book",
+                            product: [[${currentBook.id}]]
+                        },
+                        success: function (response) {
+                            $(cart).hide();
+                            $(cart).prev("input").show();
+                        },
+                        error: function (response) {
+                        }
+                    });
+                }
+            });
+        </script>
+        <div class="left_menu_title" th:text="#{leftMenu.books}">Книги</div>
+        <ul th:each="booksec : ${booksecs}">
+            <li><a th:href="'/'+#{language}+'/booksection/'+${booksec.id}"
+                   th:text="((#{language} == 'ru') or (${booksec.nameEng} == ''))?${booksec.name}:${booksec.nameEng}"></a>
+            </li>
+        </ul>
+
+    </div>
+    <div id="main_block">
+        <nav class="current_path"><a th:href="@{'/'+#{language}+'/'}" th:text="#{header.main}">Главная</a> <span class="path_arrow"> > </span><a th:href="@{'/'+#{language}+'/books_info'}" th:text="#{book.books}">Книги</a><span class="path_arrow"> > </span><a th:href="@{'/'+#{language}+'/booksection/'+${currentBook.bookSec.id}}" th:text="(#{language} == 'ru' or ${currentBook.bookSec.nameEng} == '')?${currentBook.bookSec.name}:${currentBook.bookSec.nameEng}"></a><span class="path_arrow"> > </span><span th:text="(#{language} == 'ru' or ${currentBook.nameEng} == '')?${currentBook.name}:${currentBook.nameEng}"></span></nav>
+        <div class="page_title"
+             th:text="((#{language} == 'ru') or (${currentBook.nameEng} == ''))?${currentBook.name}:${currentBook.nameEng}"></div>
+
+
+            <div class="cursive_title" th:if="${#strings.length(currentBook.author) > 0}"><span
+                    th:utext="((#{language} == 'ru') or (${currentBook.authorEng} == ''))?${currentBook.author}:${currentBook.authorEng}"></span>
+            </div>
+            <div th:if="${#strings.length(currentBook.editionNumber) > 0}"><span
+                    th:utext="((#{language} == 'ru') or (${currentBook.editionNumberEng} == null))?${currentBook.editionNumber}:${currentBook.editionNumberEng}"></span>
+            </div>
+            <div class="jurnal_short_info">
+                <p th:if="${currentBook.year != null and currentBook.year != ''}"><span
+                        th:text="${currentBook.year}+' '+#{book.year}"></span></p>
+                <p th:if="${currentBook.pages > 0}"><span
+                        th:text="${currentBook.pages}+' '+#{book.pages}"></span></p>
+                <p th:if="${#strings.length(currentBook.circulation) > 0}"><span
+                        th:text="#{book.circulation}+' '">Тираж </span><span
+                        th:text="((#{language} == 'ru') or (${currentBook.circulationEng} == ''))?${currentBook.circulation}:${currentBook.circulationEng}"></span>
+                </p>
+
+                <p th:if="${currentBook.type > 0}"
+                   th:text="((#{language} == 'ru') or (${currentBook.bookType.nameEng} == ''))?${currentBook.bookType.name}:${currentBook.bookType.nameEng}"></p>
+                <!--            <p th:if="${book.price > 0}" th:text="'Цена: '+${book.price}"></p>-->
+                <p th:if="${#strings.length(currentBook.size.name) > 0}"><span class="field_name"
+                                                                               th:text="#{book.format}+' '">Формат </span><span
+                        th:text="${currentBook.size.name}"></span></p>
+                <p th:if="${#strings.length(currentBook.cover.name) > 0}"><span class="field_name"
+                                                                                th:text="#{book.cover}+': '">Обложка: </span><span
+                        th:text="((#{language} == 'ru') or (${currentBook.cover.nameEng} == ''))?${currentBook.cover.name}:${currentBook.cover.nameEng}"></span>
+                </p>
+                <p th:if="${#strings.length(currentBook.isbn) > 0}"><span class="field_name">ISBN </span><span
+                        th:text="${currentBook.isbn}"></span></p>
+                <p th:if="${#strings.length(currentBook.bbk) > 0}"><span class="field_name">ББК </span><span
+                        th:text="${currentBook.bbk}"></span></p>
+                <p th:if="${#strings.length(currentBook.udk) > 0}"><span class="field_name">УДК </span><span
+                        th:text="${currentBook.udk}"></span></p>
+            </div>
+            <p th:if="${currentBook.description != ''}" class="field_name" th:text="#{book.annot}">Аннотация</p>
+            <div th:if="${currentBook.description != ''}"
+                 th:utext="((#{language} == 'ru') or (${currentBook.descriptionEng} == ''))?${currentBook.description}:${currentBook.descriptionEng}"></div>
+            <p th:if="${currentBook.content != null} and ${currentBook.content != ''}" class="field_name" th:text="#{book.content}">Оглавление</p>
+            <div th:if="${currentBook.content != null} and ${currentBook.content != ''}"
+                 th:utext="((#{language} == 'ru') or (${currentBook.contentEng} == null))?${currentBook.content}:${currentBook.contentEng}"></div>
+            <a th:if="${currentBook.bookFile != ''}" class="download_button padding margin_top"
+               th:text="#{article.download}" th:href="@{'/uploads/books/files/'+${currentBook.bookFile}}"></a>
+
     </div>
 </div>
 </body>

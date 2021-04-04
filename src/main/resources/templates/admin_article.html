@@ -1,195 +1,223 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="~{admin_template::head}">
+
+</head>
 <body>
-<div th:if="${action == 'article_add'} or ${action == 'article_list'} or ${action == 'article_change'}" th:fragment="article_options" class="relative">
-    <div class="title" th:if="${action == 'article_add'}">Добавление статьи</div>
-    <div class="page_title" th:if="${action == 'article_change'} or ${action == 'article_list'}">Изменение статьи</div>
-    <form enctype="multipart/form-data"  class="main_form" method="post"
-          th:attr="action=${action == 'article_add'?'/admin/article_add':'/admin/article_change'}"
-          th:object="${article}">
-        <input th:if="${action == 'article_change'}" th:field="*{id}" id="article_id" name="article_id" type="hidden">
-        <input th:if="${action == 'article_change'}" th:field="*{sectionId}" id="section_id" name="section_id"
-               type="section_id">
+<div id="admin">
+    <div th:replace="~{admin_template :: admin_menu}">
+
+    </div>
+    <div id="admin_content">
+        <div th:with="section=${@sectionService.getSectionById(article.sectionId)}">
+            <nav th:if="${action == 'article_add'}" class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><a href="/admin/journal_change">Изменение журналов</a><span class="path_arrow"> > </span><a th:href="@{'/admin/journal_change'(id=${section.number.journalId})}" th:text="${section.number.journal.name}"></a><span class="path_arrow"> > </span><a th:href="@{'/admin/number_change'(id=${section.number.id})}" th:text="'Журнал '+${section.number.journal.name}+' №'+${section.number.name}+' за '+${section.number.year}+' год'"></a><span class="path_arrow"> > </span><a th:href="@{'/admin/section_change'(id=${section.id})}" th:text="${section.name}">Раздел</a></a><span class="path_arrow"> > </span><span>Добавление статьи</span></nav>
+            <nav th:if="${action == 'article_change'}" class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><a href="/admin/journal_change">Изменение журналов</a><span class="path_arrow"> > </span><a th:href="@{'/admin/journal_change'(id=${section.number.journalId})}" th:text="${section.number.journal.name}"></a><span class="path_arrow"> > </span><a th:href="@{'/admin/number_change'(id=${section.number.id})}" th:text="'Журнал '+${section.number.journal.name}+' №'+${section.number.name}+' за '+${section.number.year}+' год'"></a><span class="path_arrow"> > </span><a th:href="@{'/admin/section_change'(id=${section.id})}" th:text="${section.name}">Раздел</a></a><span class="path_arrow"> > </span><span th:text="${article.name}">Статья</span></nav>
+        </div>
+        <div th:if="${action == 'article_add'} or ${action == 'article_list'} or ${action == 'article_change'}" class="relative">
+            <div class="title" th:if="${action == 'article_add'}">Добавление статьи</div>
+            <div class="page_title" th:if="${action == 'article_change'} or ${action == 'article_list'}">Изменение статьи</div>
+            <form enctype="multipart/form-data"  class="main_form" method="post"
+                  th:attr="action=${action == 'article_add'?'/admin/article_add':'/admin/article_change'}"
+                  th:object="${article}">
+                <input th:if="${action == 'article_change'}" th:field="*{id}" id="article_id" name="article_id" type="hidden">
+
+<!--                <div th:if="${article.sectionId <= 0}">-->
+
+<!--                    <select class="select-css" th:if="${action == 'article_add'} or ${action == 'article_list'}"-->
+<!--                            id="select_journal_name" name="journal_name">-->
+<!--                        <option selected disabled>Журнал</option>-->
+<!--                        <option th:each="journal : ${journals}" th:value="${journal.id}" th:text="${journal.name}"></option>-->
+<!--                    </select>-->
+
+<!--                    <select class="select-css" th:if="${action == 'article_add'} or ${action == 'article_list'}"-->
+<!--                            id="select_number_year" name="number_year">-->
+<!--                        <option selected disabled>Год</option>-->
+<!--                    </select>-->
+
+<!--                    <select class="select-css" name="numberId" th:if="${action == 'article_add'} or ${action == 'article_list'}"-->
+<!--                            id="select_number_name">-->
+<!--                        <option value="" th:disabled="disabled" th:selected="selected">Номер</option>-->
+<!--                    </select>-->
+
+<!--                    <select class="select-css" name="sectionId" th:if="${action == 'article_list'} or ${action == 'article_add'}" id="select_section_name">-->
+<!--                        <option value="" th:disabled="disabled" th:selected="selected">Раздел</option>-->
+<!--                    </select>-->
+
+<!--                    <select class="select-css" name="id" th:if="${action == 'article_list'}" id="select_article_name">-->
+<!--                        <option value="" th:disabled="disabled" th:selected="selected">Статья</option>-->
+<!--                    </select>-->
+<!--                </div>-->
+
+                <div class="article_main_params  main_params" th:if="${action == 'article_add'} or ${action == 'article_change'}">
+
+                    <input th:if="${action == 'article_change'} or ${article.sectionId > 0}" th:field="*{sectionId}" id="section_id" name="section_id"
+                           type="hidden">
+
+                    <small class="input_error" th:each="err : ${#fields.errors('sectionId')}" th:text="${err}"></small>
+                    <a class="remove_link" th:if="${action == 'article_change'}" th:href="@{/admin/article_delete(id=${article.id})}"><img
+                            title="удалить" class="remove_img" src="/images/delete.png"></a>
+
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{name}" id="article_name" name="article_name" placeholder="Название статьи" type="text" >
+                        <label class="form__label">Название статьи</label>
+                    </div>
+                    <small class="input_error" th:each="err : ${#fields.errors('name')}" th:text="${err}"></small>
 
 
-        <select class="select-css" th:if="${action == 'article_add'} or ${action == 'article_list'}"
-                id="select_journal_name" name="journal_name">
-            <option selected disabled>Журнал</option>
-            <option th:each="journal : ${journals}" th:value="${journal.id}" th:text="${journal.name}"></option>
-        </select>
 
-        <select class="select-css" th:if="${action == 'article_add'} or ${action == 'article_list'}"
-                id="select_number_year" name="number_year">
-            <option selected disabled>Год</option>
-        </select>
-<!--        <script>-->
-<!--            $("#select_number_year option[value = 2021]").prop('selected', true);-->
-<!--        </script>-->
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{page}" id="page" name="page" placeholder="Страницы" type="text" >
+                        <label class="form__label">Страницы</label>
+                    </div>
 
-        <select class="select-css" name="numberId" th:if="${action == 'article_add'} or ${action == 'article_list'}"
-                id="select_number_name">
-            <option value="" th:disabled="disabled" th:selected="selected">Номер</option>
-        </select>
+                    <label class="textarea_label" for="authors">Авторы</label>
+                    <textarea th:field="*{authors}" id="authors" name="authors" cols="60"
+                              rows="5"></textarea>
 
-        <select class="select-css" name="sectionId" th:if="${action == 'article_list'} or ${action == 'article_add'}" id="select_section_name">
-            <option value="" th:disabled="disabled" th:selected="selected">Раздел</option>
-        </select>
+                    <label class="textarea_label" for="authors">Аннотация</label>
+                    <textarea th:field="*{descript}" id="descript" name="descript" cols="60"
+                              rows="5"></textarea>
 
-        <select class="select-css" name="id" th:if="${action == 'article_list'}" id="select_article_name">
-            <option value="" th:disabled="disabled" th:selected="selected">Статья</option>
-        </select>
+                    <label class="textarea_label" for="authors">Литература</label>
+                    <textarea th:field="*{literature}" id="literature" name="literature" cols="60"
+                              rows="5"></textarea>
 
-        <div class="article_main_params  main_params" th:if="${action == 'article_add'} or ${action == 'article_change'}">
-            <small class="input_error" th:each="err : ${#fields.errors('sectionId')}" th:text="${err}"></small>
-            <a th:if="${action == 'article_change'}" th:href="@{/admin/article_delete(id=${article.id})}"><img
-                    title="удалить" class="remove_img" src="/images/delete.png"></a>
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{keywords}" id="keywords" name="keywords" placeholder="Ключевые слова" type="text" >
+                        <label class="form__label">Ключевые слова</label>
+                    </div>
 
-            <div class="form__group field">
-                <input class="form__field" th:field="*{name}" id="article_name" name="article_name" placeholder="Название статьи" type="text" >
-                <label class="form__label">Название статьи</label>
-            </div>
-            <small class="input_error" th:each="err : ${#fields.errors('name')}" th:text="${err}"></small>
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{udk}" id="udk" name="udk" placeholder="УДК" type="text" >
+                        <label class="form__label">УДК</label>
+                    </div>
 
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{doi}" id="doi" name="doi" placeholder="DOI" type="text" >
+                        <label class="form__label">DOI</label>
+                    </div>
 
+                    <label class="textarea_label" for="authors">Цитирование</label>
+                    <textarea th:field="*{citata}" id="citata" name="citata" cols="60"
+                              rows="5"></textarea>
 
-            <div class="form__group field">
-                <input class="form__field" th:field="*{page}" id="page" name="page" placeholder="Страницы" type="text" >
-                <label class="form__label">Страницы</label>
-            </div>
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{vak}" id="vak" name="vak" placeholder="ВАК" type="text" >
+                        <label class="form__label">ВАК</label>
+                    </div>
 
-            <label class="textarea_label" for="authors">Авторы</label>
-            <textarea th:field="*{authors}" id="authors" name="authors" cols="60"
-                      rows="5"></textarea>
+                    <label class="textarea_label" for="authors">Текст статьи</label>
+                    <textarea th:field="*{articleText}" id="articleText" name="articleText" cols="60"
+                              rows="5"></textarea>
 
-            <label class="textarea_label" for="authors">Аннотация</label>
-            <textarea th:field="*{descript}" id="descript" name="descript" cols="60"
-                      rows="5"></textarea>
+                    <div class="form__group field">
+                        <select class="select-css" th:field="*{type}" >
+                            <option th:each="type : ${types}" th:text="${type.name}" th:value="${type.id}"></option>
+                        </select>
 
-            <label class="textarea_label" for="authors">Литература</label>
-            <textarea th:field="*{literature}" id="literature" name="literature" cols="60"
-                      rows="5"></textarea>
+                        <label class="form__label">Тип статьи</label>
+                    </div>
 
 
-            <div class="form__group field">
-                <input class="form__field" th:field="*{keywords}" id="keywords" name="keywords" placeholder="Ключевые слова" type="text" >
-                <label class="form__label">Ключевые слова</label>
-            </div>
 
-            <div class="form__group field">
-                <input class="form__field" th:field="*{udk}" id="udk" name="udk" placeholder="УДК" type="text" >
-                <label class="form__label">УДК</label>
-            </div>
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{dataRecieved}" id="dataRecieved" name="dataRecieved" placeholder="Дата поступления" type="text" >
+                        <label class="form__label">Дата поступления</label>
+                    </div>
 
-            <div class="form__group field">
-                <input class="form__field" th:field="*{doi}" id="doi" name="doi" placeholder="DOI" type="text" >
-                <label class="form__label">DOI</label>
-            </div>
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{dataApproved}" id="dataApproved" name="dataApproved" placeholder="Одобрена после рецензирования" type="text" >
+                        <label class="form__label">Одобрена после рецензирования</label>
+                    </div>
 
-            <label class="textarea_label" for="authors">Цитирование</label>
-            <textarea th:field="*{citata}" id="citata" name="citata" cols="60"
-                      rows="5"></textarea>
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{dataAccepted}" id="dataAccepted" name="dataAccepted" placeholder="Принята к публикации" type="text" >
+                        <label class="form__label">Принята к публикации</label>
+                    </div>
 
-            <div class="form__group field">
-                <input class="form__field" th:field="*{vak}" id="vak" name="vak" placeholder="ВАК" type="text" >
-                <label class="form__label">ВАК</label>
-            </div>
-
-            <label class="textarea_label" for="authors">Текст статьи</label>
-            <textarea th:field="*{articleText}" id="articleText" name="articleText" cols="60"
-                      rows="5"></textarea>
-
-            <div class="form__group field">
-                <input class="form__field" th:field="*{articleType}" id="articleType" name="articleType" placeholder="Тип статьи" type="text" >
-                <label class="form__label">Тип статьи</label>
-            </div>
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{nameEng}" id="nameEng" name="nameEng" placeholder="Английское название" type="text" >
+                        <label class="form__label">Английское название</label>
+                    </div>
+                    <small class="input_error" th:each="err : ${#fields.errors('nameEng')}" th:text="${err}"></small>
 
 
-            <div class="form__group field">
-                <input class="form__field" th:field="*{dataRecieved}" id="dataRecieved" name="dataRecieved" placeholder="Дата поступления" type="text" >
-                <label class="form__label">Дата поступления</label>
-            </div>
-
-            <div class="form__group field">
-                <input class="form__field" th:field="*{dataApproved}" id="dataApproved" name="dataApproved" placeholder="Одобрена после рецензирования" type="text" >
-                <label class="form__label">Одобрена после рецензирования</label>
-            </div>
-
-            <div class="form__group field">
-                <input class="form__field" th:field="*{dataAccepted}" id="dataAccepted" name="dataAccepted" placeholder="Принята к публикации" type="text" >
-                <label class="form__label">Принята к публикации</label>
-            </div>
-
-            <div class="form__group field">
-                <input class="form__field" th:field="*{nameEng}" id="nameEng" name="nameEng" placeholder="Английское название" type="text" >
-                <label class="form__label">Английское название</label>
-            </div>
-            <small class="input_error" th:each="err : ${#fields.errors('nameEng')}" th:text="${err}"></small>
+                    <label class="textarea_label" for="authorsEng">Авторы (англ.)</label>
+                    <textarea th:field="*{authorsEng}" id="authorsEng" name="authorsEng" cols="60"
+                              rows="5"></textarea>
 
 
-            <label class="textarea_label" for="authorsEng">Авторы (англ.)</label>
-            <textarea th:field="*{authorsEng}" id="authorsEng" name="authorsEng" cols="60"
-                      rows="5"></textarea>
+                    <label class="textarea_label" for="descriptEng">Аннотация (англ.)</label>
+                    <textarea th:field="*{descriptEng}" id="descriptEng" name="descriptEng" cols="60"
+                              rows="5"></textarea>
+
+                    <label class="textarea_label" for="literatureEng">Литература (англ.)</label>
+                    <textarea th:field="*{literatureEng}" id="literatureEng" name="literatureEngdescriptEng" cols="60"
+                              rows="5"></textarea>
+                    <input type="button" class="translit" value="Транслит">
+
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{keywordsEng}" id="keywordsEng" name="keywordsEng" placeholder="Ключевые слова (англ.)" type="text" >
+                        <label class="form__label">Ключевые слова (англ.)</label>
+                    </div>
+
+                    <label class="textarea_label" for="citataEng">Цитирование (англ.)</label>
+                    <textarea th:field="*{citataEng}" id="citataEng" name="citataEng" cols="60"
+                              rows="5"></textarea>
+
+                    <div class="form__group field">
+                        <input type="file" name="file">
+                        <label class="form__label">Файл</label>
+                    </div>
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{price}" id="price" name="price" placeholder="Цена" type="text" >
+                        <label class="form__label">Цена</label>
+                    </div>
+                    <input type="hidden" th:field="*{articleFile}">
+                    <p th:if="${article.articleFile != null} and ${#strings.length(article.articleFile) > 0}"><a target="_blank" th:href="@{'/uploads/articles/'+${article.articleFile}}">Текущая версия статьи</a></p>
+                    <small class="input_error" th:each="err : ${#fields.errors('articleFile')}" th:text="${err}"></small>
 
 
-            <label class="textarea_label" for="descriptEng">Аннотация (англ.)</label>
-            <textarea th:field="*{descriptEng}" id="descriptEng" name="descriptEng" cols="60"
-                      rows="5"></textarea>
+                    <input th:if="${action == 'article_add'}" id="submit" value="Добавить статью" type="submit">
+                    <input class="ajax_submit" th:if="${action == 'article_change'}" id="submit" value="Сохранить статью" type="button">
+                    <div class="form_message"></div>
+                    <script>
 
-            <label class="textarea_label" for="literatureEng">Литература (англ.)</label>
-            <textarea th:field="*{literatureEng}" id="literatureEng" name="literatureEngdescriptEng" cols="60"
-                      rows="5"></textarea>
+                        var textarea = ["authors","authorsEng","descript","descriptEng","literature","literatureEng","citata", "citataEng","articleText"];
 
-
-            <div class="form__group field">
-                <input class="form__field" th:field="*{keywordsEng}" id="keywordsEng" name="keywordsEng" placeholder="Ключевые слова (англ.)" type="text" >
-                <label class="form__label">Ключевые слова (англ.)</label>
-            </div>
-
-            <label class="textarea_label" for="citataEng">Цитирование (англ.)</label>
-            <textarea th:field="*{citataEng}" id="citataEng" name="citataEng" cols="60"
-                      rows="5"></textarea>
-
-            <div class="form__group field">
-                <input type="file" name="file">
-                <label class="form__label">Статья</label>
-            </div>
-            <input type="hidden" th:field="*{articleFile}">
-            <p th:if="${article.articleFile != null} and ${#strings.length(article.articleFile) > 0}"><a target="_blank" th:href="@{'/uploads/articles/'+${article.articleFile}}">Текущая версия статьи</a></p>
-            <small class="input_error" th:each="err : ${#fields.errors('articleFile')}" th:text="${err}"></small>
-
-
-            <input class="ajax_submit"  th:if="${action == 'article_add'}" id="submit" value="Добавить статью" type="button">
-            <input class="ajax_submit" th:if="${action == 'article_change'}" id="submit" value="Сохранить статью" type="button">
-            <div class="form_message"></div>
-            <script>
-
-                var textarea = ["authors","authorsEng","descript","descriptEng","literature","literatureEng","citata", "citataEng","articleText"];
-
-                for(var i = 0; i < textarea.length;i++){
-                    CKEDITOR.replace(textarea[i]);
-                }
-
-                $(".ajax_submit").click(
-                    function(){
                         for(var i = 0; i < textarea.length;i++){
-                            var value = CKEDITOR.instances[textarea[i]].getData();
-                            $("#"+textarea[i]).val(value);
+                            CKEDITOR.replace(textarea[i]);
                         }
-                        var url = $(".main_form").attr("action");
-                        sendAjaxForm('main_params', 'main_form', url);
-                        return false;
-                    }
-                );
-            </script>
-        </div>
-        <div th:if="${action == 'article_list'}" class="article_main_params main_params">
 
-        </div>
-        <div id="article_options" class="change_options">
+                        $(".ajax_submit").click(
+                            function(){
+                                for(var i = 0; i < textarea.length;i++){
+                                    var value = CKEDITOR.instances[textarea[i]].getData();
+                                    $("#"+textarea[i]).val(value);
+                                }
+                                var url = $(".main_form").attr("action");
+                                sendAjaxForm('main_params', 'main_form', url);
+                                return false;
+                            }
+                        );
 
+                        $('.translit').click(function(){
+
+                            var literature = translit(CKEDITOR.instances["literature"].getData());
+                            CKEDITOR.instances["literatureEng"].setData(literature);
+                        });
+                    </script>
+                </div>
+                <div th:if="${action == 'article_list'}" class="article_main_params main_params">
+
+                </div>
+                <div id="article_options" class="change_options">
+
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 </body>
 </html>

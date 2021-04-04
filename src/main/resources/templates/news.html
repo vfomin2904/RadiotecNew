@@ -7,11 +7,16 @@
 <div id="content">
     <div th:replace="~{left_menu :: menu}"></div>
     <div id="main_block">
-        <div th:text="${selectedNews == null}? #{news.title} : ${selectedNews.date}+ ' '+${selectedNews.name}" class="page_title"></div>
-        <div th:if="${selectedNews == null}" th:each="item : ${news}">
-            <div><a class="black_link" th:href="'/'+#{language}+'/news/'+${item.id}"><span th:text="${item.date}+' '"></span><span th:text="${item.name}"></span></a></div>
+        <div th:if="${selectedNews != null}" class="page_title">
+            <span th:text="${selectedNews.date}+' '"></span>
+            <span th:text="((#{language} == 'ru') or (${selectedNews.nameEng} == ''))?${selectedNews.name}:${selectedNews.nameEng}"></span>
         </div>
-        <div th:if="${selectedNews != null}" th:utext="${selectedNews.longNews}">
+        <div th:if="${selectedNews == null}" th:text="#{news.title}" class="page_title">
+        </div>
+        <div th:if="${selectedNews == null}" th:each="item : ${news}" class="news_block">
+           <a class="black_link" th:href="'/'+#{language}+'/news/'+${item.id}"><span th:if="${item.date != null}" th:text="${item.date}+' '"></span><span th:text="((#{language} == 'ru') or (${item.nameEng} == ''))?${item.name}:${item.nameEng}"></span></a>
+        </div>
+        <div th:if="${selectedNews != null}" th:utext="((#{language} == 'ru') or (${selectedNews.longNewsEng} == ''))?${selectedNews.longNews}:${selectedNews.longNewsEng}">
         </div>
     </div>
 </div>

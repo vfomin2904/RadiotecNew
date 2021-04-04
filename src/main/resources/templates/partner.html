@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{header :: head}"></head>
+<body>
+<div th:replace="~{header :: header_menu}"></div>
+
+<div id="content">
+    <div id="left_menu" th:fragment="menu">
+        <div th:replace="~{left_menu :: books_menu}">
+
+        </div>
+    </div>
+    <div id="main_block">
+
+        <div th:utext="(#{language} == 'ru' or ${partner.contentEng == ''})?${partner.content}:${partner.contentEng}">
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

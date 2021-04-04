@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="~{admin_template::head}">
+
+</head>
+<body>
+<div id="admin">
+    <div th:replace="~{admin_template :: admin_menu}">
+
+    </div>
+    <div id="admin_content">
+        <nav class="current_path"><a href="/admin/">Главная</a><span class="path_arrow"> > </span><span>Корзина</span></nav>
+        <div class="relative">
+            <div class="page_title">Заказы</div>
+            <ul class="admin_line_menu">
+                <li><a href="/admin/cart?status=Оплачено">Оплачено</a></li>
+                <li><a href="/admin/cart?status=Не оплачено">Не оплачено</a></li>
+                <li><a href="/admin/cart?status=Обработано">Обработано</a></li>
+                <li><a href="/admin/cart?status=Архив">Архив</a></li>
+            </ul>
+
+            <div class="admin_card_item" th:each="order : ${orders}">
+                <a class="remove_link" th:href="@{/admin/order_delete(id=${order.id})}"><img title="удалить"
+                                                                                             class="remove_card_img"
+                                                                                             src="/images/delete.png"></a>
+                <div class="order_info">
+                    <p><span th:text="'ФИО: '+${order.fio}"></span></p><br>
+                    <p><span th:text="'Email: '+${order.email}"></span></p><br>
+                    <p><span th:text="'Телефон: '+${order.phone}"></span></p><br>
+                    <p><span th:text="'Статус: '"></span>
+                        <select th:attr="data-order=${order.id}" class="select_status" style="display: inline-block">
+                             <option disabled selected th:value="${order.status}" th:text="${order.status}"></option>
+                            <option value="Не оплачено">Не оплачено</option>
+                            <option value="Оплачено">Оплачено</option>
+                            <option value="Обработано">Обработано</option>
+                            <option value="Архив">Архив</option>
+                     </select>
+                        </p><br>
+                </div>
+                <p><span class="show_details">Показать детали заказа</span></p>
+                <div class="order_details">
+                    <div th:each="book : ${books[order.id]}" class="cart_box">
+                    <div class="cart_box_cell cart_box_img">
+                        <a th:href="'/'+#{language}+'/books/'+${book.id}"><img
+                                th:src="'/uploads/books/' + ${book.coverImg}"
+                                class="card-img-top"
+                                th:alt="((#{language} == 'ru') or (${book.nameEng} == ''))?${book.name}:${book.nameEng}"></a>
+
+                    </div>
+                    <div class="card-body cart_box_cell">
+                        <a class="black_link" th:href="'/'+#{language}+'/books/'+${book.id}"><h4 class="card-title"
+                                                                                                 th:text="((#{language} == 'ru') or (${book.nameEng} == ''))?${book.name}:${book.nameEng}"></h4>
+                        </a>
+                        <p class="card-text"
+                           th:utext="((#{language} == 'ru') or (${book.authorEng} == ''))?${book.author}:${book.authorEng}"></p>
+                        <div class="card-text book_description"
+                             th:utext="((#{language} == 'ru') or (${book.descriptionEng} == ''))?${book.description}:${book.descriptionEng}"></div>
+                    </div>
+                    <div class="card-price cart_box_cell cart_box_price">
+                       <p>
+                            <span th:text="#{price.price}+': '"></span>
+                            <span class="item_price" th:text="${book.price}"></span>
+                            <span th:text="' '+#{price.rub}"></span>
+                        </p>
+                    </div>
+                </div>
+                    <div th:each="article : ${articles[order.id]}" class="cart_box">
+                        <div class="cart_box_cell cart_box_img">
+                        <a th:href="'/'+#{language}+'/journal/'+${article.section.number.journal.id}+'/number/'+${article.section.number.id}+'/section/'+${article.section.id}+'/article/'+${article.id}"><img
+                                th:src="'/uploads/journals/' + ${article.section.number.journal.cover}"
+                                class="card-img-top"
+                                th:alt="((#{language} == 'ru') or (${article.nameEng} == ''))?${article.name}:${article.nameEng}"></a>
+
+                    </div>
+                    <div class="card-body cart_box_cell">
+                        <a class="black_link"
+                           th:href="'/'+#{language}+'/journal/'+${article.section.number.journal.id}+'/number/'+${article.section.number.id}+'/section/'+${article.section.id}+'/article/'+${article.id}">
+                            <h4 class="card-title"
+                                th:text="((#{language} == 'ru') or (${article.nameEng} == ''))?${article.name}:${article.nameEng}"></h4>
+                        </a>
+                        <p class="card-text"
+                           th:utext="((#{language} == 'ru') or (${article.authorsEng} == ''))?${article.authors}:${article.authorsEng}"></p>
+                        <div class="card-text book_description"
+                             th:utext="((#{language} == 'ru') or (${article.descriptEng} == ''))?${article.descript}:${article.descriptEng}"></div>
+                    </div>
+                    <div class="card-price cart_box_cell cart_box_price">
+                        <p>
+                            <span th:text="#{price.price}+': '"></span>
+                            <span class="item_price" th:text="${article.price}"></span>
+                            <span th:text="' '+#{price.rub}"></span>
+                        </p></div>
+                </div>
+                     <div th:each="number : ${numbers[order.id]}" class="cart_box">
+                <div class="cart_box_cell cart_box_img">
+                    <a th:href="'/'+#{language}+'/journal/'+${number.journal.id}+'/number/'+${number.id}"><img
+                            th:src="'/uploads/journals/' + ${number.journal.cover}"
+                            class="card-img-top"
+                            th:alt="#{journal.journal}+' '+((#{language}=='ru')?${number.journal.name}:${number.journal.nameEng})+' №'+${number.name}+' '+#{for}+' '+${number.year}+' '+#{book.year}"></a>
+
+                </div>
+                <div class="card-body cart_box_cell">
+                    <a class="black_link"
+                       th:href="'/'+#{language}+'/journal/'+${number.journal.id}+'/number/'+${number.id}"><h4
+                            class="card-title"
+                            th:text="#{journal.journal}+' '+((#{language}=='ru')?${number.journal.name}:${number.journal.nameEng})+' №'+${number.name}+' '+#{for}+' '+${number.year}+' '+#{book.year}"></h4>
+                    </a>
+                </div>
+                <div class="card-price cart_box_cell cart_box_price">
+                    <p>
+                        <span th:text="#{price.price}+': '"></span>
+                        <span class="item_price" th:text="${number.price}"></span>
+                        <span th:text="' '+#{price.rub}"></span>
+                    </p>
+                </div>
+            </div>
+                </div>
+        </div>
+            <script>
+                $(".show_details").click(function(){
+                    var details = $(this).parent().next(".order_details");
+                    if($(details).css("display") == "none"){
+                        $(details).show();
+                    } else{
+                        $(details).hide();
+                    }
+                });
+
+                $( ".select_status" ).change(function() {
+                    var status = $(this).val();
+                    var order = $(this).attr("data-order");
+                            $.ajax({
+                                url: "/admin/order_status",
+                                type: "POST", //метод отправки
+                                data: {
+                                    order: order,
+                                    status: status
+                                }
+                            });
+                        });
+            </script>
+    </div>
+</div>
+</div>
+
+</body>
+</html>

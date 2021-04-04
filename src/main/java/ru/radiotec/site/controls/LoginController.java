@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.radiotec.site.entity.BookSec;
 import ru.radiotec.site.entity.Journals;
+import ru.radiotec.site.entity.Page;
 import ru.radiotec.site.entity.User;
 import ru.radiotec.site.services.*;
 
@@ -28,9 +29,14 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PageService pageService;
+
     @GetMapping("/login")
     private String getLoginPage(Model model){
         init_menu(model);
+        Page headerRight = pageService.getPageById(6);
+        model.addAttribute("headerRight", headerRight);
         return "login";
     }
 

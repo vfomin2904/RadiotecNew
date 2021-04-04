@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="~{admin_template::head}">
+
+</head>
+<body>
+<div id="admin">
+    <div th:replace="~{admin_template :: admin_menu}">
+
+    </div>
+    <div id="admin_content">
+        <nav th:if="${type == 'journal'}" class="current_path"><a href="/admin/">Главная</a><span class="path_arrow"> > </span><span>Подписки</span></nav>
+        <nav th:if="${type != 'journal'}" class="current_path"><a href="/admin/">Главная</a><span class="path_arrow"> > </span><span>Заказы книг</span></nav>
+        <div class="relative">
+            <div class="page_title"
+                 th:text="${type == 'journal'}?'Список подписок на журналы':'Список заказов книг'"></div>
+            <select class="select_journal">
+                <option disabled th:classappend="(${item} == 0)?'selected':''" th:if="${type == 'journal'}">Выбрать журнал</option>
+                <option disabled th:classappend="(${item} == 0)?'selected':''" th:if="${type != 'journal'}">Выбрать книжный раздел</option>
+                <option th:if="${type == 'journal'}" th:classappend="(${item} == ${journal.id})?'selected':''" th:each="journal: ${@journalsService.getActiveJournals()}" th:text="${journal.name}" th:value="${journal.id}"></option>
+                <option th:if="${type != 'journal'}" th:classappend="(${item} == ${section.id})?'selected':''" th:each="section: ${@bookSecService.getAllBookSec()}" th:text="${section.name}" th:value="${section.id}"></option>
+            </select>
+            <br>
+            <script>
+                $( ".select_journal" ).change(function() {
+                    var item = $(this).val();
+                    document.location.href = '/admin/subscribes?type=[[${type}]]&item='+item;
+                });
+
+                $(".selected").attr("selected", "selected");
+            </script>
+
+            <div class="admin_card_item" th:each="subscribe : ${subscribes}">
+                <a class="remove_link" th:href="@{/admin/subscribe_delete(id=${subscribe.id}, type=${type})}"><img
+                        title="удалить"
+                        class="remove_card_img"
+                        src="/images/delete.png"></a>
+                <div class="order_info">
+                    <p th:if="${type=='book'}" th:with="book = ${@bookService.getBookById(subscribe.product)}">
+                        <span>Книга: <a th:href="@{'/ru/books/'+${book.id}}" th:text="${book.name}"></a></span>
+                    </p>
+                    <p th:if="${type=='journal'}" th:with="journal = ${@journalsService.getJournalById(subscribe.product)}">
+                        <span>Журнал: <a th:href="@{'/ru/journal/'+${journal.id}}" th:text="${journal.name}"></a></span>
+                    </p>
+                    <p th:if="${type=='book_section'}" th:with="booksec = ${@bookSecService.getBookSecById(subscribe.product)}">
+                        <span>Серия книг: <a th:href="@{'/ru/booksection/'+${booksec.id}}" th:text="${booksec.name}"></a></span><br>
+                        <span th:if="${subscribe.book != null and subscribe.book != ''}" th:text="'Книга: '+${subscribe.book}"></span>
+                    </p>
+                    <br>
+                    <p><span th:text="'Количество: '+${subscribe.count}"></span></p><br>
+                    <p><span th:text="'Заказчик: '+${subscribe.fio}"></span></p><br>
+                    <p><span class="show_details">Показать детали</span></p>
+                    <br>
+                    <div class="order_details">
+                        <p><span th:text="'Телефон: '+${subscribe.phone}"></span></p><br>
+                        <p><span th:text="'Удобное время звонка: '+${subscribe.time}"></span></p><br>
+                        <p><span th:text="'E-mail: '+${subscribe.email}"></span></p><br>
+                        <p><span th:text="'Организация: '+${subscribe.company}"></span></p><br>
+                        <p><span th:text="'Адрес: '+${subscribe.address}"></span></p><br>
+                    </div>
+                </div>
+            </div>
+            <script>
+                    $(".show_details").click(function(){
+                    var details = $(this).parent().next().next(".order_details");
+                    if($(details).css("display") == "none"){
+                    $(details).show();
+                } else{
+                    $(details).hide();
+                }
+                });
+            </script>
+        </div>
+    </div>
+</div>
+</div>
+
+</body>
+</html>

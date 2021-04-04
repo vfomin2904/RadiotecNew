@@ -18,8 +18,14 @@ public class Books {
     @Column(name="bookname")
     private String name;
 
+    @Column(name="bookname_eng")
+    private String nameEng;
+
     @Column(name="bookauthor")
     private String author;
+
+    @Column(name="bookauthor_eng")
+    private String authorEng;
 
     @Column(name="booksection")
     private int section;
@@ -37,6 +43,9 @@ public class Books {
     @Column(name="description")
     private String description;
 
+    @Column(name="description_eng")
+    private String descriptionEng;
+
     @Column(name="bookyear")
     private String year;
 
@@ -47,6 +56,13 @@ public class Books {
     @JoinColumn(name="publisher", referencedColumnName = "id", insertable = false, updatable = false)
     private Publisher publish;
 
+    @Column(name="type")
+    private int type;
+
+    @ManyToOne
+    @JoinColumn(name="type", referencedColumnName = "id", insertable = false, updatable = false)
+    private BookType bookType;
+
     @Column(name="isbn")
     private String isbn;
 
@@ -55,6 +71,9 @@ public class Books {
 
     @Column(name="editionnumber")
     private String editionNumber;
+
+    @Column(name="editionnumber_eng")
+    private String editionNumberEng;
 
     @Column(name="bookcover")
     private int bookcover;
@@ -70,9 +89,6 @@ public class Books {
     @JoinColumn(name="booksize", referencedColumnName = "id", insertable = false, updatable = false)
     private BookSize size;
 
-    @Column(name="publisheddate")
-    private String publisheddate;
-
     @Column(name="bookudk")
     private String udk;
 
@@ -87,6 +103,25 @@ public class Books {
 
     @Column(name="content")
     private String content;
+
+    @Column(name="content_eng")
+    private String contentEng;
+
+    @Column(name="circulation_eng")
+    private String circulationEng;
+
+    @Column(name="circulation")
+    private String circulation;
+
+    @Column(name="sort")
+    private int sort;
+
+    @Column(name="sort_new")
+    private int sortNew;
+
+
+    @Column(name="file")
+    private String bookFile;
 
     public Books(){
 
@@ -207,14 +242,6 @@ public class Books {
         this.booksize = booksize;
     }
 
-    public String getPublisheddate() {
-        return publisheddate;
-    }
-
-    public void setPublisheddate(String publisheddate) {
-        this.publisheddate = publisheddate;
-    }
-
     public String getUdk() {
         return udk;
     }
@@ -290,5 +317,106 @@ public class Books {
 
     public void setSize(BookSize size) {
         this.size = size;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public BookType getBookType() {
+        return bookType;
+    }
+
+    public void setBookType(BookType bookType) {
+        this.bookType = bookType;
+    }
+
+    public String getCirculation() {
+        return circulation;
+    }
+
+    public void setCirculation(String circulation) {
+        this.circulation = circulation;
+    }
+
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
+    }
+
+
+    public int getSortNew() {
+        return sortNew;
+    }
+
+    public void setSortNew(int sortNew) {
+        this.sortNew = sortNew;
+    }
+
+    public String getNameEng() {
+        return nameEng;
+    }
+
+    public void setNameEng(String nameEng) {
+        this.nameEng = nameEng;
+    }
+
+    public String getAuthorEng() {
+        return authorEng;
+    }
+
+    public void setAuthorEng(String authorEng) {
+        this.authorEng = authorEng;
+    }
+
+    public String getDescriptionEng() {
+        return descriptionEng;
+    }
+
+    public void setDescriptionEng(String descriptionEng) {
+        this.descriptionEng = descriptionEng;
+    }
+
+    public String getEditionNumberEng() {
+        return editionNumberEng;
+    }
+
+    public void setEditionNumberEng(String editionNumberEng) {
+        this.editionNumberEng = editionNumberEng;
+    }
+
+    public String getContentEng() {
+        return contentEng;
+    }
+
+    public void setContentEng(String contentEng) {
+        this.contentEng = contentEng;
+    }
+
+    public String getCirculationEng() {
+        return circulationEng;
+    }
+
+    public void setCirculationEng(String circulationEng) {
+        this.circulationEng = circulationEng;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public String getBookFile() {
+        return bookFile;
+    }
+
+    public void setBookFile(String bookFile) {
+        this.bookFile = bookFile;
     }
 }

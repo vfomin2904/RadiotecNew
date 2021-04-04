@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="~{admin_template::head}">
+
+</head>
+<body>
+<div id="admin">
+    <div th:replace="~{admin_template :: admin_menu}">
+
+    </div>
+    <div id="admin_content">
+        <div th:with="section=${@sectionService.getSectionById(sectionId)}">
+            <nav class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><a href="/admin/journal_change">Изменение журналов</a><span class="path_arrow"> > </span><a th:href="@{'/admin/journal_change'(id=${section.number.journalId})}" th:text="${section.number.journal.name}"></a><span class="path_arrow"> > </span><a th:href="@{'/admin/number_change'(id=${section.number.id})}" th:text="'Журнал '+${section.number.journal.name}+' №'+${section.number.name}+' за '+${section.number.year}+' год'"></a><span class="path_arrow"> > </span><a th:href="@{'/admin/section_change'(id=${section.id})}" th:text="${section.name}">Раздел</a></a><span class="path_arrow"> > </span><span>Список статей</span></nav>
+        </div>
+        <div th:if="${article_list != null}" class="relative">
+            <div class="title">Список статей</div>
+            <br>
+            <div class="article_box" th:each="article : ${article_list}">
+                <div class="col1">
+                    <div class="article_box_name"><a th:text="${article.name}"
+                                                     th:href="@{/admin/article_change(id=${article.id})}"></a>
+                    </div>
+                    <div class="article_box_authors" th:utext="${article.authors}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
