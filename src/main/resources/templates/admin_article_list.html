@@ -10,6 +10,9 @@
 
     </div>
     <div id="admin_content">
+        <div th:with="section=${@sectionService.getSectionById(sectionId)}">
+            <nav class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><a href="/admin/journal_change">Изменение журналов</a><span class="path_arrow"> > </span><a th:href="@{'/admin/journal_change'(id=${section.number.journalId})}" th:text="${section.number.journal.name}"></a><span class="path_arrow"> > </span><a th:href="@{'/admin/number_change'(id=${section.number.id})}" th:text="'Журнал '+${section.number.journal.name}+' №'+${section.number.name}+' за '+${section.number.year}+' год'"></a><span class="path_arrow"> > </span><a th:href="@{'/admin/section_change'(id=${section.id})}" th:text="${section.name}">Раздел</a></a><span class="path_arrow"> > </span><span>Список статей</span></nav>
+        </div>
         <div th:if="${article_list != null}" class="relative">
             <div class="title">Список статей</div>
             <br>

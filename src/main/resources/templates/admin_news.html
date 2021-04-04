@@ -10,8 +10,19 @@
 
     </div>
     <div id="admin_content">
+        <nav th:if="${action == 'news_add'} and ${news.type == 0}"  class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><a href="/admin/menu_change?type=main">Изменение главного меню</a><span class="path_arrow"> > </span><span>Добавление новости</span></nav>
+        <nav th:if="(${action == 'news_change'} or ${action == 'news_list'}) and ${type == 0}"  class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><a href="/admin/menu_change?type=main">Изменение главного меню</a><span class="path_arrow"> > </span><span>Изменение новостей</span></nav>
+        <nav th:if="(${action == 'news_change'} or ${action == 'news_list'}) and ${type == 1}"  class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><span>Изменение срочных сообщений</span></nav>
+        <nav th:if="${action == 'news_add'} and ${type == 1}"  class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><span>Добавление срочного сообщения</span></nav>
+
+        <nav th:if="(${action == 'news_change'} or ${action == 'news_list'}) and ${type == 2}"  class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><span>Изменение коротких сообщений</span></nav>
+        <nav th:if="${action == 'news_add'} and ${type == 2}"  class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><span>Добавление короткого сообщения</span></nav>
+
+
         <div th:if="${action == 'news_change'}  or ${action == 'news_add'} or ${action == 'news_list'}" class="relative">
-            <div class="title" th:if="${action == 'news_add'}">Добавление новости</div>
+            <div class="title" th:if="${action == 'news_add'} and ${news.type == 0}">Добавление новости</div>
+            <div class="title" th:if="${action == 'news_add'} and ${news.type == 1}">Добавление срочного сообщения</div>
+            <div class="title" th:if="${action == 'news_add'} and ${news.type == 2}">Добавление короткого сообщения</div>
             <div class="page_title" th:if="(${action == 'news_change'}) and ${news.type == 0}">Изменение новости</div>
             <div class="page_title" th:if="(${action == 'news_change'}) and ${news.type == 1}">Изменение срочного сообщения</div>
             <div class="page_title" th:if="(${action == 'news_change'}) and ${news.type == 2}">Изменение короткого сообщения</div>

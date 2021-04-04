@@ -10,8 +10,11 @@
 
     </div>
     </div>
-    <div id="main_block" th:utext="((#{language} == 'ru') or (${page.contentEng} == ''))?${page.content}:${page.contentEng}">
+    <div id="main_block">
+        <nav class="current_path"><a th:href="@{'/'+#{language}+'/'}" th:text="#{header.main}">Главная</a> <span class="path_arrow"> > </span><span th:text="#{leftMenu.journals}">Журналы</span></nav>
+        <div  th:utext="((#{language} == 'ru') or (${page.contentEng} == ''))?${page.content}:${page.contentEng}">
 
+        </div>
     </div>
 </div>
 </body>

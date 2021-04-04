@@ -168,7 +168,7 @@
                         } else {
                             var sum = 0;
                             for (var i = 0; i < $(".item_price").length; i++) {
-                                sum += Number.parseInt($(".item_price").text());
+                                sum += Number.parseInt($(".item_price").eq(i).text());
                             }
                             $(".total_price_sum").text(sum);
                         }

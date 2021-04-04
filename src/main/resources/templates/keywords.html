@@ -9,7 +9,7 @@
     <div id="main_block">
         <div class="page_title" th:text="#{keywords.title}+' '+${keywords}"></div>
         <div class="article_box" style="margin-bottom:10px;padding:8px;" th:each="article : ${articles}">
-            <div class="article_box_name"><a th:text="((#{language} == 'ru') or (${article.nameEng} == ''))?${article.name}:${article.nameEng}" th:href="'/'+#{language}+'/article/'+${article.id}"></a></div>
+            <div class="article_box_name"><a th:text="((#{language} == 'ru') or (${article.nameEng} == ''))?${article.name}:${article.nameEng}" th:href="'/'+#{language}+'/journal/'+${article.section.number.journal.id}+'/number/'+${article.section.number.id}+'/section/'+${article.section.id}+'/article/'+${article.id}"></a></div>
             <div class="article_box_authors" th:utext="((#{language} == 'ru') or (${article.authorsEng} == ''))?${article.authors}:${article.authorsEng}"></div>
         </div>
     </div>

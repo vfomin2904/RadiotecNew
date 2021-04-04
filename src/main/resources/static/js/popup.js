@@ -25,9 +25,6 @@ $(document).ready(function($) {
         }
     });
 
-    setTimeout(function(){$(".ya-site-form__submit").val("ПОИСК")}, 300);
-
-
     $(".subscribe_button").click(function(){
         var form = $('.user_form')[0];
 

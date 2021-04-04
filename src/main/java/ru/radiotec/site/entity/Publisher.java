@@ -19,7 +19,7 @@ public class Publisher{
     @Column(name="extname")
     private String extname;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "publish")
+    @OneToMany(mappedBy = "publish")
     private Set<Books> books = new HashSet<>();
 
     public Publisher(){

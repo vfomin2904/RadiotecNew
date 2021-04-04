@@ -6,9 +6,11 @@
 
 <div id="content">
     <div id="main_block" class="relative">
+        <nav class="current_path"><a th:href="@{'/'+#{language}+'/'}" th:text="#{header.main}">Главная</a> <span class="path_arrow"> > </span><a th:href="@{'/'+#{language}+'/journals_info'}" th:text="#{leftMenu.journals}">Журналы</a><span class="path_arrow"> > </span><a th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}}" th:text="(#{language} == 'ru' or ${currentJournal.nameEng} == '')?${currentJournal.name}:${currentJournal.nameEng}"></a><span class="path_arrow"> > </span><span th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}+'/number/'+${number.id}}" th:text="#{journal.journal}+' '+((#{language}=='ru')?${number.journal.name}:${number.journal.nameEng})+' №'+${number.name}+' '+#{for}+' '+${number.year}+' '+#{book.year}"></span></nav>
+
 
         <div class="right_cart_block" th:if="${number.price > 0}">
-            <div class="price_book" th:text="${number.price}"></div>
+            <div class="price_book" th:text="${number.price}+' '+#{price.rub}"></div>
             <div class="cart_block">
                 <div class="cart_line">
                     <img class="cart_img" th:src="@{/images/cart_white.png}">
@@ -79,7 +81,7 @@
                 </div>
             </div>
         </div>
-        <a th:if="${number.numberFile != null}" class="download_button padding margin_top" th:text="#{article.download}" th:href="@{'/uploads/numbers/'+${number.numberFile}}"></a>
+        <a th:if="${number.numberFile != ''}" class="download_button padding margin_top" th:text="#{article.download}" th:href="@{'/uploads/numbers/'+${number.numberFile}}"></a>
         <div th:if="${#lists.isEmpty(number.sections)}" th:text="#{number.empty}">
             Данный номер не содержит статей
         </div>

@@ -10,6 +10,10 @@
 
     </div>
     <div id="admin_content">
+        <div th:with="section=${@sectionService.getSectionById(article.sectionId)}">
+            <nav th:if="${action == 'article_add'}" class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><a href="/admin/journal_change">Изменение журналов</a><span class="path_arrow"> > </span><a th:href="@{'/admin/journal_change'(id=${section.number.journalId})}" th:text="${section.number.journal.name}"></a><span class="path_arrow"> > </span><a th:href="@{'/admin/number_change'(id=${section.number.id})}" th:text="'Журнал '+${section.number.journal.name}+' №'+${section.number.name}+' за '+${section.number.year}+' год'"></a><span class="path_arrow"> > </span><a th:href="@{'/admin/section_change'(id=${section.id})}" th:text="${section.name}">Раздел</a></a><span class="path_arrow"> > </span><span>Добавление статьи</span></nav>
+            <nav th:if="${action == 'article_change'}" class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><a href="/admin/journal_change">Изменение журналов</a><span class="path_arrow"> > </span><a th:href="@{'/admin/journal_change'(id=${section.number.journalId})}" th:text="${section.number.journal.name}"></a><span class="path_arrow"> > </span><a th:href="@{'/admin/number_change'(id=${section.number.id})}" th:text="'Журнал '+${section.number.journal.name}+' №'+${section.number.name}+' за '+${section.number.year}+' год'"></a><span class="path_arrow"> > </span><a th:href="@{'/admin/section_change'(id=${section.id})}" th:text="${section.name}">Раздел</a></a><span class="path_arrow"> > </span><span th:text="${article.name}">Статья</span></nav>
+        </div>
         <div th:if="${action == 'article_add'} or ${action == 'article_list'} or ${action == 'article_change'}" class="relative">
             <div class="title" th:if="${action == 'article_add'}">Добавление статьи</div>
             <div class="page_title" th:if="${action == 'article_change'} or ${action == 'article_list'}">Изменение статьи</div>
@@ -107,28 +111,6 @@
                     <textarea th:field="*{articleText}" id="articleText" name="articleText" cols="60"
                               rows="5"></textarea>
 
-<!--                    <div class="form__group field">-->
-<!--                        <select class="select-css" name="articleType" th:field="*{articleType}" >-->
-<!--                            <option th:if="${article.articleType != ''}"  th:value="${article.articleType}" th:text="${article.articleType}"></option>-->
-<!--                            <option  value="">Не выбран</option>-->
-<!--                            <option  value="RAR">RAR</option>-->
-<!--                            <option  value="EDI">EDI</option>-->
-<!--                            <option  value="BRV">BRV</option>-->
-<!--                            <option  value="CNF">CNF</option>-->
-<!--                            <option  value="SCO">SCO</option>-->
-<!--                            <option  value="REV">REV</option>-->
-<!--                            <option  value="ABS">ABS</option>-->
-<!--                            <option  value="REP">REP</option>-->
-<!--                            <option  value="COR">COR</option>-->
-<!--                            <option  value="PER">PER</option>-->
-<!--                            <option  value="MIS">MIS</option>-->
-<!--                            <option  value="UNK">UNK</option>-->
-<!--                        </select>-->
-
-<!--                        <label class="form__label">Тип статьи</label>-->
-<!--                    </div>-->
-
-
                     <div class="form__group field">
                         <select class="select-css" th:field="*{type}" >
                             <option th:each="type : ${types}" th:text="${type.name}" th:value="${type.id}"></option>
@@ -197,7 +179,7 @@
                     <small class="input_error" th:each="err : ${#fields.errors('articleFile')}" th:text="${err}"></small>
 
 
-                    <input class="ajax_submit"  th:if="${action == 'article_add'}" id="submit" value="Добавить статью" type="button">
+                    <input th:if="${action == 'article_add'}" id="submit" value="Добавить статью" type="submit">
                     <input class="ajax_submit" th:if="${action == 'article_change'}" id="submit" value="Сохранить статью" type="button">
                     <div class="form_message"></div>
                     <script>

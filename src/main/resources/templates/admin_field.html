@@ -10,15 +10,16 @@
 
     </div>
     <div id="admin_content">
+        <nav class="current_path"><a href="/admin/">Главная</a><span class="path_arrow"> > </span><span>Настройка полей</span></nav>
         <div class="relative">
             <div class="page_title">Добавление полей</div>
 
             <div th:each="item: ${items}" th:if="${item.id > 0}">
 
                 <span class="item_field_name" th:text="${item.name}"></span><span th:if="${type} != 'size' and ${type != 'publisher'}" th:text="' ('+${item.nameEng}+')'"></span>
-                <a class="remove_link" th:href="@{'/admin/'+${type}+'_delete'(id=${item.id})}"><img title="удалить"
-                                                                                                    class="remove_line_img"
-                                                                                                    src="/images/delete.png"></a>
+<!--                <a class="remove_link" th:href="@{'/admin/'+${type}+'_delete'(id=${item.id})}"><img title="удалить"-->
+<!--                                                                                                    class="remove_line_img"-->
+<!--                                                                                                    src="/images/delete.png"></a>-->
             </div>
             <form class="main_form" method="post" th:action="@{'/admin/'+${type}+'_change'}" th:object="${object}">
                 <div class="form__group field">

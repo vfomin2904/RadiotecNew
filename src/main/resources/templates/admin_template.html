@@ -28,7 +28,7 @@
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                 </div>
                 <ul class="submenuItems">
-                    <li><a href="/admin/journal_add">Добавить</a></li>
+                    <li sec:authorize="hasAuthority('ADMIN')"><a href="/admin/journal_add">Добавить</a></li>
                     <li><a href="/admin/journal_change">Изменить</a></li>
                 </ul>
             </li>
@@ -37,7 +37,7 @@
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                 </div>
                 <ul class="submenuItems">
-                    <li><a href="/admin/booksec_add">Добавить</a></li>
+                    <li sec:authorize="hasAuthority('ADMIN')"><a href="/admin/booksec_add">Добавить</a></li>
                     <li><a href="/admin/booksec_change">Изменить</a></li>
                 </ul>
             </li>
@@ -46,12 +46,12 @@
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                 </div>
                 <ul class="submenuItems">
-                    <li><a href="/admin/book_add">Добавить</a></li>
+                    <li sec:authorize="hasAuthority('ADMIN')"><a href="/admin/book_add">Добавить</a></li>
                     <li><a href="/admin/book_change">Изменить</a></li>
                     <li><a href="/admin/book_sort">Сортировка новых книг</a></li>
                 </ul>
             </li>
-            <li>
+            <li sec:authorize="hasAuthority('ADMIN')">
                 <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Меню
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                 </div>
@@ -61,7 +61,7 @@
                     <li><a th:href="@{/admin/menu_change(type=journal)}">Журналы</a></li>
                 </ul>
             </li>
-            <li>
+            <li sec:authorize="hasAuthority('ADMIN')">
                 <div class="dropdownlink"><i class="fa fa-motorcycle" aria-hidden="true"></i> Сообщения
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                 </div>
@@ -76,10 +76,10 @@
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                 </div>
                 <ul class="submenuItems">
-                    <li><a href="/admin/cart">Корзина</a></li>
-                    <li><a th:href="@{/admin/subscribes(type=book)}">Заказ книг</a></li>
-                    <li><a th:href="@{/admin/subscribes(type=journal)}">Подписка</a></li>
-                    <li><a th:href="@{/admin/menu_change(id=6)}">Надпись на фоне</a></li>
+                    <li sec:authorize="hasAuthority('ADMIN')"><a href="/admin/cart">Корзина</a></li>
+                    <li sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/admin/subscribes(type=book_section)}">Заказ книг</a></li>
+                    <li sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/admin/subscribes(type=journal)}">Подписка</a></li>
+                    <li sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/admin/menu_change(id=6)}">Надпись на фоне</a></li>
                     <li><a href="/admin/other?type=fields">Настройка полей</a></li>
                 </ul>
             </li>

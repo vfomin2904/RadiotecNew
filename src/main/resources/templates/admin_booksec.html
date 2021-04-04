@@ -10,6 +10,9 @@
 
     </div>
     <div id="admin_content">
+        <nav th:if="${action == 'booksec_change'} or ${action == 'booksec_list'}"  class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><span>Изменение книжного раздела</span></nav>
+        <nav th:if="${action == 'booksec_add'}"  class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><span>Добавление книжного раздела</span></nav>
+
         <div th:if="${action == 'booksec_change'} or ${action == 'booksec_list'} or ${action == 'booksec_add'}" class="relative">
             <div class="title" th:if="${action == 'booksec_add'}">Добавление книжного раздела</div>
             <div class="page_title" th:if="${action == 'booksec_list'}">Изменение книжного раздела</div>
@@ -17,7 +20,7 @@
             <form class="main_form" method="post" th:attr="action=${action == 'booksec_add'?'/admin/booksec_add':'/admin/booksec_change'}"
                   th:object="${bookSec}">
 
-                <label th:if="${action == 'booksec_list'}" for="book_select_section">Раздел</label>
+<!--                <label th:if="${action == 'booksec_list'}" for="book_select_section">Раздел</label>-->
                 <select class="select-css" th:if="${action == 'booksec_list'}" id="book_select_section" name="booksec_name">
                     <option selected disabled>Книжный раздел</option>
                     <option th:each="booksec : ${booksecs}" th:value="${booksec.id}" th:text="${booksec.name}"></option>
@@ -65,7 +68,7 @@
                         <label class="form__label">Ключевые слова (англ.)</label>
                     </div>
 
-                    <input class="ajax_submit"  id="submit" th:if="${action == 'booksec_add'}" value="Добавить книжный раздел" type="button">
+                    <input id="submit" th:if="${action == 'booksec_add'}" value="Добавить книжный раздел" type="submit">
                     <input class="ajax_submit"  id="submit" th:if="${action == 'booksec_change'}" value="Сохранить книжный раздел" type="button">
 
                     <div class="form_message"></div>

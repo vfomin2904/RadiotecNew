@@ -16,7 +16,7 @@ public class BookSize {
     @Column(name="name")
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "size")
+    @OneToMany(mappedBy = "size")
     private Set<Books> books = new HashSet<>();
 
     public BookSize(){

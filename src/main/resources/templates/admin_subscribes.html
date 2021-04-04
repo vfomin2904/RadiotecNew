@@ -10,6 +10,8 @@
 
     </div>
     <div id="admin_content">
+        <nav th:if="${type == 'journal'}" class="current_path"><a href="/admin/">Главная</a><span class="path_arrow"> > </span><span>Подписки</span></nav>
+        <nav th:if="${type != 'journal'}" class="current_path"><a href="/admin/">Главная</a><span class="path_arrow"> > </span><span>Заказы книг</span></nav>
         <div class="relative">
             <div class="page_title"
                  th:text="${type == 'journal'}?'Список подписок на журналы':'Список заказов книг'"></div>
@@ -42,7 +44,8 @@
                         <span>Журнал: <a th:href="@{'/ru/journal/'+${journal.id}}" th:text="${journal.name}"></a></span>
                     </p>
                     <p th:if="${type=='book_section'}" th:with="booksec = ${@bookSecService.getBookSecById(subscribe.product)}">
-                        <span>Серия книг: <a th:href="@{'/ru/booksection/'+${booksec.id}}" th:text="${booksec.name}"></a></span>
+                        <span>Серия книг: <a th:href="@{'/ru/booksection/'+${booksec.id}}" th:text="${booksec.name}"></a></span><br>
+                        <span th:if="${subscribe.book != null and subscribe.book != ''}" th:text="'Книга: '+${subscribe.book}"></span>
                     </p>
                     <br>
                     <p><span th:text="'Количество: '+${subscribe.count}"></span></p><br>
@@ -60,7 +63,7 @@
             </div>
             <script>
                     $(".show_details").click(function(){
-                    var details = $(this).parent().next(".order_details");
+                    var details = $(this).parent().next().next(".order_details");
                     if($(details).css("display") == "none"){
                     $(details).show();
                 } else{

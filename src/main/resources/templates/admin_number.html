@@ -10,13 +10,16 @@
 
     </div>
     <div id="admin_content">
+        <nav th:if="${action == 'number_change'} and ${number.journal != null}" class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><a href="/admin/journal_change">Изменение журналов</a><span class="path_arrow"> > </span><a th:href="@{'/admin/journal_change'(id=${number.journalId})}" th:text="${number.journal.name}"></a><span class="path_arrow"> > </span><span th:text="'Журнал '+${number.journal.name}+' №'+${number.name}+' за '+${number.year}+' год'"></span></nav>
+        <nav th:if="${action == 'number_add'}" class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><a href="/admin/journal_change">Изменение журналов</a><span class="path_arrow"> > </span><a th:href="@{'/admin/journal_change'(id=${number.journalId})}" th:text="${@journalsService.getJournalById(number.journalId).name}"></a><span class="path_arrow"> > </span><span>Новый номер</span></nav>
+
         <div th:if="${action == 'number_change'} or ${action == 'number_list'} or ${action == 'number_add'}"
              class="relative">
             <div class="title" th:if="${action == 'number_add'}">Добавление номера</div>
             <div class="page_title" th:if="${action == 'number_change'} or ${action == 'number_list'}">Изменение
                 номера
             </div>
-            <form class="main_form" method="post" th:if="${action == 'number_add'} or ${action == 'number_change'}"
+            <form class="main_form" enctype="multipart/form-data" method="post" th:if="${action == 'number_add'} or ${action == 'number_change'}"
                   th:attr="action=${action == 'number_add'?'/admin/number_add':'/admin/number_change'}"
                   th:object="${number}">
                 <a class="remove_link" th:if="${action == 'number_change'}"
@@ -99,8 +102,8 @@
                         <label class="form__label">Файл</label>
                     </div>
 
-                    <input class="ajax_submit" th:if="${action == 'number_add'}" id="submit" value="Добавить номер"
-                           type="button">
+                    <input  th:if="${action == 'number_add'}" id="submit" value="Добавить номер"
+                           type="submit">
                     <input class="ajax_submit" th:if="${action == 'number_change'}" id="submit" value="Сохранить номер"
                            type="button">
 

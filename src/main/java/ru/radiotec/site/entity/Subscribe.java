@@ -45,6 +45,9 @@ public class Subscribe{
     @Column(name="type")
     private String type;
 
+    @Column(name="book")
+    private String book;
+
     @Column(name="user")
     private int userId;
 
@@ -149,5 +152,13 @@ public class Subscribe{
 
     public void setProduct(int product) {
         this.product = product;
+    }
+
+    public String getBook() {
+        return book;
+    }
+
+    public void setBook(String book) {
+        this.book = book;
     }
 }

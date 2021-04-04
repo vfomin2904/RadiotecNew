@@ -40,4 +40,8 @@ public class BookService {
     public void delete(Books book) {
         bookRepository.delete(book);
     }
+
+    public List<Books> getBookBySize(int id) {
+        return bookRepository.findBooksByBooksize(id);
+    }
 }

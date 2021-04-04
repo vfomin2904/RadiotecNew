@@ -10,6 +10,8 @@
 
     </div>
     <div id="admin_content">
+        <nav th:if="${action == 'book_sort_new'}" class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><span>Сортировка новых книг</span></nav>
+        <nav th:if="${action == 'book_sort'}" class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><a href="/admin/booksec_change" th:text="${booksec.name}"></a><span class="path_arrow"> > </span><span>Сортировка книг</span></nav>
         <div th:if="${action == 'book_sort_new'} or ${action == 'book_sort'}" class="relative">
             <div th:if="${action == 'book_sort_new'}" class="title">Список новых книг</div>
             <div th:if="${action == 'book_sort'}" class="title" th:text="${booksec.name}">Список новых книг</div>

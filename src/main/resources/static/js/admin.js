@@ -2,111 +2,111 @@ $(document).ready(function () {
 
     delete_img_activate();
 
-    $('#select_journal_name').on('change', function (e) {
-        // var optionSelected = $("option:selected", this);
-        $(this).nextAll("select").prop('selectedIndex', 0);
-        $(this).nextAll("select").find(".custom_option").remove();
-
-        var valueSelected = this.value;
-        $.ajax({
-            url: "/admin/handler",
-            method: "POST",
-            data: {
-                journal_id: valueSelected
-            },
-            dataType: "html"
-        }).success(function (data) {
-            var data = $(data);
-            // $('#select_number_year').html(data);
-            $('#select_number_year').html(data.find('.years_list').html());
-        });
-    });
-
-    $('#select_number_year').on('change', function (e) {
-        $(this).nextAll("select").prop('selectedIndex', 0);
-        $(this).nextAll("select").find(".custom_option").remove();
-        var valueYear = this.value;
-        var valueJournal = $('#select_journal_name').val();
-        $.ajax({
-            url: "/admin/handler",
-            method: "POST",
-            data: {
-                journal_id: valueJournal,
-                number_year: valueYear
-            }
-        }).success(function (data) {
-            var data = $(data);
-            // $('#select_number_name').html(data);
-            $('#select_number_name').html(data.find('.numbers_list').html());
-
-        });
-    });
-
-    $('#select_number_name').on('change', function (e) {
-        $(this).nextAll("select").prop('selectedIndex', 0);
-        $(this).nextAll("select").find(".custom_option").remove();
-        var valueNumber = this.value;
-        $.ajax({
-            url: "/admin/handler",
-            method: "POST",
-            data: {
-                number_id: valueNumber
-            }
-        }).success(function (data) {
-            var data = $(data);
-
-            $('#select_section_name').html(data.find('.section_list').html());
-        });
-    });
-
-    $('#select_section_name').on('change', function (e) {
-        $(this).nextAll("select").prop('selectedIndex', 0);
-        $(this).nextAll("select").find(".custom_option").remove();
-        var valueSection = this.value;
-        var action = $(".main_form").attr("action");
-        action = action.substring(action.lastIndexOf("/") + 1);
-
-        if (action == "article_add") {
-            return;
-        }
-        $.ajax({
-            url: "/admin/handler",
-            method: "POST",
-            data: {
-                section_id: valueSection,
-                action: action
-            }
-        }).success(function (data) {
-            var data = $(data);
-            if (action == "section_change") {
-                $('.main_params').html(data.find('.section_main_params').html());
-                init_checkbox();
-                delete_img_activate();
-            } else if (action == "article_change") {
-                var data = $(data);
-                $('#select_article_name').html(data.find('.articles_list').html());
-            }
-        });
-    });
-
-    $('#select_article_name').on('change', function (e) {
-        $(this).nextAll("select").prop('selectedIndex', 0);
-        $(this).nextAll("select").find(".custom_option").remove();
-
-        var valueArticle = this.value;
-        $.ajax({
-            url: "/admin/handler",
-            method: "POST",
-            data: {
-                art_id: valueArticle
-            }
-        }).success(function (data) {
-            var data = $(data);
-            $('.main_params').html(data.find('.article_main_params').html());
-            delete_img_activate();
-            init_checkbox();
-        });
-    });
+    // $('#select_journal_name').on('change', function (e) {
+    //     // var optionSelected = $("option:selected", this);
+    //     $(this).nextAll("select").prop('selectedIndex', 0);
+    //     $(this).nextAll("select").find(".custom_option").remove();
+    //
+    //     var valueSelected = this.value;
+    //     $.ajax({
+    //         url: "/admin/handler",
+    //         method: "POST",
+    //         data: {
+    //             journal_id: valueSelected
+    //         },
+    //         dataType: "html"
+    //     }).success(function (data) {
+    //         var data = $(data);
+    //         // $('#select_number_year').html(data);
+    //         $('#select_number_year').html(data.find('.years_list').html());
+    //     });
+    // });
+    //
+    // $('#select_number_year').on('change', function (e) {
+    //     $(this).nextAll("select").prop('selectedIndex', 0);
+    //     $(this).nextAll("select").find(".custom_option").remove();
+    //     var valueYear = this.value;
+    //     var valueJournal = $('#select_journal_name').val();
+    //     $.ajax({
+    //         url: "/admin/handler",
+    //         method: "POST",
+    //         data: {
+    //             journal_id: valueJournal,
+    //             number_year: valueYear
+    //         }
+    //     }).success(function (data) {
+    //         var data = $(data);
+    //         // $('#select_number_name').html(data);
+    //         $('#select_number_name').html(data.find('.numbers_list').html());
+    //
+    //     });
+    // });
+    //
+    // $('#select_number_name').on('change', function (e) {
+    //     $(this).nextAll("select").prop('selectedIndex', 0);
+    //     $(this).nextAll("select").find(".custom_option").remove();
+    //     var valueNumber = this.value;
+    //     $.ajax({
+    //         url: "/admin/handler",
+    //         method: "POST",
+    //         data: {
+    //             number_id: valueNumber
+    //         }
+    //     }).success(function (data) {
+    //         var data = $(data);
+    //
+    //         $('#select_section_name').html(data.find('.section_list').html());
+    //     });
+    // });
+    //
+    // $('#select_section_name').on('change', function (e) {
+    //     $(this).nextAll("select").prop('selectedIndex', 0);
+    //     $(this).nextAll("select").find(".custom_option").remove();
+    //     var valueSection = this.value;
+    //     var action = $(".main_form").attr("action");
+    //     action = action.substring(action.lastIndexOf("/") + 1);
+    //
+    //     if (action == "article_add") {
+    //         return;
+    //     }
+    //     $.ajax({
+    //         url: "/admin/handler",
+    //         method: "POST",
+    //         data: {
+    //             section_id: valueSection,
+    //             action: action
+    //         }
+    //     }).success(function (data) {
+    //         var data = $(data);
+    //         if (action == "section_change") {
+    //             $('.main_params').html(data.find('.section_main_params').html());
+    //             init_checkbox();
+    //             delete_img_activate();
+    //         } else if (action == "article_change") {
+    //             var data = $(data);
+    //             $('#select_article_name').html(data.find('.articles_list').html());
+    //         }
+    //     });
+    // });
+    //
+    // $('#select_article_name').on('change', function (e) {
+    //     $(this).nextAll("select").prop('selectedIndex', 0);
+    //     $(this).nextAll("select").find(".custom_option").remove();
+    //
+    //     var valueArticle = this.value;
+    //     $.ajax({
+    //         url: "/admin/handler",
+    //         method: "POST",
+    //         data: {
+    //             art_id: valueArticle
+    //         }
+    //     }).success(function (data) {
+    //         var data = $(data);
+    //         $('.main_params').html(data.find('.article_main_params').html());
+    //         delete_img_activate();
+    //         init_checkbox();
+    //     });
+    // });
 
     $('#book_select_section').on('change', function (e) {
         $(this).nextAll("select").prop('selectedIndex', 0);

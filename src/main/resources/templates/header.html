@@ -21,25 +21,37 @@
     <link rel="stylesheet" type="text/css" href="/main.css">
     <link rel="stylesheet" type="text/css" href="/popup.css">
 
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript" >
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+        ym(75124855, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+            webvisor:true
+        });
+    </script>
+<!--    <noscript><div><img src="https://mc.yandex.ru/watch/75124855" style="position:absolute; left:-9999px;" alt="" /></div></noscript>-->
+
+    <!-- /Yandex.Metrika counter -->
+
 </head>
 <div th:fragment="header_menu" id="header_menu">
-    <!--    <div id="top_background_line"></div>-->
     <div id="header_top_line">
         <div id="header_top_line_content">
-            <ul id="select_lang">
+            <ul id="select_lang" th:with="url=${#strings.toLowerCase(#request.getQueryString())}">
                 <li th:classappend="(#{language} == 'ru')?'active_lang':''"><a
-                        th:href="@{${#strings.replace(#httpServletRequest.requestURI, '/en/','/ru/')}}"><img title="rus"
+                        th:href="@{${#strings.replace(#httpServletRequest.requestURI, '/en/','/ru/')}+'?'+${url}}"><img title="rus"
                                                                                                              th:src="@{/images/ru.png}"></a>
                 </li>
                 <li th:classappend="(#{language} == 'en')?'active_lang':''"><a
-                        th:href="@{${#strings.replace(#httpServletRequest.requestURI, '/ru/','/en/')}}"><img title="en"
+                        th:href="@{${#strings.replace(#httpServletRequest.requestURI, '/ru/','/en/')}+'?'+${url}}"><img title="en"
                                                                                                              th:src="@{/images/en.png}"></a>
                 </li>
             </ul>
-            <div id="header_right" th:if="${headerRight != null}"
-                 th:utext="(#{language} == 'ru')?${headerRight.content}:${headerRight.contentEng}">
-
-            </div>
             <ul id="main_menu">
                 <li><a th:href="'/'+#{language}+'/'" th:text="#{header.main}">Главная</a></li>
                 <li><a th:href="'/'+#{language}+'/about'" th:text="#{header.about}">Об издательстве</a></li>
@@ -55,6 +67,10 @@
                 <li style="margin-left:15px;"><a th:href="'/'+#{language}+'/cart'" th:text="#{header.cart}">Корзина</a>
                 </li>
             </ul>
+            <div id="header_right" th:if="${headerRight != null}"
+                 th:utext="(#{language} == 'ru')?${headerRight.content}:${headerRight.contentEng}">
+
+            </div>
         </div>
     </div>
     <div id="header_block">
@@ -65,10 +81,7 @@
         </div>
         <div id="header_middlie">
             <img th:src="(#{language} == 'ru')?'/images/RADIOTEKHNIKA_RU.png':'/images/RADIOTEKHNIKA_EN.png'">
-            <!--            <span th:text="#{header.pubHouse}" style="margin-left:50px;">Издательство</span> <br> <span-->
-            <!--                style="text-transform: uppercase;font-size:54px;margin-left:0px;"><strong-->
-            <!--                th:text="#{header.radiotec}">РАДИОТЕХНИКА</strong></span></div>-->
-        </div>
+     </div>
         <div id="header_bottom_line">
 
         </div>
@@ -89,35 +102,35 @@
                        th:text="#{header.archives}">Архив</a></li>
                 <li><a th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}(page=for_authors)}"
                        th:text="#{header.forAuthors}">Для авторов</a></li>
-                <li><a th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}(page=subscribe)}"
+                <li><a th:href="@{'/'+#{language}+'/subscribe/'(journal=${currentJournal.id})}"
                        th:text="#{header.subscribe}">Подписка</a></li>
             </ul>
             <ul th:if="${currentBook != null}" id="journal_menu">
-                <li th:if="not ${#strings.equals(page, '')}"><a style="position:relative;"
+                <li th:if="${backActive == null}"><a style="position:relative;"
                                                                 th:href="'/'+#{language}+'/books/'+${currentBook.id}">
                     <div class="back_arrow"></div>
                 </a></li>
-                <li><a th:href="@{'/'+#{language}+'/books/'+${currentBook.id}(page=reader)}"
+                <li><a th:href="@{'/'+#{language}+'/reader/'(book=${currentBook.id})}"
                        th:text="#{header.readers}">Читателям</a></li>
-                <li><a th:href="@{'/'+#{language}+'/books/'+${currentBook.id}(page=partner)}"
+                <li><a th:href="@{'/'+#{language}+'/partner/'(book=${currentBook.id})}"
                        th:text="#{header.partners}">Партнерам</a></li>
-                <li><a th:href="@{'/'+#{language}+'/books/'+${currentBook.id}(page=author)}"
+                <li><a th:href="@{'/'+#{language}+'/author/'(book=${currentBook.id})}"
                        th:text="#{header.forAuthors}">Для авторов</a></li>
-                <li><a th:href="@{'/'+#{language}+'/books/'+${currentBook.id}(page=order)}" th:text="#{header.order}">Заказ
+                <li><a th:href="@{'/'+#{language}+'/order_book/'(book=${currentBook.id})}" th:text="#{header.order}">Заказ
                     книг</a></li>
             </ul>
             <ul th:if="${currentBookSection != null}" id="journal_menu">
-                <li th:if="not ${#strings.equals(tab, '')}"><a style="position:relative;"
+                <li th:if="${backActive == null}"><a style="position:relative;"
                                                                 th:href="'/'+#{language}+'/booksection/'+${currentBookSection.id}">
                     <div class="back_arrow"></div>
                 </a></li>
-                <li><a th:href="@{'/'+#{language}+'/booksection/'+${currentBookSection.id}(tab=reader)}"
+                <li><a th:href="@{'/'+#{language}+'/reader/'(section=${currentBookSection.id})}"
                        th:text="#{header.readers}">Читателям</a></li>
-                <li><a th:href="@{'/'+#{language}+'/booksection/'+${currentBookSection.id}(tab=partner)}"
+                <li><a th:href="@{'/'+#{language}+'/partner/'(section=${currentBookSection.id})}"
                        th:text="#{header.partners}">Партнерам</a></li>
-                <li><a th:href="@{'/'+#{language}+'/booksection/'+${currentBookSection.id}(tab=author)}"
+                <li><a th:href="@{'/'+#{language}+'/author/'(section=${currentBookSection.id})}"
                        th:text="#{header.forAuthors}">Для авторов</a></li>
-                <li><a th:href="@{'/'+#{language}+'/booksection/'+${currentBookSection.id}(tab=order)}"
+                <li><a th:href="@{'/'+#{language}+'/order_book/'(section=${currentBookSection.id})}"
                        th:text="#{header.order}">Заказ книг</a></li>
             </ul>
             <div class="ya-site-form ya-site-form_inited_no"
@@ -169,6 +182,9 @@
             }
 
         </style>
+        <script>
+            setTimeout(function(){$(".ya-site-form__submit").val("[[#{search}]]")}, 300);
+        </script>
     </div>
 
 </div>

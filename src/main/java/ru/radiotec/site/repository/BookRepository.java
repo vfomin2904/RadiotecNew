@@ -15,4 +15,6 @@ public interface BookRepository extends JpaRepository<Books, Integer> {
 
     @Query("select MAX(id) from Books")
     int findBooksWithMaxId();
+
+    List<Books> findBooksByBooksize(int booksize);
 }

@@ -5,14 +5,14 @@
 <div th:replace="~{header :: header_menu}"></div>
 
 <div id="content">
-    <div id="left_menu">
+    <div id="left_menu" th:fragment="menu">
         <div th:replace="~{left_menu :: books_menu}">
 
         </div>
     </div>
     <div id="main_block">
-        <nav class="current_path"><a th:href="@{'/'+#{language}+'/'}" th:text="#{header.main}">Главная</a> <span class="path_arrow"> > </span><span th:text="#{book.books}">Книги</span></nav>
-        <div  th:utext="(#{language} == 'ru' or ${page.contentEng} == '')?${page.content}:${page.contentEng}">
+
+        <div th:utext="(#{language} == 'ru' or ${reader.contentEng == ''})?${reader.content}:${reader.contentEng}">
 
         </div>
     </div>

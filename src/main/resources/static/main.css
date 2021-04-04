@@ -189,9 +189,9 @@ body{
 
 #header_right{
     width: 140px;
-    float:left;
+    float:right;
     text-align: center;
-    margin-left:60px;
+    margin-right:160px;
     font-family: sans-serif;
     padding-top:2px;
 }
@@ -557,7 +557,7 @@ body{
 
 .download_button{
     background:#51A0BA;
-    color:white;
+    color:white !important;
     text-decoration: none;
     padding:5px 8px;
     font-size:18px;
@@ -647,6 +647,10 @@ body{
     margin:20px auto;
     border:1px solid #ccc;
     padding:20px;
+}
+.user_form select{
+    display: block;
+    width:100%;
 }
 .user_form label{
     display:block;
@@ -812,4 +816,63 @@ input[type="button"],
 input[type="button"]:active,
 input[type="button"]:focus {
     outline: none;
+}
+
+.current_path{
+    color:#2b5866;
+    font-size:11px;
+}
+.current_path a{
+    color:#2b5866 !important;
+    font-size:11px;
+}
+.path_arrow{
+    font-size:8px;
+    font-weight: bold;
+}
+
+.journal_menu_block{
+    /*display: flex;*/
+    /*justify-content: space-between;*/
+    width:100%;
+    /*flex-wrap: wrap;*/
+}
+.journal_menu{
+    list-style-type: none;
+    padding:0;
+    margin: 10px 0;
+    width:100%;
+
+    cursor:pointer;
+}
+.journal_menu > li{
+    margin: 0 0 5px 0;
+    font-size:15px;
+    color: #707070;
+    display: none;
+}
+.journal_menu li a {
+    color: #999999 !important;
+    font-size:15px;
+    text-decoration: none;
+    padding-left:30px;
+}
+/*.journal_menu li a::before {*/
+/*    color: #2b5866 !important;*/
+/*    content: "» ";*/
+/*}*/
+.journal_menu_title{
+    list-style-type: none;
+    color: #000 !important;
+    background: #ccc;
+    margin: 10px 0;
+    padding: 7px 10px;
+    display:block !important;
+}
+
+.journal_menu_title:hover{
+    color:#fff !important;
+}
+.journal_menu_title.active{
+    color:#fff !important;
 }

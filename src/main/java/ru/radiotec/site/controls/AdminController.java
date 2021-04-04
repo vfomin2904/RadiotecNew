@@ -113,7 +113,7 @@ public class AdminController {
             return "admin_journal";
         }
         journalsService.create(journal);
-        return "redirect:/admin/";
+        return "redirect:/admin/journal_change";
     }
 
     @PostMapping("/journal_change")
@@ -218,7 +218,7 @@ public class AdminController {
         }
 
         numberService.create(number);
-        return "redirect:/admin/";
+        return "redirect:/admin/journal_change";
     }
 
     @GetMapping("/number_change")
@@ -284,6 +284,7 @@ public class AdminController {
     public String getSectionList(Model model, @RequestParam(required = true) int id) {
         TreeSet<Section> sections = new TreeSet<>(sectionService.getSectionByNumber(id));
         model.addAttribute("section_list", sections);
+        model.addAttribute("numberId", id);
         return "admin_section_list";
     }
 
@@ -327,7 +328,7 @@ public class AdminController {
         section.setSort(max + 1);
 
         sectionService.create(section);
-        return "redirect:/admin/";
+        return "redirect:/admin/number_change?id="+section.getNumberId();
     }
 
     @GetMapping("/section_delete")
@@ -367,6 +368,7 @@ public class AdminController {
     public String getArticleList(Model model, @RequestParam(required = true) int id) {
         List<Article> articles = articleService.getArticleBySection(id);
         model.addAttribute("article_list", articles);
+        model.addAttribute("sectionId", id);
         return "admin_article_list";
     }
 
@@ -415,7 +417,7 @@ public class AdminController {
             return getAdminArticleAddPage(model, article, 0);
         }
         articleService.create(article);
-        return "redirect:/admin/";
+        return "redirect:/admin/section_change?id="+article.getSectionId();
     }
 
     @GetMapping("/article_change")
@@ -750,6 +752,7 @@ public class AdminController {
             model.addAttribute("news", news);
 
         }
+        model.addAttribute("type", type);
         model.addAttribute("action", "news_add");
         return "admin_news";
     }
@@ -789,9 +792,9 @@ public class AdminController {
         } else {
             List<News> news_list = newsService.getNewsByType(type);
             model.addAttribute("news_list", news_list);
-            model.addAttribute("type", type);
             model.addAttribute("action", "news_list");
         }
+        model.addAttribute("type", type);
 
         return "admin_news";
     }
@@ -817,9 +820,8 @@ public class AdminController {
         if (id > 0) {
             Page page = pageService.getPageById(id);
             model.addAttribute("page", page);
-        } else if (type.length() > 0) {
-            model.addAttribute("type", type);
         }
+        model.addAttribute("type", type);
         return "admin_menu";
     }
 
@@ -881,6 +883,11 @@ public class AdminController {
     @GetMapping("/size_delete")
     public String getAdminSizeDeletePage(@RequestParam(required = true) int id) {
         BookSize bookSize = bookSizeService.getBookSizeById(id);
+//        List<Books> books = bookService.getBookBySize(id);
+//        for (Books book : books) {
+//            book.setBooksize(0);
+//            bookService.update(book);
+//        }
         bookSizeService.delete(bookSize);
         return "redirect:/admin/field_change?id=1";
     }
@@ -920,6 +927,11 @@ public class AdminController {
     @GetMapping("/article_type_delete")
     public String getAdminArticleTypeDeletePage(@RequestParam(required = true) int id) {
         ArticleType articleType = articleTypeService.getArticleTypeById(id);
+        List<Article> articles = articleService.getArticleByType(id);
+        for (Article article : articles) {
+            article.setType(0);
+            articleService.update(article);
+        }
         articleTypeService.delete(articleType);
         return "redirect:/admin/field_change?id=5";
     }
@@ -1032,11 +1044,11 @@ public class AdminController {
     public String getAdminSubscribePage(Model model, @RequestParam(required = true) String type, @RequestParam(required = false, defaultValue = "0") int item) {
         List<Subscribe>  subscribes = subscribeService.getSubscribeByType(type);
         if(item > 0){
-           if(type.equals("book")){
-               subscribes.removeIf((o) -> item != bookService.getBookById(o.getProduct()).getSection());
-           } else{
+//           if(type.equals("book")){
+//               subscribes.removeIf((o) -> item != bookService.getBookById(o.getProduct()).getSection());
+//           } else{
                subscribes.removeIf((o) -> o.getProduct() != item);
-           }
+//           }
         }
 
         model.addAttribute("subscribes", subscribes);

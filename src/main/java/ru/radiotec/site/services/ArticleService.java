@@ -33,6 +33,10 @@ public class ArticleService {
         return articleRepository.findBySectionId(section_id);
     }
 
+    public List<Article> getArticleByType(int article_type) {
+        return articleRepository.findByType(article_type);
+    }
+
     public void update(Article article) {
         articleRepository.save(article);
     }

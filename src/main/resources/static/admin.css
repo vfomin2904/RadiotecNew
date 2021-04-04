@@ -553,3 +553,23 @@ input {
     color:#333;
     font-size:15px;
 }
+
+
+.current_path{
+    color:#2b5866;
+    font-size:11px;
+    margin-bottom: 5px;
+}
+.current_path a{
+    color:#2b5866 !important;
+    font-size:11px;
+    text-decoration: underline !important;
+}
+.path_arrow{
+    font-size:8px;
+    font-weight: bold;
+}
+
+.menu_info{
+    display: none;
+}

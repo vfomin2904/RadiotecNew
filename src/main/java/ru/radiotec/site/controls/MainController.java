@@ -81,6 +81,8 @@ public class MainController {
 
     @GetMapping("/journals_info")
     public String getJournalsInfoPage(Model model) {
+        Page headerRight = pageService.getPageById(6);
+        model.addAttribute("headerRight", headerRight);
         init_menu(model);
         Page page = pageService.getPageById(9);
         model.addAttribute("page", page);
@@ -89,6 +91,8 @@ public class MainController {
 
     @GetMapping("/books_info")
     public String getBooksInfoPage(Model model) {
+        Page headerRight = pageService.getPageById(6);
+        model.addAttribute("headerRight", headerRight);
         init_menu(model);
         Page page = pageService.getPageById(10);
         model.addAttribute("page", page);
@@ -143,8 +147,7 @@ public class MainController {
     public String getJournalPage(Model model, @PathVariable int journalId, @RequestParam(defaultValue = "", required = false) String page) {
         Journals currentJournal = journalsService.getJournalById(journalId);
         TreeMap<String, TreeSet<Number>> numberSorted = journalsService.getNumberSortedByYear(currentJournal, true);
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
+
         if (numberSorted.size() > 0) {
             String lastYear = numberSorted.firstKey();
             int currentNumber = numberSorted.get(lastYear).last().getId();
@@ -153,21 +156,8 @@ public class MainController {
         model.addAttribute("currentJournal", currentJournal);
         model.addAttribute("numbersSorted", numberSorted);
         model.addAttribute("page", page);
-
-        if(page.equals("subscribe")){
-            Page subscribePage = pageService.getPageById(8);
-            model.addAttribute("subscribePage", subscribePage);
-            Subscribe subscribe = new Subscribe();
-            subscribe.setProduct(currentJournal.getId());
-            subscribe.setType("journal");
-
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if(!auth.getName().equals("anonymousUser")){
-                User currentUser = userService.getUserByLogin(auth.getName());
-                subscribe.setUserId(currentUser.getId().intValue());
-            }
-            model.addAttribute("subscribe", subscribe);
-        }
+        Page headerRight = pageService.getPageById(6);
+        model.addAttribute("headerRight", headerRight);
 
         return "journal";
     }
@@ -217,14 +207,13 @@ public class MainController {
     }
 
     @GetMapping("/books/{book_id}")
-    public String getBookPage(Model model, @PathVariable int book_id, @RequestParam(defaultValue = "", required = false) String page) {
+    public String getBookPage(Model model, @PathVariable int book_id) {
         Books currentBook = bookService.getBookById(book_id);
         model.addAttribute("currentBook", currentBook);
         Page headerRight = pageService.getPageById(6);
         model.addAttribute("headerRight", headerRight);
         ArrayList<BookSec> bookSec = new ArrayList<>(bookSecService.getAllBookSec());
         model.addAttribute("booksecs", bookSec);
-        model.addAttribute("page", page);
 
         List<Cart> carts = (List<Cart>)httpSession.getAttribute("cart");
         boolean cartActive = false;
@@ -236,36 +225,13 @@ public class MainController {
             }
         }}
         model.addAttribute("cartActive", cartActive);
+        model.addAttribute("backActive", false);
 
-        if(page.equals("reader")){
-            Page reader = pageService.getPageById(3);
-            model.addAttribute("reader", reader);
-        } else if(page.equals("partner")){
-            Page partner = pageService.getPageById(4);
-            model.addAttribute("partner", partner);
-        } else if(page.equals("author")){
-            Page author = pageService.getPageById(5);
-            model.addAttribute("author", author);
-        } else if(page.equals("order")){
-            Page orderPage = pageService.getPageById(7);
-            model.addAttribute("orderPage", orderPage);
-            Subscribe subscribe = new Subscribe();
-            subscribe.setProduct(currentBook.getId());
-            subscribe.setType("book");
-
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if(!auth.getName().equals("anonymousUser")){
-                User currentUser = userService.getUserByLogin(auth.getName());
-                subscribe.setUserId(currentUser.getId().intValue());
-            }
-
-            model.addAttribute("subscribe", subscribe);
-        }
         return "book";
     }
 
     @GetMapping("/booksection/{id}")
-    public String getBookSectionPage(Model model, @PathVariable int id, @RequestParam(required = false, defaultValue = "1") int page, @RequestParam(required = false, defaultValue = "") String tab) {
+    public String getBookSectionPage(Model model, @PathVariable int id, @RequestParam(required = false, defaultValue = "1") int page) {
         BookSec currentBookSection = bookSecService.getBookSecById(id);
         int bookCount = currentBookSection.getBooks().size();
         int bookCountOnPage = 9;
@@ -274,40 +240,15 @@ public class MainController {
         int end = (start + bookCountOnPage > bookCount) ? bookCount - 1 : start + bookCountOnPage - 1;
         Page headerRight = pageService.getPageById(6);
         model.addAttribute("headerRight", headerRight);
-//        model.addAttribute("section", section);
         model.addAttribute("start", start);
         model.addAttribute("end", end);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentBookSection", currentBookSection);
-        model.addAttribute("tab", tab);
         init_menu(model);
+        model.addAttribute("backActive", false);
 
 
-        if(tab.equals("reader")){
-            Page reader = pageService.getPageById(3);
-            model.addAttribute("reader", reader);
-        } else if(tab.equals("partner")){
-            Page partner = pageService.getPageById(4);
-            model.addAttribute("partner", partner);
-        } else if(tab.equals("author")){
-            Page author = pageService.getPageById(5);
-            model.addAttribute("author", author);
-        } else if(tab.equals("order")){
-            Page orderPage = pageService.getPageById(7);
-            model.addAttribute("orderPage", orderPage);
-            Subscribe subscribe = new Subscribe();
-            subscribe.setProduct(currentBookSection.getId());
-            subscribe.setType("book_section");
-
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if(!auth.getName().equals("anonymousUser")){
-                User currentUser = userService.getUserByLogin(auth.getName());
-                subscribe.setUserId(currentUser.getId().intValue());
-            }
-
-            model.addAttribute("subscribe", subscribe);
-        }
         return "bookssection";
     }
 
@@ -378,8 +319,122 @@ public class MainController {
         return "custom_page";
     }
 
+    @GetMapping("/subscribe/")
+    public String getSubscribePage(Model model, @RequestParam(required = false, defaultValue = "0") int journal){
+        Page subscribePage = pageService.getPageById(8);
+        model.addAttribute("subscribePage", subscribePage);
+        Page headerRight = pageService.getPageById(6);
+        model.addAttribute("headerRight", headerRight);
+        Subscribe subscribe = new Subscribe();
+        if(journal != 0) {
+            subscribe.setProduct(journal);
+            Journals currentJournal = journalsService.getJournalById(journal);
+            model.addAttribute("currentJournal", currentJournal);
+        }
+        subscribe.setType("journal");
 
-    private void init_menu(Model model) {
+        List<Journals> journals = journalsService.getActiveJournals();
+        model.addAttribute("journals", journals);
+
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(!auth.getName().equals("anonymousUser")){
+            User currentUser = userService.getUserByLogin(auth.getName());
+            subscribe.setUserId(currentUser.getId().intValue());
+        }
+        model.addAttribute("subscribe", subscribe);
+        return "subscribe";
+    }
+
+    @GetMapping("/reader/")
+    public String getReaderPage(Model model, @RequestParam(required = false, defaultValue = "0") int section, @RequestParam(required = false, defaultValue = "0") int book) {
+
+        Page headerRight = pageService.getPageById(6);
+        model.addAttribute("headerRight", headerRight);
+        if(book > 0){
+            Books currentBook = bookService.getBookById(book);
+            model.addAttribute("currentBook", currentBook);
+        } else if(section > 0){
+            BookSec currentBookSection = bookSecService.getBookSecById(section);
+            model.addAttribute("currentBookSection", currentBookSection);
+        }
+        ArrayList<BookSec> bookSec = new ArrayList<>(bookSecService.getAllBookSec());
+        model.addAttribute("booksecs", bookSec);
+
+        Page reader = pageService.getPageById(3);
+        model.addAttribute("reader", reader);
+        return "reader";
+    }
+
+    @GetMapping("/partner/")
+    public String getPartnerPage(Model model, @RequestParam(required = false, defaultValue = "0") int section, @RequestParam(required = false, defaultValue = "0") int book) {
+        Page headerRight = pageService.getPageById(6);
+        model.addAttribute("headerRight", headerRight);
+        if(book > 0){
+            Books currentBook = bookService.getBookById(book);
+            model.addAttribute("currentBook", currentBook);
+        } else if(section > 0){
+            BookSec currentBookSection = bookSecService.getBookSecById(section);
+            model.addAttribute("currentBookSection", currentBookSection);
+        }
+        ArrayList<BookSec> bookSec = new ArrayList<>(bookSecService.getAllBookSec());
+        model.addAttribute("booksecs", bookSec);
+
+        Page partner = pageService.getPageById(4);
+        model.addAttribute("partner", partner);
+        return "partner";
+    }
+
+    @GetMapping("/author/")
+    public String getAuthorPage(Model model, @RequestParam(required = false, defaultValue = "0") int section, @RequestParam(required = false, defaultValue = "0") int book) {
+        Page headerRight = pageService.getPageById(6);
+        model.addAttribute("headerRight", headerRight);
+        if(book > 0){
+            Books currentBook = bookService.getBookById(book);
+            model.addAttribute("currentBook", currentBook);
+        } else if(section > 0){
+            BookSec currentBookSection = bookSecService.getBookSecById(section);
+            model.addAttribute("currentBookSection", currentBookSection);
+        }
+        ArrayList<BookSec> bookSec = new ArrayList<>(bookSecService.getAllBookSec());
+        model.addAttribute("booksecs", bookSec);
+
+        Page author = pageService.getPageById(5);
+        model.addAttribute("author", author);
+        return "author";
+    }
+
+    @GetMapping("/order_book/")
+    public String getOrderBookPage(Model model, @RequestParam(required = false, defaultValue = "0") int section, @RequestParam(required = false, defaultValue = "0") int book) {
+        Page headerRight = pageService.getPageById(6);
+        model.addAttribute("headerRight", headerRight);
+        if(book > 0){
+            Books currentBook = bookService.getBookById(book);
+            model.addAttribute("currentBook", currentBook);
+        } else if(section > 0){
+            BookSec currentBookSection = bookSecService.getBookSecById(section);
+            model.addAttribute("currentBookSection", currentBookSection);
+        }
+        ArrayList<BookSec> bookSec = new ArrayList<>(bookSecService.getAllBookSec());
+        model.addAttribute("booksecs", bookSec);
+
+
+        Subscribe subscribe = new Subscribe();
+        subscribe.setType("book_section");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(!auth.getName().equals("anonymousUser")){
+            User currentUser = userService.getUserByLogin(auth.getName());
+            subscribe.setUserId(currentUser.getId().intValue());
+        }
+        model.addAttribute("subscribe", subscribe);
+
+        Page page = pageService.getPageById(7);
+        model.addAttribute("page", page);
+        return "order_book";
+    }
+
+
+        private void init_menu(Model model) {
         TreeSet<Journals> journals = new TreeSet<>(journalsService.getActiveJournals());
         ArrayList<BookSec> bookSec = new ArrayList<>(bookSecService.getAllBookSec());
         Map<String, Collection> attributes = new HashMap<>();

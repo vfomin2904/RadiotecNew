@@ -13,13 +13,15 @@ public class Page {
     @Column(name="page_id")
     private int id;
 
-    @NotEmpty
     @Column(name="content")
     private String content;
 
 
     @Column(name="content_eng")
     private String contentEng;
+
+    @Column(name="name")
+    private String name;
 
     public Page() {
     }
@@ -46,5 +48,13 @@ public class Page {
 
     public void setContentEng(String contentEng) {
         this.contentEng = contentEng;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -19,7 +19,7 @@ public class BookCover {
     @Column(name="name_eng")
     private String nameEng;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cover")
+    @OneToMany(mappedBy = "cover")
     private Set<Books> books = new HashSet<>();
 
     public BookCover(){

@@ -10,6 +10,9 @@
 
     </div>
     <div id="admin_content">
+        <nav th:if="${action == 'book_change'} or ${action == 'book_list'}" class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><span>Изменение книги</span></nav>
+        <nav th:if="${action == 'book_add'}" class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><span>Добавление книги</span></nav>
+
         <div th:if="${action == 'book_change'} or ${action == 'book_list'} or ${action == 'book_add'}" class="relative">
             <div class="title" th:if="${action == 'book_add'}">Добавление книги</div>
             <div class="page_title" th:if="${action == 'book_list'}">Изменение книги</div>

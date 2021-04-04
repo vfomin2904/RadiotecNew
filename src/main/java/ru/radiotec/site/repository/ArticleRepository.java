@@ -10,4 +10,6 @@ import java.util.List;
 public interface ArticleRepository extends JpaRepository<Article, Integer> {
     List<Article> findByKeywordsContainingOrKeywordsEngContaining(String keywords, String keywordsEng);
     List<Article> findBySectionId(int id);
+
+    List<Article> findByType(int article_type);
 }

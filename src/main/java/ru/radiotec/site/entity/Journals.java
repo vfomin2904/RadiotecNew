@@ -19,7 +19,6 @@ public class Journals implements Comparable<Journals>{
     @Column(name="menu_name")
     private String menuName;
 
-    @NotEmpty
     @Column(name="type")
     private String type;
 
@@ -135,7 +134,6 @@ public class Journals implements Comparable<Journals>{
     @Column(name="menu_name_eng")
     private String menuNameEng;
 
-    @NotEmpty
     @Column(name="type_eng")
     private String typeEng;
 

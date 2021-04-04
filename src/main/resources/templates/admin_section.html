@@ -10,6 +10,10 @@
 
     </div>
     <div id="admin_content">
+        <div th:with="number=${@numberService.getNumberById(section.numberId)}">
+             <nav th:if="${action == 'section_add'}" class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><a href="/admin/journal_change">Изменение журналов</a><span class="path_arrow"> > </span><a th:href="@{'/admin/journal_change'(id=${number.journalId})}" th:text="${@journalsService.getJournalById(number.journalId).name}"></a><span class="path_arrow"> > </span><a th:href="@{'/admin/number_change'(id=${number.id})}" th:text="'Журнал '+${number.journal.name}+' №'+${number.name}+' за '+${number.year}+' год'"></a><span class="path_arrow"> > </span><span>Добавление раздела</span></nav>
+             <nav th:if="${action == 'section_change'}" class="current_path"><a href="/admin/">Главная</a> <span class="path_arrow"> > </span><a href="/admin/journal_change">Изменение журналов</a><span class="path_arrow"> > </span><a th:href="@{'/admin/journal_change'(id=${number.journalId})}" th:text="${@journalsService.getJournalById(number.journalId).name}"></a><span class="path_arrow"> > </span><a th:href="@{'/admin/number_change'(id=${number.id})}" th:text="'Журнал '+${number.journal.name}+' №'+${number.name}+' за '+${number.year}+' год'"></a><span class="path_arrow"> > </span><span th:text="${section.name}">Раздел</span></nav>
+        </div>
         <div th:if="${action == 'section_add'} or ${action == 'section_change'} or ${action == 'section_list'}" class="relative">
             <div class="title" th:if="${action == 'section_add'}">Добавление раздела номера</div>
             <div class="page_title" th:if="${action == 'section_change'} or ${action == 'section_list'}">Изменение раздела</div>
@@ -71,7 +75,7 @@
                     <input class="custom-checkbox active" id="checkbox_active" type="checkbox" name="checkbox_active">
                     <label for="checkbox_active">Активировать</label>
                     <input th:field="*{active}" class="checkbox_value" id="active" name="active" th:value="0" type="hidden">
-                    <input class="ajax_submit" th:if="${action == 'section_add'}" id="submit" value="Добавить раздел" type="button">
+                    <input th:if="${action == 'section_add'}" id="submit" value="Добавить раздел" type="submit">
                     <input class="ajax_submit" th:if="${action == 'section_change'}" id="submit" value="Изменить раздел" type="button">
 
                     <script>

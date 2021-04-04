@@ -28,6 +28,9 @@ public class RootController {
     private OrderService orderService;
 
     @Autowired
+    private BookSecService bookSecService;
+
+    @Autowired
     private HttpSession httpSession;
 
     @GetMapping("/")
@@ -117,5 +120,12 @@ public class RootController {
         httpSession.removeAttribute("cart");
 
         return "redirect:/";
+    }
+
+    @ResponseBody
+    @PostMapping("/book_list")
+    public Set<Books> getBookList(@RequestParam(required = true) int section){
+        BookSec sec = bookSecService.getBookSecById(section);
+        return sec.getBooks();
     }
 }
