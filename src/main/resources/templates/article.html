@@ -9,10 +9,10 @@
         <nav class="current_path"><a th:href="@{'/'+#{language}+'/'}" th:text="#{header.main}">Главная</a> <span
                 class="path_arrow"> > </span><a th:href="@{'/'+#{language}+'/journals_info'}"
                                                 th:text="#{leftMenu.journals}">Журналы</a><span
-                class="path_arrow"> > </span><a th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}}"
+                class="path_arrow"> > </span><a th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})"
                                                 th:text="(#{language} == 'ru' or ${currentJournal.nameEng} == '')?${currentJournal.name}:${currentJournal.nameEng}"></a><span
                 class="path_arrow"> > </span><a
-                th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}+'/number/'+${article.section.number.id}}"
+                th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})+'/number/'+${article.section.number.year}+'-'+${article.section.number.name}"
                 th:text="#{journal.journal}+' '+((#{language}=='ru')?${article.section.number.journal.name}:${article.section.number.journal.nameEng})+' №'+${article.section.number.name}+' '+#{for}+' '+${article.section.number.year}+' '+#{book.year}"></a><span
                 class="path_arrow"> > </span><span
                 th:text="(#{language} == 'ru' or ${article.nameEng} == '')?${article.name}:${article.nameEng}"></span>

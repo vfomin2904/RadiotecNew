@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface NumberRepository extends JpaRepository<Number, Integer> {
     List<Number> findByYearIsContaining(String year);
+
+    Number getNumberByYearAndNameAndJournalId(String year, String name, int journal);
 }

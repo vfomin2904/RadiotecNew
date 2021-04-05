@@ -210,7 +210,7 @@ public class Journals implements Comparable<Journals>{
     @Column(name="print_eng")
     private String printEng;
 
-    @Column(name="sendingArticle_eng")
+    @Column(name="sending_article_eng")
     private String sendingArticleEng;
 
     @Column(name="rules_eng")
@@ -227,6 +227,9 @@ public class Journals implements Comparable<Journals>{
 
     @Column(name="history_eng")
     private String historyEng;
+
+    @Column(name="link")
+    private String link;
 
 
     public String getMenuName() {
@@ -825,5 +828,13 @@ public class Journals implements Comparable<Journals>{
     @Override
     public int compareTo(Journals o) {
         return this.getId()-o.getId();
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 }

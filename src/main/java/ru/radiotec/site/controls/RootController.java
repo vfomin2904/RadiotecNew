@@ -9,6 +9,7 @@ import ru.radiotec.site.entity.Number;
 import ru.radiotec.site.entity.*;
 import ru.radiotec.site.services.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -36,6 +37,14 @@ public class RootController {
     @GetMapping("/")
     public String getMainPage(){
         return "redirect:/ru/";
+    }
+
+
+    @RequestMapping(value={"/robots.txt", "/robot.txt"})
+    @ResponseBody
+    public String getRobotsTxt() {
+        return "User-agent: * \n" +
+                "Disallow: /admin/\n";
     }
 
     @PostMapping("/upload_ckeditor")

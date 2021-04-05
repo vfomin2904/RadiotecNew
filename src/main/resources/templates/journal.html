@@ -10,14 +10,14 @@
         <ul id="left_menu_journal">
             <li class="popup-open"><a href="#" th:text="#{journal.submission}">Отправить статью</a></li>
 
-            <li><a th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}+'#rules'(page=about_journal)}"
+            <li><a th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})+'#rules?page=about_journal'"
                    th:text="#{journal.guidelines}">Правила для авторов</a></li>
-            <li><a th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}+'#redkol'(page=about_journal)}"
+            <li><a th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})+'#redkol?page=about_journal'"
                    th:text="#{journal.board}">Редакционная коллегия</a></li>
-            <li><a th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}+'#review'(page=about_journal)}"
+            <li><a th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})+'#review?page=about_journal'"
                    th:text="#{journal.peer}">Рецензирование</a></li>
-            <li><a th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}+'#ethics'(page=about_journal)}"
-                   style="border:0;" th:text="#{journal.pubethics}">Этика публикаций</a></li>
+            <li><a th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})+'#ethics?page=about_journal'"
+                   style="border-bottom:0 !important;" th:text="#{journal.pubethics}">Этика публикаций</a></li>
 
         </ul>
         <div class="popup-fade">
@@ -41,7 +41,7 @@
                                                   th:text="#{leftMenu.journals}">Журналы</a><span
                     class="path_arrow"> > </span><a
                     th:text="(#{language} == 'ru' or ${currentJournal.nameEng} == '')?${currentJournal.name}:${currentJournal.nameEng}"
-                    th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}}"></a><span
+                    th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})"></a><span
                     class="path_arrow"> > </span><span th:text="#{header.archives}"></span></nav>
         <nav th:if="${#strings.equals(page, 'about_journal')}" class="current_path"><a th:href="@{'/'+#{language}+'/'}"
                                                                                        th:text="#{header.main}">Главная</a>
@@ -49,7 +49,7 @@
                                                   th:text="#{leftMenu.journals}">Журналы</a><span
                     class="path_arrow"> > </span><a
                     th:text="(#{language} == 'ru' or ${currentJournal.nameEng} == '')?${currentJournal.name}:${currentJournal.nameEng}"
-                    th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}}"></a><span
+                    th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})"></a><span
                     class="path_arrow"> > </span><span th:text="#{header.aboutJournal}"></span></nav>
         <nav th:if="${#strings.equals(page, 'for_authors')}" class="current_path"><a th:href="@{'/'+#{language}+'/'}"
                                                                                      th:text="#{header.main}">Главная</a>
@@ -57,7 +57,7 @@
                                                   th:text="#{leftMenu.journals}">Журналы</a><span
                     class="path_arrow"> > </span><a
                     th:text="(#{language} == 'ru' or ${currentJournal.nameEng} == '')?${currentJournal.name}:${currentJournal.nameEng}"
-                    th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}}"></a><span
+                    th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})"></a><span
                     class="path_arrow"> > </span><span th:text="#{header.forAuthors}"></span></nav>
 
         <h3 class="page_title padding" th:if="#{language} == 'ru'"
@@ -70,7 +70,7 @@
                 <div class="number_line" th:each="number : ${numbersSorted}">
                     <span class="number_year" th:text="${number.key}"></span>
                     <div class="number_val" th:each="num : ${number.value}">
-                        <a th:href="'/'+#{language}+'/journal/'+${currentJournal.id}+'/number/'+${num.id}"><span
+                        <a th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})+'/number/'+${num.year}+'-'+${num.name}"><span
                                 th:text="${num.name}"></span></a>
                     </div>
                 </div>
@@ -326,11 +326,17 @@
     </div>
 
     <script>
-        $(".journal_menu_title:not(.active)").click(function(){
-            $(".journal_menu").find("li:not(.journal_menu_title)").hide(350);
-            $(this).parent().find("li").show(350);
-            $(".active").removeClass("active");
-            $(this).addClass("active");
+        $(".journal_menu_title").click(function(){
+            if($(this).hasClass("active")){
+                $(".journal_menu").find("li:not(.journal_menu_title)").hide(350);
+                $(this).removeClass("active");
+            } else{
+                $(".journal_menu").find("li:not(.journal_menu_title)").hide(350);
+                $(this).parent().find("li").show(350);
+                $(".active").removeClass("active");
+                $(this).addClass("active");
+            }
+
         });
 
         $(".journal_menu  a").click(function(e){

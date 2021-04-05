@@ -40,4 +40,9 @@ public class NumberService {
     public List<Number> getNumbersByYear(String year){
         return numberRepository.findByYearIsContaining(year);
     }
+
+
+    public Number getNumberByYearAndNameAndJournalId(String year, String name, int journal) {
+        return numberRepository.getNumberByYearAndNameAndJournalId(year, name, journal);
+    }
 }
