@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface JournalRepository extends JpaRepository<Journals, Integer> {
     List<Journals> findJournalsByActive(int active);
+
+    Journals findByLink(String link);
 }

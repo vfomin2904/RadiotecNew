@@ -3,7 +3,8 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head th:fragment="head">
 
-    <title>Журнал «Радиотехника» | Издательство РАДИОТЕХНИКА</title>
+    <title th:if="${title == null} or ${titleEng == null}">Журнал «Радиотехника» | Издательство РАДИОТЕХНИКА</title>
+    <title th:if="${title != null} and ${titleEng != null}" th:text="((#{language} == 'ru' or ${titleEng == ''})?${title}:${titleEng})+' | '+#{header.pubHouse}+' '+#{header.radiotec}">Журнал «Радиотехника» | Издательство РАДИОТЕХНИКА</title>
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
@@ -20,6 +21,9 @@
     <script type="text/javascript" src="/js/popup.js"></script>
     <link rel="stylesheet" type="text/css" href="/main.css">
     <link rel="stylesheet" type="text/css" href="/popup.css">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,300&display=swap" rel="stylesheet">
 
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript" >
@@ -44,11 +48,11 @@
         <div id="header_top_line_content">
             <ul id="select_lang" th:with="url=${#strings.toLowerCase(#request.getQueryString())}">
                 <li th:classappend="(#{language} == 'ru')?'active_lang':''"><a
-                        th:href="@{${#strings.replace(#httpServletRequest.requestURI, '/en/','/ru/')}+'?'+${url}}"><img title="rus"
+                        th:href="${#strings.replace(#httpServletRequest.requestURI, '/en/','/ru/')}+(${url == null}?'':'?'+${url})"><img title="rus"
                                                                                                              th:src="@{/images/ru.png}"></a>
                 </li>
                 <li th:classappend="(#{language} == 'en')?'active_lang':''"><a
-                        th:href="@{${#strings.replace(#httpServletRequest.requestURI, '/ru/','/en/')}+'?'+${url}}"><img title="en"
+                        th:href="${#strings.replace(#httpServletRequest.requestURI, '/ru/','/en/')}+(${url == null}?'':'?'+${url})"><img title="en"
                                                                                                              th:src="@{/images/en.png}"></a>
                 </li>
             </ul>
@@ -90,17 +94,17 @@
         <div id="orange_line_content">
             <ul th:if="${currentJournal != null}" id="journal_menu">
                 <li th:if="not ${#strings.equals(page, '')}"><a style="position:relative;"
-                                                                th:href="'/'+#{language}+'/journal/'+${currentJournal.id}">
+                                                                th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})">
                     <div class="back_arrow"></div>
                 </a></li>
-                <li><a th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}(page=about_journal)}"
+                <li><a th:href="@{'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})(page=about_journal)}"
                        th:text="#{header.aboutJournal}">О журнале</a></li>
-                <li th:if="${currentNumber > 0}"><a
-                        th:href="'/'+#{language}+'/journal/'+${currentJournal.id}+'/number/'+${currentNumber}"
+                <li th:if="${currentNumber != null}"><a
+                        th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})+'/number/'+${currentNumber.year}+'-'+${currentNumber.name}"
                         th:text="#{header.current}">Текущий выпуск</a></li>
-                <li><a th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}(page=archive)}"
+                <li><a th:href="@{'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})(page=archive)}"
                        th:text="#{header.archives}">Архив</a></li>
-                <li><a th:href="@{'/'+#{language}+'/journal/'+${currentJournal.id}(page=for_authors)}"
+                <li><a th:href="@{'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})(page=for_authors)}"
                        th:text="#{header.forAuthors}">Для авторов</a></li>
                 <li><a th:href="@{'/'+#{language}+'/subscribe/'(journal=${currentJournal.id})}"
                        th:text="#{header.subscribe}">Подписка</a></li>

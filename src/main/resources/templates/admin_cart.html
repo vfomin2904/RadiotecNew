@@ -67,7 +67,7 @@
                 </div>
                     <div th:each="article : ${articles[order.id]}" class="cart_box">
                         <div class="cart_box_cell cart_box_img">
-                        <a th:href="'/'+#{language}+'/journal/'+${article.section.number.journal.id}+'/number/'+${article.section.number.id}+'/section/'+${article.section.id}+'/article/'+${article.id}"><img
+                        <a th:href="'/'+#{language}+'/journal/'+(${article.section.number.journal.link == ''}?${article.section.number.journal.id}:${article.section.number.journal.link})+'/number/'+${article.section.number.year}+'-'+${article.section.number.name}+'/section/'+${article.section.id}+'/article/'+${article.id}"><img
                                 th:src="'/uploads/journals/' + ${article.section.number.journal.cover}"
                                 class="card-img-top"
                                 th:alt="((#{language} == 'ru') or (${article.nameEng} == ''))?${article.name}:${article.nameEng}"></a>
@@ -75,7 +75,7 @@
                     </div>
                     <div class="card-body cart_box_cell">
                         <a class="black_link"
-                           th:href="'/'+#{language}+'/journal/'+${article.section.number.journal.id}+'/number/'+${article.section.number.id}+'/section/'+${article.section.id}+'/article/'+${article.id}">
+                           th:href="'/'+#{language}+'/journal/'+(${article.section.number.journal.link == ''}?${article.section.number.journal.id}:${article.section.number.journal.link})+'/number/'+${article.section.number.year}+'-'+${article.section.number.name}+'/article/'+${article.id}">
                             <h4 class="card-title"
                                 th:text="((#{language} == 'ru') or (${article.nameEng} == ''))?${article.name}:${article.nameEng}"></h4>
                         </a>
@@ -93,7 +93,7 @@
                 </div>
                      <div th:each="number : ${numbers[order.id]}" class="cart_box">
                 <div class="cart_box_cell cart_box_img">
-                    <a th:href="'/'+#{language}+'/journal/'+${number.journal.id}+'/number/'+${number.id}"><img
+                    <a th:href="'/'+#{language}+'/journal/'+(${number.journal.link == ''}?${number.journal.id}:${number.journal.link})+'/number/'+${number.year}+'-'+${number.name}"><img
                             th:src="'/uploads/journals/' + ${number.journal.cover}"
                             class="card-img-top"
                             th:alt="#{journal.journal}+' '+((#{language}=='ru')?${number.journal.name}:${number.journal.nameEng})+' №'+${number.name}+' '+#{for}+' '+${number.year}+' '+#{book.year}"></a>
@@ -101,7 +101,7 @@
                 </div>
                 <div class="card-body cart_box_cell">
                     <a class="black_link"
-                       th:href="'/'+#{language}+'/journal/'+${number.journal.id}+'/number/'+${number.id}"><h4
+                       th:href="'/'+#{language}+'/journal/'+(${number.journal.link == ''}?${number.journal.id}:${number.journal.link})+'/number/'+${number.id}"><h4
                             class="card-title"
                             th:text="#{journal.journal}+' '+((#{language}=='ru')?${number.journal.name}:${number.journal.nameEng})+' №'+${number.name}+' '+#{for}+' '+${number.year}+' '+#{book.year}"></h4>
                     </a>

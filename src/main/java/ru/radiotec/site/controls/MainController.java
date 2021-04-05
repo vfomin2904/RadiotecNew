@@ -13,6 +13,7 @@ import ru.radiotec.site.services.*;
 //import org.springframework.security.core.userdetails.User;
 
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.*;
 
@@ -76,6 +77,8 @@ public class MainController {
         init_menu(model);
         Page headerRight = pageService.getPageById(6);
         model.addAttribute("headerRight", headerRight);
+        model.addAttribute("title", "Поиск");
+        model.addAttribute("titleEng", "Search");
         return "search";
     }
 
@@ -86,6 +89,8 @@ public class MainController {
         init_menu(model);
         Page page = pageService.getPageById(9);
         model.addAttribute("page", page);
+        model.addAttribute("title", "Журналы");
+        model.addAttribute("titleEng", "Journals");
         return "journals_info";
     }
 
@@ -96,6 +101,8 @@ public class MainController {
         init_menu(model);
         Page page = pageService.getPageById(10);
         model.addAttribute("page", page);
+        model.addAttribute("title", "Книги");
+        model.addAttribute("titleEng", "Books");
         return "books_info";
     }
 
@@ -130,6 +137,8 @@ public class MainController {
                 }
             }
 
+            model.addAttribute("title", "Корзина");
+            model.addAttribute("titleEng", "Cart");
             model.addAttribute("totalPrice", totalPrice);
             model.addAttribute("books", books);
             model.addAttribute("articles", articles);
@@ -144,13 +153,21 @@ public class MainController {
 
 
     @GetMapping("/journal/{journalId}")
-    public String getJournalPage(Model model, @PathVariable int journalId, @RequestParam(defaultValue = "", required = false) String page) {
-        Journals currentJournal = journalsService.getJournalById(journalId);
+    public String getJournalPage(Model model, @PathVariable String journalId, @RequestParam(defaultValue = "", required = false) String page) {
+        Journals currentJournal;
+        try{
+            int id = Integer.parseInt(journalId);
+            currentJournal = journalsService.getJournalById(id);
+        }catch(NumberFormatException e){
+            currentJournal = journalsService.getJournalByLink(journalId);
+        }
+
+
         TreeMap<String, TreeSet<Number>> numberSorted = journalsService.getNumberSortedByYear(currentJournal, true);
 
         if (numberSorted.size() > 0) {
             String lastYear = numberSorted.firstKey();
-            int currentNumber = numberSorted.get(lastYear).last().getId();
+            Number currentNumber = numberSorted.get(lastYear).last();
             model.addAttribute("currentNumber", currentNumber);
         }
         model.addAttribute("currentJournal", currentJournal);
@@ -159,13 +176,34 @@ public class MainController {
         Page headerRight = pageService.getPageById(6);
         model.addAttribute("headerRight", headerRight);
 
+        model.addAttribute("title", currentJournal.getName());
+        model.addAttribute("titleEng", currentJournal.getNameEng());
+
         return "journal";
     }
 
     @GetMapping("/journal/{journalId}/number/{numberId}")
-    public String getNumberPage(Model model, @PathVariable int journalId, @PathVariable int numberId) {
-        Journals currentJournal = journalsService.getJournalById(journalId);
-        Number number = numberService.getNumberById(numberId);
+    public String getNumberPage(Model model, @PathVariable String journalId, @PathVariable String numberId) {
+        Journals currentJournal;
+        try{
+            int id = Integer.parseInt(journalId);
+            currentJournal = journalsService.getJournalById(id);
+        }catch(NumberFormatException e){
+            currentJournal = journalsService.getJournalByLink(journalId);
+        }
+
+        Number number = null;
+        try{
+            int id = Integer.parseInt(numberId);
+            number = numberService.getNumberById(id);
+        }catch(NumberFormatException e){
+            String[] search = numberId.split("-",2);
+            if(search.length > 1) {
+                number = numberService.getNumberByYearAndNameAndJournalId(search[0], search[1], currentJournal.getId());
+            }
+        }
+
+
         Page headerRight = pageService.getPageById(6);
         model.addAttribute("headerRight", headerRight);
         model.addAttribute("currentJournal", currentJournal);
@@ -175,19 +213,28 @@ public class MainController {
         boolean cartActive = false;
         if(carts != null){
             for(Cart cart: carts){
-                if (cart.getProduct() == numberId && cart.getType().equals("number")) {
+                if (cart.getProduct() == number.getId() && cart.getType().equals("number")) {
                     cartActive = true;
                     break;
                 }
             }}
         model.addAttribute("cartActive", cartActive);
+        model.addAttribute("title", currentJournal.getName());
+        model.addAttribute("titleEng", currentJournal.getNameEng());
         return "number";
     }
 
-    @GetMapping("/journal/{journalId}/number/{numberId}/section/{secId}/article/{artId}")
-    public String getArticlePage(Model model, @PathVariable int journalId, @PathVariable int numberId, @PathVariable int secId, @PathVariable int artId) {
+    @GetMapping("/journal/{journalId}/number/{numberId}/article/{artId}")
+    public String getArticlePage(Model model, @PathVariable String journalId, @PathVariable String numberId, @PathVariable int artId) {
+        Journals currentJournal;
+        try{
+            int id = Integer.parseInt(journalId);
+            currentJournal = journalsService.getJournalById(id);
+        }catch(NumberFormatException e){
+            currentJournal = journalsService.getJournalByLink(journalId);
+        }
+
         Article article = articleService.getArticleById(artId);
-        Journals currentJournal = journalsService.getJournalById(journalId);
         Page headerRight = pageService.getPageById(6);
         model.addAttribute("headerRight", headerRight);
         model.addAttribute("currentJournal", currentJournal);
@@ -203,6 +250,8 @@ public class MainController {
                 }
             }}
         model.addAttribute("cartActive", cartActive);
+        model.addAttribute("title", article.getName());
+        model.addAttribute("titleEng", article.getNameEng());
         return "article";
     }
 
@@ -226,6 +275,8 @@ public class MainController {
         }}
         model.addAttribute("cartActive", cartActive);
         model.addAttribute("backActive", false);
+        model.addAttribute("title", currentBook.getName());
+        model.addAttribute("titleEng", currentBook.getNameEng());
 
         return "book";
     }
@@ -247,6 +298,8 @@ public class MainController {
         model.addAttribute("currentBookSection", currentBookSection);
         init_menu(model);
         model.addAttribute("backActive", false);
+        model.addAttribute("title", currentBookSection.getName());
+        model.addAttribute("titleEng", currentBookSection.getNameEng());
 
 
         return "bookssection";
@@ -259,6 +312,8 @@ public class MainController {
         model.addAttribute("headerRight", headerRight);
         model.addAttribute("news", news);
         init_menu(model);
+        model.addAttribute("title", "Новости");
+        model.addAttribute("titleEng", "News");
         return "news";
     }
 
@@ -269,6 +324,8 @@ public class MainController {
         model.addAttribute("headerRight", headerRight);
         model.addAttribute("selectedNews", selectedNews);
         init_menu(model);
+        model.addAttribute("title", "Новости");
+        model.addAttribute("titleEng", "News");
         return "news";
     }
 
@@ -288,6 +345,8 @@ public class MainController {
         init_menu(model);
         Page headerRight = pageService.getPageById(6);
         model.addAttribute("headerRight", headerRight);
+        model.addAttribute("title", "Подписка");
+        model.addAttribute("titleEng", "Subscribe");
         return "subscription";
     }
 
@@ -296,6 +355,8 @@ public class MainController {
         init_menu(model);
         Page headerRight = pageService.getPageById(6);
         model.addAttribute("headerRight", headerRight);
+        model.addAttribute("title", "Заказ книг");
+        model.addAttribute("titleEng", "Ordering books");
         return "order_books";
     }
 
@@ -306,6 +367,8 @@ public class MainController {
         model.addAttribute("headerRight", headerRight);
         Page page = pageService.getPageById(1);
         model.addAttribute("page", page);
+        model.addAttribute("title", "Для авторов");
+        model.addAttribute("titleEng", "For authors");
         return "custom_page";
     }
 
@@ -316,6 +379,8 @@ public class MainController {
         model.addAttribute("headerRight", headerRight);
         Page page = pageService.getPageById(2);
         model.addAttribute("page", page);
+        model.addAttribute("title", "О журнале");
+        model.addAttribute("titleEng", "About");
         return "custom_page";
     }
 
@@ -343,12 +408,16 @@ public class MainController {
             subscribe.setUserId(currentUser.getId().intValue());
         }
         model.addAttribute("subscribe", subscribe);
+        model.addAttribute("title", "Подписка");
+        model.addAttribute("titleEng", "Subscribe");
         return "subscribe";
     }
 
     @GetMapping("/reader/")
-    public String getReaderPage(Model model, @RequestParam(required = false, defaultValue = "0") int section, @RequestParam(required = false, defaultValue = "0") int book) {
+    public String getReaderPage(Model model, @RequestParam(required = false, defaultValue = "0") int section, @RequestParam(required = false, defaultValue = "0") int book, HttpServletRequest request) {
 
+        String referer = request.getHeader("Referer");
+        System.out.println(referer);
         Page headerRight = pageService.getPageById(6);
         model.addAttribute("headerRight", headerRight);
         if(book > 0){
@@ -363,6 +432,8 @@ public class MainController {
 
         Page reader = pageService.getPageById(3);
         model.addAttribute("reader", reader);
+        model.addAttribute("title", "Читателям");
+        model.addAttribute("titleEng", "To readers");
         return "reader";
     }
 
@@ -382,6 +453,8 @@ public class MainController {
 
         Page partner = pageService.getPageById(4);
         model.addAttribute("partner", partner);
+        model.addAttribute("title", "Партнерам");
+        model.addAttribute("titleEng", "Partners");
         return "partner";
     }
 
@@ -401,6 +474,8 @@ public class MainController {
 
         Page author = pageService.getPageById(5);
         model.addAttribute("author", author);
+        model.addAttribute("title", "Авторам");
+        model.addAttribute("titleEng", "Authors");
         return "author";
     }
 
@@ -430,6 +505,8 @@ public class MainController {
 
         Page page = pageService.getPageById(7);
         model.addAttribute("page", page);
+        model.addAttribute("title", "Заказ книг");
+        model.addAttribute("titleEng", "Ordering books");
         return "order_book";
     }
 

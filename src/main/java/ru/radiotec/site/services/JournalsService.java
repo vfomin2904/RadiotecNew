@@ -72,4 +72,8 @@ public class JournalsService {
         });
         return numbers;
     }
+
+    public Journals getJournalByLink(String link) {
+        return journalRepository.findByLink(link);
+    }
 }
