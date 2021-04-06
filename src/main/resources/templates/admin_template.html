@@ -77,8 +77,8 @@
                 </div>
                 <ul class="submenuItems">
                     <li sec:authorize="hasAuthority('ADMIN')"><a href="/admin/cart">Корзина</a></li>
-                    <li sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/admin/subscribes(type=book_section)}">Заказ книг</a></li>
-                    <li sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/admin/subscribes(type=journal)}">Подписка</a></li>
+                    <li sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/admin/subscribes(type=order_book)}">Заказ книг</a></li>
+                    <li sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/admin/subscribes(type=journal_subscribe)}">Подписка</a></li>
                     <li sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/admin/menu_change(id=6)}">Надпись на фоне</a></li>
                     <li><a href="/admin/other?type=fields">Настройка полей</a></li>
                 </ul>

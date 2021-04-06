@@ -84,6 +84,7 @@ public class RootController {
         Cart cart = new Cart();
         cart.setProduct(product);
         cart.setType(type);
+        cart.setCount(1);
         List<Cart> currentCart = (List<Cart>)httpSession.getAttribute("cart");
 
         if(currentCart != null){
@@ -106,6 +107,27 @@ public class RootController {
 
         if(currentCart != null){
             currentCart.removeIf(cart -> cart.getType().equals(type) && cart.getProduct() == product);
+            httpSession.setAttribute("cart", currentCart);
+        }
+
+        return "Ok";
+    }
+
+    @ResponseBody
+    @PostMapping("/cart_count_change")
+    public String changeCount(@RequestParam(required = true) int product, @RequestParam(required = true) String type, @RequestParam(required = true, defaultValue = "1") int count){
+
+        List<Cart> currentCart = (List<Cart>)httpSession.getAttribute("cart");
+
+        if(currentCart != null){
+            currentCart.removeIf(cart -> cart.getType().equals(type) && cart.getProduct() == product);
+            Cart cart = new Cart();
+            cart.setProduct(product);
+            cart.setType(type);
+            cart.setCount(count);
+            System.out.println(type);
+            System.out.println(count);
+            currentCart.add(cart);
             httpSession.setAttribute("cart", currentCart);
         }
 

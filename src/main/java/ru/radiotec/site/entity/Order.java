@@ -27,6 +27,9 @@ public class Order {
     @Column(name="status")
     private String status;
 
+    @Column(name="address")
+    private String address;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
     private List<Cart> carts = new ArrayList<>();
 
@@ -79,5 +82,13 @@ public class Order {
 
     public void setCarts(List<Cart> carts) {
         this.carts = carts;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

@@ -287,9 +287,9 @@ body{
 
 .card-group{
     width:100%;
-    justify-content: space-around;
-    display: flex;
-    flex-wrap: wrap;
+    /*justify-content: space-around;*/
+    /*display: flex;*/
+    /*flex-wrap: wrap;*/
 }
 .card{
     width: 95%;
@@ -623,6 +623,10 @@ body{
     width: 190px;
     text-align: center;
 }
+.cart_title{
+    color:#2b5866 !important;
+    padding-left: 20px;
+}
 .cart_img{
     cursor:pointer;
     display: inline-block;
@@ -730,7 +734,7 @@ body{
 }
 .cart_box .remove_link img{
     width:30px !important;
-
+    border:0 !important;
     margin: 10px auto;
 }
 .cart_box_line{
@@ -750,6 +754,21 @@ body{
     padding-right: 15px;
     font-size:18px;
     margin-top:20px;
+}
+.cart_count{
+    width:30px;
+    height:30px;
+    text-align: center;
+}
+.count_minus, .count_plus{
+    border:0 !important;
+    height:20px !important;
+    width:20px !important;
+    cursor:pointer;
+    vertical-align: middle;
+    margin: 0 5px;
+    font-size:18px;
+    color:#2b5866;
 }
 
 .cart_order_input{

@@ -254,7 +254,6 @@ function init_checkbox() {
     });
     $('.active').click(function (e) {
         if ($(this).is(':checked')) {
-            console.log(1);
             $(this).next().next(".checkbox_value").val("1");
         } else {
             $(this).next().next(".checkbox_value").val("0");

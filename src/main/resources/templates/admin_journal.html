@@ -408,6 +408,23 @@
                 </div>
 
                 <div class="main_info">
+
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{priceSubscribe}" placeholder="Стоимость подписки" id="priceSubscribe"
+                               name="priceSubscribe" type="text">
+
+                        <label class="form__label">Стоимость подписки</label>
+                    </div>
+                    <br>
+
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{link}" placeholder="Ссылка" id="link"
+                               name="link" type="text">
+
+                        <label class="form__label">Ссылка</label>
+                    </div>
+                    <br>
+
                     <div class="form__group field">
                         <input type="file" name="file">
                         <label class="form__label">Обложка</label>
@@ -418,13 +435,7 @@
                             th:src="@{'/uploads/journals/'+${journals.cover}}"></img></p>
 
                     <br>
-                    <div class="form__group field">
-                        <input class="form__field" th:field="*{link}" placeholder="Ссылка" id="link"
-                               name="link" type="text">
 
-                        <label class="form__label">Ссылка</label>
-                    </div>
-                    <br>
                     <input class="custom-checkbox active" id="checkbox_active" type="checkbox" name="checkbox_active">
                     <label for="checkbox_active">Активировать</label>
                     <input th:field="*{active}" class="checkbox_value" id="active" name="active" th:value="0"

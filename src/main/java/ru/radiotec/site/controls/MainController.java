@@ -118,6 +118,10 @@ public class MainController {
             List<Books> books = new ArrayList<>();
             List<Article> articles = new ArrayList<>();
             List<Number> numbers = new ArrayList<>();
+            List<Journals> subscribes = new ArrayList<>();
+            List<Books> orders = new ArrayList<>();
+            Map<Integer, Integer> orderCount = new HashMap<>();
+            Map<Integer, Integer> subscribeCount = new HashMap<>();
 
             int totalPrice = 0;
 
@@ -134,6 +138,16 @@ public class MainController {
                     Number number = numberService.getNumberById(cart.getProduct());
                     numbers.add(number);
                     totalPrice += number.getPrice();
+                } else if (cart.getType().equals("journal_subscribe")) {
+                    Journals subscribe = journalsService.getJournalById(cart.getProduct());
+                    subscribes.add(subscribe);
+                    totalPrice += subscribe.getPriceSubscribe()*cart.getCount();
+                    subscribeCount.put(subscribe.getId(),cart.getCount());
+                } else if (cart.getType().equals("order_book")) {
+                    Books order = bookService.getBookById(cart.getProduct());
+                    orders.add(order);
+                    totalPrice += order.getPriceOrder()*cart.getCount();
+                    orderCount.put(order.getId(),cart.getCount());
                 }
             }
 
@@ -143,6 +157,10 @@ public class MainController {
             model.addAttribute("books", books);
             model.addAttribute("articles", articles);
             model.addAttribute("numbers", numbers);
+            model.addAttribute("orders", orders);
+            model.addAttribute("subscribes", subscribes);
+            model.addAttribute("orderCount", orderCount);
+            model.addAttribute("subscribeCount", subscribeCount);
         }
 
 
@@ -178,6 +196,17 @@ public class MainController {
 
         model.addAttribute("title", currentJournal.getName());
         model.addAttribute("titleEng", currentJournal.getNameEng());
+
+        List<Cart> carts = (List<Cart>)httpSession.getAttribute("cart");
+        boolean cartActive = false;
+        if(carts != null){
+            for(Cart cart: carts){
+                if (cart.getProduct() == currentJournal.getId() && cart.getType().equals("journal_subscribe")) {
+                    cartActive = true;
+                    break;
+                }
+            }}
+        model.addAttribute("cartActive", cartActive);
 
         return "journal";
     }
@@ -266,14 +295,18 @@ public class MainController {
 
         List<Cart> carts = (List<Cart>)httpSession.getAttribute("cart");
         boolean cartActive = false;
+        boolean orderActive = false;
         if(carts != null){
         for(Cart cart: carts){
             if (cart.getProduct() == book_id && cart.getType().equals("book")) {
                 cartActive = true;
-                break;
+            }
+            if (cart.getProduct() == book_id && cart.getType().equals("order_book")) {
+                orderActive = true;
             }
         }}
         model.addAttribute("cartActive", cartActive);
+        model.addAttribute("orderActive", orderActive);
         model.addAttribute("backActive", false);
         model.addAttribute("title", currentBook.getName());
         model.addAttribute("titleEng", currentBook.getNameEng());
@@ -390,24 +423,6 @@ public class MainController {
         model.addAttribute("subscribePage", subscribePage);
         Page headerRight = pageService.getPageById(6);
         model.addAttribute("headerRight", headerRight);
-        Subscribe subscribe = new Subscribe();
-        if(journal != 0) {
-            subscribe.setProduct(journal);
-            Journals currentJournal = journalsService.getJournalById(journal);
-            model.addAttribute("currentJournal", currentJournal);
-        }
-        subscribe.setType("journal");
-
-        List<Journals> journals = journalsService.getActiveJournals();
-        model.addAttribute("journals", journals);
-
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(!auth.getName().equals("anonymousUser")){
-            User currentUser = userService.getUserByLogin(auth.getName());
-            subscribe.setUserId(currentUser.getId().intValue());
-        }
-        model.addAttribute("subscribe", subscribe);
         model.addAttribute("title", "Подписка");
         model.addAttribute("titleEng", "Subscribe");
         return "subscribe";
@@ -492,17 +507,6 @@ public class MainController {
         }
         ArrayList<BookSec> bookSec = new ArrayList<>(bookSecService.getAllBookSec());
         model.addAttribute("booksecs", bookSec);
-
-
-        Subscribe subscribe = new Subscribe();
-        subscribe.setType("book_section");
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(!auth.getName().equals("anonymousUser")){
-            User currentUser = userService.getUserByLogin(auth.getName());
-            subscribe.setUserId(currentUser.getId().intValue());
-        }
-        model.addAttribute("subscribe", subscribe);
-
         Page page = pageService.getPageById(7);
         model.addAttribute("page", page);
         model.addAttribute("title", "Заказ книг");

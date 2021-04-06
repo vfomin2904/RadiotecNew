@@ -7,6 +7,64 @@
 <div id="content">
     <div id="left_menu" th:fragment="menu">
         <img class="journal_img" th:src="${'/uploads/journals/'+currentJournal.cover}">
+
+        <div style="margin-bottom:15px;" th:if="${currentJournal.priceSubscribe > 0}">
+            <div class="price_book" th:text="${currentJournal.priceSubscribe} +' '+#{price.rub}"></div>
+            <div class="cart_block">
+                <div class="cart_line" data-type="journal_subscribe">
+                    <img class="cart_img" th:src="@{/images/cart_white.png}">
+                    <input type="button" class="cart_button add_cart" th:classappend="(${cartActive})?'hidden':''"
+                           th:value="#{cart.subscribe}">
+                    <input type="button" class="cart_button delete_cart" th:classappend="(${cartActive})?'':'hidden'"
+                           th:value="#{cart.unsubscribe}">
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(".add_cart").click(function () {
+                var cart = $(this);
+                var type = $(cart).parent().attr("data-type");
+                if (cart.hasClass("add_cart")) {
+                    $.ajax({
+                        url: "/cart_add",
+                        type: "POST", //метод отправки
+                        data: {
+                            type: type,
+                            product: [[${currentJournal.id}]],
+                            count: "1"
+                        },
+                        success: function (response) {
+                            $(cart).hide();
+                            $(cart).next("input").show();
+                        },
+                        error: function (response) {
+                        }
+                    });
+                }
+            });
+            $(".delete_cart").click(function () {
+                var cart = $(this);
+                var type = $(cart).parent().attr("data-type");
+                if (cart.hasClass("delete_cart")) {
+                    $.ajax({
+                        url: "/cart_delete",
+                        type: "POST", //метод отправки
+                        data: {
+                            type: type,
+                            product: [[${currentJournal.id}]]
+                        },
+                        success: function (response) {
+                            $(cart).hide();
+                            $(cart).prev("input").show();
+                        },
+                        error: function (response) {
+                        }
+                    });
+                }
+            });
+        </script>
+
         <ul id="left_menu_journal">
             <li class="popup-open"><a href="#" th:text="#{journal.submission}">Отправить статью</a></li>
 

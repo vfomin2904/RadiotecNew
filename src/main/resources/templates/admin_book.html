@@ -167,8 +167,13 @@
                     <input th:field="*{bookNew}" class="checkbox_value"  id="bookNew" name="bookNew" th:value="0" type="hidden">
 
                     <div class="form__group field">
-                        <input class="form__field" th:field="*{price}" id="price" name="price" placeholder="Цена" type="text" >
-                        <label class="form__label">Цена</label>
+                        <input class="form__field" th:field="*{price}" id="price" name="price" placeholder="Цена электронной версии" type="text" >
+                        <label class="form__label">Цена электронной версии</label>
+                    </div>
+
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{priceOrder}" id="priceOrder" name="priceOrder" placeholder="Цена бумажной версии" type="text" >
+                        <label class="form__label">Цена бумажной версии</label>
                     </div>
 
                     <input type="hidden" th:field="*{bookFile}">

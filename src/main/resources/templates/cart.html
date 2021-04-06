@@ -8,7 +8,7 @@
     <div id="main_block" class="relative">
         <h3 th:text="#{cart.cart}"></h3>
         <p class="padding gray_font"
-           th:classappend="(${#lists.isEmpty(numbers)} and ${#lists.isEmpty(articles)} and ${#lists.isEmpty(books)})?'':'hidden'"
+           th:classappend="(${#lists.isEmpty(numbers)} and ${#lists.isEmpty(articles)} and ${#lists.isEmpty(books)} and ${#lists.isEmpty(subscribes)} and ${#lists.isEmpty(orders)})?'':'hidden'"
            th:text="#{cart.empty}"></p>
         <p class="padding gray_font" th:if="not ${#lists.isEmpty(books)}" th:text="#{book.books}">Книги</p>
         <div class="card-group cart_box" th:if="not ${#lists.isEmpty(books)}">
@@ -35,6 +35,44 @@
                     <p>
                         <span th:text="#{price.price}+': '"></span>
                         <span class="item_price" th:text="${book.price}"></span>
+                        <span th:text="' '+#{price.rub}"></span>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <p class="padding gray_font" th:if="not ${#lists.isEmpty(orders)}" th:text="#{cart.paperEditionBook}">Бумажные издания книг</p>
+        <div class="card-group cart_box" th:if="not ${#lists.isEmpty(orders)}">
+            <div class="card cart_box_line order" th:each="book : ${orders}">
+                <div class="cart_box_cell cart_box_img">
+                    <a th:href="'/'+#{language}+'/books/'+${book.id}"><img th:src="'/uploads/books/' + ${book.coverImg}"
+                                                                           class="card-img-top"
+                                                                           th:alt="((#{language} == 'ru') or (${book.nameEng} == ''))?${book.name}:${book.nameEng}"></a>
+
+                </div>
+                <div class="card-body cart_box_cell">
+                    <a class="black_link" th:href="'/'+#{language}+'/books/'+${book.id}"><h4 class="card-title"
+                                                                                             th:text="((#{language} == 'ru') or (${book.nameEng} == ''))?${book.name}:${book.nameEng}"></h4>
+                    </a>
+                    <p class="card-text"
+                       th:utext="((#{language} == 'ru') or (${book.authorEng} == ''))?${book.author}:${book.authorEng}"></p>
+                    <div class="card-text book_description"
+                         th:utext="((#{language} == 'ru') or (${book.descriptionEng} == ''))?${book.description}:${book.descriptionEng}"></div>
+                </div>
+                <div class="card-price cart_box_cell cart_box_price">
+                    <a class="remove_link"
+                       th:href="'/cart_delete?type=order_book&product='+${book.id}"><img
+                            title="удалить" class="remove_img" src="/images/delete.png"></a>
+                    <p th:text="#{cart.count}" style="text-align:center;">Количество</p>
+                    <p>
+                        <span class="up_arrow count_minus" title="вверх">-</span>
+                        <input class="cart_count" type="text" th:value="${orderCount[book.id]}">
+                        <span class="down_arrow count_plus" title="вниз">+</span>
+                    </p>
+                    <p>
+                        <span th:text="#{price.price}+': '"></span>
+                        <span th:attr="data-onePrice=${book.priceOrder}, data-product=${book.id}" data-type="order_book" class="item_price" th:text="${book.priceOrder}*${orderCount[book.id]}"></span>
                         <span th:text="' '+#{price.rub}"></span>
                     </p>
                 </div>
@@ -110,15 +148,53 @@
             </div>
         </div>
 
+        <p class="padding gray_font" th:if="not ${#lists.isEmpty(subscribes)}" th:text="#{header.subscribe}">Подписка</p>
+
+        <div class="card-group cart_box" th:if="not ${#lists.isEmpty(subscribes)}">
+            <div class="card cart_box_line subscribe" th:each="subscribe : ${subscribes}">
+                <div class="cart_box_cell cart_box_img">
+                    <a th:href="'/'+#{language}+'/journal/'+(${subscribe.link == ''}?${subscribe.id}:${subscribe.link})"><img
+                            th:src="'/uploads/journals/' + ${subscribe.cover}"
+                            class="card-img-top"
+                            th:alt="#{journal.journal}+' '+((#{language}=='ru')?${subscribe.name}:${subscribe.nameEng})"></a>
+
+                </div>
+                <div class="card-body cart_box_cell">
+                    <a class="black_link"
+                       th:href="'/'+#{language}+'/journal/'+(${subscribe.link == ''}?${subscribe.id}:${subscribe.link})"><h4
+                            class="card-title"
+                            th:text="#{journal.journal}+' '+((#{language}=='ru')?${subscribe.name}:${subscribe.nameEng})"></h4>
+                    </a>
+                </div>
+                <div class="card-price cart_box_cell cart_box_price">
+                    <a class="remove_link"
+                       th:href="'/cart_delete?type=journal_subscribe&product='+${subscribe.id}"><img
+                            title="удалить" class="remove_img" src="/images/delete.png"></a>
+                    <p th:text="#{cart.count}" style="text-align:center;">Количество</p>
+                    <p>
+                        <span class="up_arrow count_minus" title="вверх">-</span>
+                        <input class="cart_count" type="text" th:value="${subscribeCount[subscribe.id]}">
+                        <span class="down_arrow count_plus" title="вниз">+</span>
+                    </p>
+                    <p>
+                        <span th:text="#{price.price}+': '"></span>
+                        <span th:attr="data-onePrice=${subscribe.priceSubscribe}, data-product=${subscribe.id}" data-type="journal_subscribe" class="item_price" th:text="${subscribe.priceSubscribe}*${subscribeCount[subscribe.id]}"></span>
+                        <span th:text="' '+#{price.rub}"></span>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
 
         <p class="total_price"
-           th:if="not ${#lists.isEmpty(numbers)} or not ${#lists.isEmpty(articles)} or not ${#lists.isEmpty(books)}">
+           th:if="not ${#lists.isEmpty(numbers)} or not ${#lists.isEmpty(articles)} or not ${#lists.isEmpty(books)} or not ${#lists.isEmpty(orders)} or not ${#lists.isEmpty(subscribes)}">
             <span th:text="#{price.total}+': '"></span><span class="total_price_sum"
                                                              th:text="${totalPrice}"></span><span
                 th:text="' '+#{price.rub}"></span></p>
 
         <br>
-        <form method="post" action="/order_cart" class="user_form"  th:if="not ${#lists.isEmpty(numbers)} or not ${#lists.isEmpty(articles)} or not ${#lists.isEmpty(books)}"
+        <form method="post" action="/order_cart" class="user_form"  th:if="not ${#lists.isEmpty(numbers)} or not ${#lists.isEmpty(articles)} or not ${#lists.isEmpty(books)} or not ${#lists.isEmpty(orders)} or not ${#lists.isEmpty(subscribes)}"
               type="button" th:value="#{book.order}" th:object="${order}">
             <label for="fio" th:text="#{form.fio}+' *'">Фамилия, Имя, Отчество (полностью)*</label>
             <input th:field="*{fio}" type="text" id="fio" name="fio" class="required" required>
@@ -128,8 +204,18 @@
 
             <label for="email">E-Mail *</label>
             <input th:field="*{email}" required class="required" type="email" name="email" id="email">
+
+            <label th:if="not ${#lists.isEmpty(subscribes)} or not ${#lists.isEmpty(orders)}" class="textarea_label address_field" for="address" th:text="#{form.address}+' *'">Адрес доставки (страна,
+                индекс, населенный пункт,
+                область, республика, дом, квартира, офис)*</label>
+            <textarea th:if="not ${#lists.isEmpty(subscribes)} or not ${#lists.isEmpty(orders)}" th:field="*{address}" required class="required" id="address" name="address" cols="60"
+                      rows="2"></textarea>
+
+
             <input class="cart_order_input"
                                      type="submit" th:value="#{book.order}">
+
+
             <div class="form_message">
 
             </div>
@@ -166,11 +252,11 @@
                             $(".total_price").remove();
                             $(".hidden").show();
                         } else {
-                            var sum = 0;
-                            for (var i = 0; i < $(".item_price").length; i++) {
-                                sum += Number.parseInt($(".item_price").eq(i).text());
-                            }
-                            $(".total_price_sum").text(sum);
+                            total();
+                        }
+                        if($(".order").length == 0 && $(".subscribe").length == 0){
+                            $(".address_field").next().remove();
+                            $(".address_field").remove();
                         }
                     } else {
                         $(link).parent().parent(".cart_box_line").remove();
@@ -181,6 +267,78 @@
             });
         }
     });
+
+    $(".count_minus").click(function(){
+        var count = $(this).next("input");
+        var val = Number.parseInt($(count).val());
+        if(val > 1){
+            $(count).val(val-1);
+            var spanPrice = $(count).parent().next().find(".item_price");
+            var currentPrice = Number.parseInt($(spanPrice).text());
+            var onePrice = Number.parseInt($(spanPrice).attr("data-onePrice"));
+            var type = $(spanPrice).attr("data-type");
+            var product = Number.parseInt($(spanPrice).attr("data-product"));
+            $(spanPrice).text(currentPrice-onePrice);
+            change_count(product, type, val-1);
+            total();
+        }
+    });
+
+    $(".count_plus").click(function(){
+        var count = $(this).prev("input");
+        var val = Number.parseInt($(count).val());
+        $(count).val(val+1);
+        var spanPrice = $(count).parent().next().find(".item_price");
+        var currentPrice = Number.parseInt($(spanPrice).text());
+        var onePrice = Number.parseInt($(spanPrice).attr("data-onePrice"));
+        var type = $(spanPrice).attr("data-type");
+        var product = Number.parseInt($(spanPrice).attr("data-product"));
+        $(spanPrice).text(currentPrice+onePrice);
+        change_count(product, type, val+1);
+        total();
+    });
+
+    $(".cart_count").change(function(){
+        var val = $(this).val();
+        if(val < 1){
+            val = 1
+            $(this).val(val);
+        }
+        var spanPrice = $(this).parent().next().find(".item_price");
+        var onePrice = Number.parseInt($(spanPrice).attr("data-onePrice"));
+        var type = $(spanPrice).attr("data-type");
+        var product = Number.parseInt($(spanPrice).attr("data-product"));
+        $(spanPrice).text(val*onePrice);
+        change_count(product, type, val);
+        total();
+    });
+
+
+    function change_count(product, type, count){
+        console.log(product);
+        console.log(type);
+        console.log(count);
+        $.ajax({
+            url: "/cart_count_change",
+            type: "POST", //метод отправки
+            data: {
+                type: type,
+                product: product,
+                count: count
+            },
+            success: function () {
+                console.log('s');
+            }
+            });
+    }
+
+    function total(){
+        var sum = 0;
+        for (var i = 0; i < $(".item_price").length; i++) {
+            sum += Number.parseInt($(".item_price").eq(i).text());
+        }
+        $(".total_price_sum").text(sum);
+    }
 </script>
 </body>
 </html>
