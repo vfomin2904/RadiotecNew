@@ -142,7 +142,7 @@ public class AdminController {
             return getAdminJournalChangePage(model, journal, 0);
         }
         journalsService.update(journal);
-        return "redirect:/admin/";
+        return getAdminJournalChangePage(model,journal, 0);
     }
 
     @GetMapping("/journal_change")
@@ -441,6 +441,7 @@ public class AdminController {
 
         if (!file.isEmpty()) {
             String name = "/home/tomcat/webapps/uploads/articles/" + file.getOriginalFilename();
+//            String name = file.getOriginalFilename();
             try {
                 byte[] bytes = file.getBytes();
                 BufferedOutputStream stream =
@@ -452,7 +453,7 @@ public class AdminController {
             } catch (Exception e) {
                 System.out.println("Не удалось загрузить " + name + " => " + e.getMessage());
 
-                bindingResult.rejectValue("file", "", "Не удалось загрузить файл: " + e.getMessage());
+                bindingResult.rejectValue("articleFile", "", "Не удалось загрузить файл: " + e.getMessage());
             }
 
         }
@@ -828,6 +829,26 @@ public class AdminController {
         return "redirect:/admin/menu_change?id=" + page.getId();
     }
 
+    @PostMapping("/change_price_list")
+    public String changePriceList(@RequestParam("file") MultipartFile file) {
+        if (!file.isEmpty()) {
+            String name = "/home/tomcat/webapps/uploads/price.xls";
+            if (file.getOriginalFilename().indexOf(".xls") > 0) {
+                try {
+                    byte[] bytes = file.getBytes();
+                    BufferedOutputStream stream =
+                            new BufferedOutputStream(new FileOutputStream(name));
+                    stream.write(bytes);
+                    stream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return "redirect:/admin/menu_change?type=main";
+    }
+
+
     @GetMapping("/field_change")
     public String getFieldChangePage(Model model, @RequestParam(required = true) int id) {
         switch (id) {
@@ -981,8 +1002,16 @@ public class AdminController {
         } else {
             orders = orderService.getOrdersByStatus(status);
         }
+        Collections.sort(orders, new Comparator<Order>() {
+            @Override
+            public int compare(Order o1, Order o2) {
+                return o2.getId() - o1.getId();
+            }
+        });
         model.addAttribute("orders", orders);
         model.addAttribute("type", "all");
+        Integer editorialFeePrice = Integer.parseInt(pageService.getPageById(12).getContent());
+        model.addAttribute("editorialFeePrice", editorialFeePrice);
 
         return "admin_cart";
     }
@@ -1011,6 +1040,12 @@ public class AdminController {
         } else {
             orders = orderService.getOrdersByStatus(status);
         }
+        Collections.sort(orders, new Comparator<Order>() {
+            @Override
+            public int compare(Order o1, Order o2) {
+                return o2.getId() - o1.getId();
+            }
+        });
         orders.removeIf((order) -> {
             for (Cart cart : order.getCarts()) {
                 if(cart.getType().equals(type)){
@@ -1046,6 +1081,8 @@ public class AdminController {
 
         model.addAttribute("orders", orders);
         model.addAttribute("type", type);
+        Integer editorialFeePrice = Integer.parseInt(pageService.getPageById(12).getContent());
+        model.addAttribute("editorialFeePrice", editorialFeePrice);
         model.addAttribute("item", item);
         return "admin_cart";
     }

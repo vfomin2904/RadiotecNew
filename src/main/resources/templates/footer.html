@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<footer th:with="page = ${@pageService.getPageById(11)}" th:fragment="footer">
+    <div id="footer_content" th:utext="(#{language} == 'ru' or ${page.contentEng} == '')?${page.content}:${page.contentEng}">
+
+    </div>
+</footer>
+</html>

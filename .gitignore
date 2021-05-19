@@ -35,3 +35,4 @@ build/
 application.properties
 
 /uploads/
+/src/main/java/ru/radiotec/site/payment/

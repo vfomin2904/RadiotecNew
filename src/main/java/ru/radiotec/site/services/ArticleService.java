@@ -18,7 +18,11 @@ public class ArticleService {
         return articles;
     }
     public Article getArticleById(int id) {
-        return articleRepository.findById(id).get();
+        if(articleRepository.findById(id).isPresent()){
+            return articleRepository.findById(id).get();
+        } else{
+            return null;
+        }
     }
 
     public List<Article> getArticlesByKeywords(String keywords) {

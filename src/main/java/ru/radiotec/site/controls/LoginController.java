@@ -34,22 +34,17 @@ public class LoginController {
 
     @GetMapping("/login")
     private String getLoginPage(Model model){
-        init_menu(model);
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
         return "login";
     }
 
     @GetMapping("/register")
     private String getRegisterPage(Model model){
-        init_menu(model);
         model.addAttribute("userRepo", new UserRepo());
         return "register";
     }
 
     @PostMapping("/register")
     public String registerNewUser(@Valid UserRepo userRepo, BindingResult bindingResult, Model model){
-        init_menu(model);
         if(bindingResult.hasErrors()){
             return "register";
         }

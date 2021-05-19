@@ -203,6 +203,12 @@ $(document).ready(function () {
         sort(type, next_id, current_num);
     });
 
+
+    $(".remove_file").click(function(){
+        $(this).prev("input[type=hidden]").val("");
+        $(this).next(".current_file").remove();
+    });
+
     init_checkbox();
 });
 

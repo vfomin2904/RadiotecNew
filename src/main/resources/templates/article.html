@@ -5,7 +5,7 @@
 <div th:replace="~{header :: header_menu}"></div>
 
 <div id="content">
-    <div id="main_block" class="relative">
+    <div id="main_block_full" class="relative">
         <nav class="current_path"><a th:href="@{'/'+#{language}+'/'}" th:text="#{header.main}">Главная</a> <span
                 class="path_arrow"> > </span><a th:href="@{'/'+#{language}+'/journals_info'}"
                                                 th:text="#{leftMenu.journals}">Журналы</a><span
@@ -154,5 +154,6 @@
 
     </div>
 </div>
+<footer th:replace="~{footer :: footer}"></footer>
 </body>
 </html>
