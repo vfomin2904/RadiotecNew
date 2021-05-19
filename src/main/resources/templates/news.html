@@ -6,7 +6,7 @@
 
 <div id="content">
 <!--    <div th:replace="~{left_menu :: menu}"></div>-->
-    <div id="main_block">
+    <div id="main_block_full">
         <div th:if="${selectedNews != null}" class="page_title">
             <span th:text="${selectedNews.date}+' '"></span>
             <span th:text="((#{language} == 'ru') or (${selectedNews.nameEng} == ''))?${selectedNews.name}:${selectedNews.nameEng}"></span>
@@ -20,5 +20,6 @@
         </div>
     </div>
 </div>
+<footer th:replace="~{footer :: footer}"></footer>
 </body>
 </html>

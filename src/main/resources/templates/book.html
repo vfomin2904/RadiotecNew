@@ -9,10 +9,11 @@
     <div id="left_menu" th:fragment="menu">
         <img class="journal_img" th:src="'/uploads/books/'+${currentBook.coverImg}">
 
-        <div>
-            <div class="price_book" th:if="${currentBook.price > 0}" th:text="${currentBook.price} +' '+#{price.rub}"></div>
-            <div class="cart_block" th:if="${currentBook.price > 0}">
-                <div class="cart_line">
+        <div th:if="${currentBook.price > 0}" style="margin-bottom: 10px;">
+            <p class="cart_title" th:text="#{cart.electronic}+':'">Электронная версия:</p>
+            <div class="price_book" th:text="${currentBook.price} +' '+#{price.rub}"></div>
+            <div class="cart_block">
+                <div class="cart_line" data-type="book">
                     <img class="cart_img" th:src="@{/images/cart_white.png}">
                     <input type="button" class="cart_button add_cart" th:classappend="(${cartActive})?'hidden':''"
                            th:value="#{cart.add}">
@@ -21,15 +22,29 @@
                 </div>
             </div>
         </div>
+        <div th:if="${currentBook.priceOrder > 0}">
+            <p class="cart_title" th:text="#{cart.paperEdition}+':'">Бумажное издание:</p>
+            <div class="price_book" th:text="${currentBook.priceOrder} +' '+#{price.rub}"></div>
+            <div class="cart_block">
+                <div class="cart_line" data-type="order_book">
+                    <img class="cart_img" th:src="@{/images/cart_white.png}">
+                    <input type="button" class="cart_button add_cart" th:classappend="(${orderActive})?'hidden':''"
+                           th:value="#{cart.add}">
+                    <input type="button" class="cart_button delete_cart" th:classappend="(${orderActive})?'':'hidden'"
+                           th:value="#{cart.delete}">
+                </div>
+            </div>
+        </div>
         <script>
             $(".add_cart").click(function () {
                 var cart = $(this);
+                var type = $(cart).parent().attr("data-type");
                 if (cart.hasClass("add_cart")) {
                     $.ajax({
                         url: "/cart_add",
                         type: "POST", //метод отправки
                         data: {
-                            type: "book",
+                            type: type,
                             product: [[${currentBook.id}]],
                             count: "1"
                         },
@@ -44,12 +59,13 @@
             });
             $(".delete_cart").click(function () {
                 var cart = $(this);
+                var type = $(cart).parent().attr("data-type");
                 if (cart.hasClass("delete_cart")) {
                     $.ajax({
                         url: "/cart_delete",
                         type: "POST", //метод отправки
                         data: {
-                            type: "book",
+                            type: type,
                             product: [[${currentBook.id}]]
                         },
                         success: function (response) {
@@ -120,5 +136,6 @@
 
     </div>
 </div>
+<footer th:replace="~{footer :: footer}"></footer>
 </body>
 </html>

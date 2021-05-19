@@ -1,21 +1,30 @@
 body{
     color:#2d3845;
+    padding:0;
+    margin:0;
 }
 #left_menu_column{
     border-right:1px solid silver;
-    width: 20%;
-    min-width:300px;
-    position:fixed;
-    top:0;
-    bottom:0;
-    left:0;
+    min-width: 250px;
+    /*position:fixed;*/
+    /*top:0;*/
+    /*bottom:0;*/
+    /*left:0;*/
+    /*float:left;*/
+    height:100%;
+    display: table-cell;
     background: #2d3845;
 }
-
+#admin{
+    display: table;
+    width:100%;
+    max-width: 1300px;
+}
 #admin_content{
-    margin-left:20%;
-    width:70%;
+    margin-left:250px;
+    min-width:710px;
     padding: 50px 5%;
+    display: table-cell;
 }
 #admin_content input{
     display:block;
@@ -41,9 +50,13 @@ body{
     right:7px;
     top:0px;
     width:32px;
+    border:0 !important;
 }
 .remove_card_img{
     top:7px !important;
+}
+.card-body{
+    width:450px;
 }
 
 .remove_line_img{
@@ -572,4 +585,13 @@ input {
 
 .menu_info{
     display: none;
+}
+
+.remove_file{
+    color:red;
+    width:150px !important;
+    padding: 1px 6px;
+    border: 1px solid #333;
+    cursor:pointer;
+    margin-left:15px !important;
 }

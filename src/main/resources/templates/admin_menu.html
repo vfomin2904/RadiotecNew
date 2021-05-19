@@ -26,6 +26,15 @@
                     <a href="/admin/news_add?type=0">добавить</a>
                     <a href="/admin/news_change?type=0">изменить</a>
                 </li>
+                <li>
+                    <form enctype="multipart/form-data" method="post" action="/admin/change_price_list">
+                        <div class="form__group field">
+                            <input type="file" name="file">
+                            <label class="form__label">Прайс-лист</label>
+                            <input id="editorialFee" type="submit" value="Сохранить">
+                        </div>
+                    </form>
+                </li>
             </ul>
 
             <ul class="menu_change_ul" th:if="${#strings.equals(type, 'book')} and ${page == null}">
@@ -39,6 +48,36 @@
             <ul class="menu_change_ul" th:if="${#strings.equals(type, 'journal')} and ${page == null}">
                 <li><a href="/admin/menu_change?id=8&type=journal">Подписка</a></li>
                 <li><a href="/admin/menu_change?id=9&type=journal">Страница журналов</a></li>
+                <div class="form__group field" th:with="price = ${@pageService.getPageById(12)}">
+                    <input class="form__field" id="editorialFeePrice" th:value="${price.content}" name="editorialFeePrice" placeholder="Стоимость редакционного сбора" type="text" >
+                    <label class="form__label">Стоимость редакционного сбора</label>
+                    <input id="editorialFee" type="button" value="Сохранить">
+                </div>
+                <script>
+                    function isNumeric(value) {
+                        return /^\d+$/.test(value);
+                    }
+
+                    $("#editorialFee").click(function(){
+                        var price = $("#editorialFeePrice").val();
+
+                        if(isNumeric(price)){
+                            $.ajax({
+                                url: "/change_editorial_fee",
+                                type: "POST", //метод отправки
+                                data: {
+                                    price: price
+                                },
+                                success: function (response) {
+                                },
+                                error: function (response) {
+                                }
+                            });
+                        } else{
+                            alert("Неверный формат данных!")
+                        }
+                    });
+                </script>
             </ul>
 
             <form th:if="${page != null}" enctype="multipart/form-data" class="main_form" method="post" action=""

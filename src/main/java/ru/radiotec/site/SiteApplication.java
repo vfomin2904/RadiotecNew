@@ -6,6 +6,8 @@ import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.util.unit.DataSize;
+import org.springframework.util.unit.DataUnit;
 
 import javax.servlet.MultipartConfigElement;
 
@@ -20,8 +22,8 @@ public class SiteApplication extends SpringBootServletInitializer {
     @Bean
     MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
-//        factory.setMaxFileSize("128KB");
-//        factory.setMaxRequestSize("128KB");
+        factory.setMaxFileSize(DataSize.of(100, DataUnit.MEGABYTES));
+        factory.setMaxRequestSize(DataSize.of(100, DataUnit.MEGABYTES));
         return factory.createMultipartConfig();
     }
 

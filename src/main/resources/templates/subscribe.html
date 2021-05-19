@@ -15,48 +15,8 @@
         <div th:utext="(#{language} == 'ru' or ${subscribePage.contentEng == ''})?${subscribePage.content}:${subscribePage.contentEng}">
 
         </div>
-<!--            <form class="user_form" th:object="${subscribe}" method="post" th:action="@{/subscribe}">-->
-
-<!--                <label for="product" th:text="#{journal.journal}+' *'">Журнал*</label>-->
-<!--                <select required  id="product" th:field="*{product}" class="select_journal required">-->
-<!--                    <option disabled value="0">Выбрать журнал</option>-->
-<!--                    <option th:each="journal: ${journals}" th:text="${journal.name}" th:value="${journal.id}"></option>-->
-<!--                </select>-->
-<!--                <br>-->
-
-<!--                <label for="fio" th:text="#{form.fio}+' *'">Фамилия, Имя, Отчество (полностью)*</label>-->
-<!--                <input th:field="*{fio}" type="text" id="fio" name="fio" required class="required">-->
-
-<!--                <label for="company" th:text="#{form.company}">Организация</label>-->
-<!--                <input th:field="*{company}" type="text" name="company" id="company">-->
-
-<!--                <label class="textarea_label" for="address" th:text="#{form.address}+' *'">Адрес доставки (страна, индекс, населенный пункт,-->
-<!--                    область, республика, дом, квартира, офис)*</label>-->
-<!--                <textarea th:field="*{address}" required class="required"  id="address" name="address" cols="60"-->
-<!--                          rows="2"></textarea>-->
-
-<!--                <input th:field="*{type}" type="hidden" name="type" id="type" value="journal">-->
-<!--                <input th:field="*{userId}" type="hidden" name="user" id="user">-->
-
-
-<!--                <label for="count" th:text="#{form.count}">Количество комплектов</label>-->
-<!--                <input th:field="*{count}" type="text" name="count" id="count">-->
-
-<!--                <label for="phone" th:text="#{form.phone}+' *'">Контактный телефон *</label>-->
-<!--                <input th:field="*{phone}" type="text" name="phone" id="phone" required class="required">-->
-
-<!--                <label for="time" th:text="#{form.time}">Удобное время для звонка</label>-->
-<!--                <input th:field="*{time}" type="text" name="time" id="time">-->
-
-<!--                <label for="time">E-Mail *</label>-->
-<!--                <input th:field="*{email}" type="email" name="email" id="email" required class="required">-->
-<!--                <input  class="subscribe_button"  type="button" th:value="#{journal.subscribe}">-->
-<!--                <div class="form_message">-->
-
-<!--                </div>-->
-<!--            </form>-->
-
     </div>
 </div>
+<footer th:replace="~{footer :: footer}"></footer>
 </body>
 </html>

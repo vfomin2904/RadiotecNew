@@ -123,6 +123,9 @@ public class Books {
     @Column(name="file")
     private String bookFile;
 
+    @Column(name="price_order")
+    private int priceOrder;
+
     public Books(){
 
     }
@@ -418,5 +421,13 @@ public class Books {
 
     public void setBookFile(String bookFile) {
         this.bookFile = bookFile;
+    }
+
+    public int getPriceOrder() {
+        return priceOrder;
+    }
+
+    public void setPriceOrder(int priceOrder) {
+        this.priceOrder = priceOrder;
     }
 }

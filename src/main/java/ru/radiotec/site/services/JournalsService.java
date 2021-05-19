@@ -25,7 +25,12 @@ public class JournalsService {
     }
 
     public Journals getJournalById(int id) {
-        return journalRepository.findById(id).get();
+        if(journalRepository.findById(id).isPresent()){
+            return journalRepository.findById(id).get();
+        } else{
+            return null;
+        }
+
     }
 
     public void create(Journals journal){

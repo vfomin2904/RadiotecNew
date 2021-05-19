@@ -6,16 +6,78 @@
 
 <div id="content">
     <div id="left_menu">
-    <div th:replace="~{left_menu :: journals_menu}">
+        <div th:replace="~{left_menu :: journals_menu}">
 
-    </div>
+        </div>
     </div>
     <div id="main_block">
-        <nav class="current_path"><a th:href="@{'/'+#{language}+'/'}" th:text="#{header.main}">Главная</a> <span class="path_arrow"> > </span><span th:text="#{leftMenu.journals}">Журналы</span></nav>
-        <div  th:utext="((#{language} == 'ru') or (${page.contentEng} == ''))?${page.content}:${page.contentEng}">
+        <nav class="current_path"><a th:href="@{'/'+#{language}+'/'}" th:text="#{header.main}">Главная</a> <span
+                class="path_arrow"> > </span><span th:text="#{leftMenu.journals}">Журналы</span></nav>
+
+        <div th:with="editorialFee = ${@pageService.getPageById(12)}">
+            <div th:if="${editorialFee != null}">
+                <p style="text-align:center;" th:text="#{cart.editorialFeePrice}+': '+${editorialFee.content}+' '+#{price.rub}">: 4000 руб</p>
+                <div class="cart_block" style="margin:0 auto;">
+                    <div class="cart_line">
+                        <img class="cart_img" th:src="@{/images/cart_white.png}">
+                        <input type="button" class="cart_button add_cart" th:classappend="(${cartActive})?'hidden':''"
+                               th:value="#{cart.add}">
+                        <input type="button" class="cart_button delete_cart"
+                               th:classappend="(${cartActive})?'':'hidden'" th:value="#{cart.delete}">
+                    </div>
+                </div>
+
+                <script>
+                    $(".add_cart").click(function () {
+                        var cart = $(this);
+                        if (cart.hasClass("add_cart")) {
+                            $.ajax({
+                                url: "/cart_add",
+                                type: "POST", //метод отправки
+                                data: {
+                                    type: "editorial_fee",
+                                    count: "1",
+                                    product: "0"
+                                },
+                                success: function (response) {
+                                    $(cart).hide();
+                                    $(cart).next("input").show();
+                                },
+                                error: function (response) {
+                                }
+                            });
+                        }
+                    });
+
+
+                    $(".delete_cart").click(function () {
+                        var cart = $(this);
+                        if (cart.hasClass("delete_cart")) {
+                            $.ajax({
+                                url: "/cart_delete",
+                                type: "POST", //метод отправки
+                                data: {
+                                    type: "editorial_fee",
+                                    product: "0"
+                                },
+                                success: function (response) {
+                                    $(cart).hide();
+                                    $(cart).prev("input").show();
+                                },
+                                error: function (response) {
+                                }
+                            });
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+
+        <div th:utext="((#{language} == 'ru') or (${page.contentEng} == ''))?${page.content}:${page.contentEng}">
 
         </div>
     </div>
 </div>
+<footer th:replace="~{footer :: footer}"></footer>
 </body>
 </html>

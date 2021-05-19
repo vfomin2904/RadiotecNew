@@ -62,9 +62,6 @@ public class AdminController {
     private NewsService newsService;
 
     @Autowired
-    private SubscribeService subscribeService;
-
-    @Autowired
     private OrderService orderService;
 
     @GetMapping("/")
@@ -145,7 +142,7 @@ public class AdminController {
             return getAdminJournalChangePage(model, journal, 0);
         }
         journalsService.update(journal);
-        return "redirect:/admin/";
+        return getAdminJournalChangePage(model,journal, 0);
     }
 
     @GetMapping("/journal_change")
@@ -444,6 +441,7 @@ public class AdminController {
 
         if (!file.isEmpty()) {
             String name = "/home/tomcat/webapps/uploads/articles/" + file.getOriginalFilename();
+//            String name = file.getOriginalFilename();
             try {
                 byte[] bytes = file.getBytes();
                 BufferedOutputStream stream =
@@ -455,7 +453,7 @@ public class AdminController {
             } catch (Exception e) {
                 System.out.println("Не удалось загрузить " + name + " => " + e.getMessage());
 
-                bindingResult.rejectValue("file", "", "Не удалось загрузить файл: " + e.getMessage());
+                bindingResult.rejectValue("articleFile", "", "Не удалось загрузить файл: " + e.getMessage());
             }
 
         }
@@ -831,6 +829,26 @@ public class AdminController {
         return "redirect:/admin/menu_change?id=" + page.getId();
     }
 
+    @PostMapping("/change_price_list")
+    public String changePriceList(@RequestParam("file") MultipartFile file) {
+        if (!file.isEmpty()) {
+            String name = "/home/tomcat/webapps/uploads/price.xls";
+            if (file.getOriginalFilename().indexOf(".xls") > 0) {
+                try {
+                    byte[] bytes = file.getBytes();
+                    BufferedOutputStream stream =
+                            new BufferedOutputStream(new FileOutputStream(name));
+                    stream.write(bytes);
+                    stream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return "redirect:/admin/menu_change?type=main";
+    }
+
+
     @GetMapping("/field_change")
     public String getFieldChangePage(Model model, @RequestParam(required = true) int id) {
         switch (id) {
@@ -984,35 +1002,16 @@ public class AdminController {
         } else {
             orders = orderService.getOrdersByStatus(status);
         }
-        model.addAttribute("orders", orders);
-
-        Map<Integer, List<Books>> books = new HashMap<>();
-        Map<Integer, List<Article>> articles = new HashMap<>();
-        Map<Integer, List<Number>> numbers = new HashMap<>();
-
-        for (int i = 0; i < orders.size(); i++) {
-            for (int j = 0; j < orders.get(i).getCarts().size(); j++) {
-                Order order = orders.get(i);
-                Cart item = order.getCarts().get(j);
-                if (item.getType().equals("book")) {
-                    List current = books.getOrDefault(order.getId(), new ArrayList<>());
-                    current.add(bookService.getBookById(item.getProduct()));
-                    books.put(order.getId(), current);
-                } else if (item.getType().equals("number")) {
-                    List current = numbers.getOrDefault(order.getId(), new ArrayList<>());
-                    current.add(numberService.getNumberById(item.getProduct()));
-                    numbers.put(order.getId(), current);
-                } else if (item.getType().equals("article")) {
-                    List current = articles.getOrDefault(order.getId(), new ArrayList<>());
-                    current.add(articleService.getArticleById(item.getProduct()));
-                    articles.put(order.getId(), current);
-                }
+        Collections.sort(orders, new Comparator<Order>() {
+            @Override
+            public int compare(Order o1, Order o2) {
+                return o2.getId() - o1.getId();
             }
-        }
-
-        model.addAttribute("books", books);
-        model.addAttribute("numbers", numbers);
-        model.addAttribute("articles", articles);
+        });
+        model.addAttribute("orders", orders);
+        model.addAttribute("type", "all");
+        Integer editorialFeePrice = Integer.parseInt(pageService.getPageById(12).getContent());
+        model.addAttribute("editorialFeePrice", editorialFeePrice);
 
         return "admin_cart";
     }
@@ -1022,13 +1021,6 @@ public class AdminController {
         Order order = orderService.getOrderById(id);
         orderService.delete(order);
         return "redirect:/admin/cart";
-    }
-
-    @GetMapping("/subscribe_delete")
-    public String deleteSubscribe(@RequestParam(required = true) int id, @RequestParam(required = true) String type) {
-        Subscribe subscribe = subscribeService.getSubscribeById(id);
-        subscribeService.delete(subscribe);
-        return "redirect:/admin/subscribes?type=" + type;
     }
 
     @ResponseBody
@@ -1041,20 +1033,58 @@ public class AdminController {
     }
 
     @GetMapping("/subscribes")
-    public String getAdminSubscribePage(Model model, @RequestParam(required = true) String type, @RequestParam(required = false, defaultValue = "0") int item) {
-        List<Subscribe>  subscribes = subscribeService.getSubscribeByType(type);
+    public String getAdminSubscribePage(Model model, @RequestParam(required = true) String type, @RequestParam(required = false, defaultValue = "") String status, @RequestParam(required = false, defaultValue = "0") int item) {
+        List<Order> orders;
+        if (status.equals("")) {
+            orders = orderService.getOrdersByStatus("Оплачено");
+        } else {
+            orders = orderService.getOrdersByStatus(status);
+        }
+        Collections.sort(orders, new Comparator<Order>() {
+            @Override
+            public int compare(Order o1, Order o2) {
+                return o2.getId() - o1.getId();
+            }
+        });
+        orders.removeIf((order) -> {
+            for (Cart cart : order.getCarts()) {
+                if(cart.getType().equals(type)){
+                    return false;
+                }
+            }
+            return true;
+        });
         if(item > 0){
-//           if(type.equals("book")){
-//               subscribes.removeIf((o) -> item != bookService.getBookById(o.getProduct()).getSection());
-//           } else{
-               subscribes.removeIf((o) -> o.getProduct() != item);
-//           }
+            if(type.equals("order_book")){
+                orders.removeIf((order) -> {
+                    for (Cart cart : order.getCarts()) {
+                        if(cart.getType().equals("order_book")) {
+                            Books book = bookService.getBookById(cart.getProduct());
+                            if (book.getSection() == item) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                });
+            } else if(type.equals("journal_subscribe")) {
+                orders.removeIf((order) -> {
+                    for (Cart cart : order.getCarts()) {
+                        if (cart.getProduct() == item) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+            }
         }
 
-        model.addAttribute("subscribes", subscribes);
+        model.addAttribute("orders", orders);
         model.addAttribute("type", type);
+        Integer editorialFeePrice = Integer.parseInt(pageService.getPageById(12).getContent());
+        model.addAttribute("editorialFeePrice", editorialFeePrice);
         model.addAttribute("item", item);
-        return "admin_subscribes";
+        return "admin_cart";
     }
 
 

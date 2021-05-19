@@ -20,7 +20,11 @@ public class NumberService {
         return numbers;
     }
     public Number getNumberById(int id) {
-        return numberRepository.findById(id).get();
+        if(numberRepository.findById(id).isPresent()){
+            return numberRepository.findById(id).get();
+        }else{
+            return null;
+        }
     }
 
     public void create(Number number) {

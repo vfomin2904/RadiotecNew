@@ -21,6 +21,9 @@ public class Cart {
     @Column(name="product")
     private int product;
 
+    @Column(name="count")
+    private int count;
+
     @Column(name="user")
     private int user;
 
@@ -77,5 +80,13 @@ public class Cart {
 
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }

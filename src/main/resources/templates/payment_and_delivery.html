@@ -6,13 +6,13 @@
 
 <div id="content">
     <div id="left_menu" th:fragment="menu">
-        <div th:replace="~{left_menu :: books_menu}">
+        <div th:replace="~{left_menu :: journals_menu}">
 
         </div>
     </div>
-    <div id="main_block">
+    <div id="main_block" th:with="page = ${@pageService.getPageById(13)}">
 
-        <div th:utext="(#{language} == 'ru' or ${author.contentEng == ''})?${author.content}:${author.contentEng}">
+        <div th:utext="(#{language} == 'ru' or ${page.contentEng == ''})?${page.content}:${page.contentEng}">
 
         </div>
     </div>

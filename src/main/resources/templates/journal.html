@@ -7,16 +7,74 @@
 <div id="content">
     <div id="left_menu" th:fragment="menu">
         <img class="journal_img" th:src="${'/uploads/journals/'+currentJournal.cover}">
+
+        <div style="margin-bottom:15px;" th:if="${currentJournal.priceSubscribe > 0}">
+            <div class="price_book" th:text="${currentJournal.priceSubscribe} +' '+#{price.rub}"></div>
+            <div class="cart_block">
+                <div class="cart_line" data-type="journal_subscribe">
+                    <img class="cart_img" th:src="@{/images/cart_white.png}">
+                    <input type="button" class="cart_button add_cart" th:classappend="(${cartActive})?'hidden':''"
+                           th:value="#{cart.subscribe}">
+                    <input type="button" class="cart_button delete_cart" th:classappend="(${cartActive})?'':'hidden'"
+                           th:value="#{cart.unsubscribe}">
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(".add_cart").click(function () {
+                var cart = $(this);
+                var type = $(cart).parent().attr("data-type");
+                if (cart.hasClass("add_cart")) {
+                    $.ajax({
+                        url: "/cart_add",
+                        type: "POST", //метод отправки
+                        data: {
+                            type: type,
+                            product: [[${currentJournal.id}]],
+                            count: "1"
+                        },
+                        success: function (response) {
+                            $(cart).hide();
+                            $(cart).next("input").show();
+                        },
+                        error: function (response) {
+                        }
+                    });
+                }
+            });
+            $(".delete_cart").click(function () {
+                var cart = $(this);
+                var type = $(cart).parent().attr("data-type");
+                if (cart.hasClass("delete_cart")) {
+                    $.ajax({
+                        url: "/cart_delete",
+                        type: "POST", //метод отправки
+                        data: {
+                            type: type,
+                            product: [[${currentJournal.id}]]
+                        },
+                        success: function (response) {
+                            $(cart).hide();
+                            $(cart).prev("input").show();
+                        },
+                        error: function (response) {
+                        }
+                    });
+                }
+            });
+        </script>
+
         <ul id="left_menu_journal">
             <li class="popup-open"><a href="#" th:text="#{journal.submission}">Отправить статью</a></li>
 
-            <li><a th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})+'#rules?page=about_journal'"
+            <li th:if="${currentJournal.rules != ''}"><a th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})+'?page=about_journal#rules'"
                    th:text="#{journal.guidelines}">Правила для авторов</a></li>
-            <li><a th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})+'#redkol?page=about_journal'"
+            <li th:if="${currentJournal.redkol != ''}"><a th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})+'?page=about_journal#redkol'"
                    th:text="#{journal.board}">Редакционная коллегия</a></li>
-            <li><a th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})+'#review?page=about_journal'"
+            <li th:if="${currentJournal.review != ''}"><a th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})+'?page=about_journal#review'"
                    th:text="#{journal.peer}">Рецензирование</a></li>
-            <li><a th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})+'#ethics?page=about_journal'"
+            <li th:if="${currentJournal.ethics != ''}"><a th:href="'/'+#{language}+'/journal/'+(${currentJournal.link == ''}?${currentJournal.id}:${currentJournal.link})+'?page=about_journal#ethics'"
                    style="border-bottom:0 !important;" th:text="#{journal.pubethics}">Этика публикаций</a></li>
 
         </ul>
@@ -117,7 +175,7 @@
                 <li th:if="${currentJournal.archiving != ''}"><a href="#archiving" th:text="#{journal.archiving}"></a></li>
                 <li th:if="${currentJournal.ethics != ''}"><a href="#ethics" th:text="#{journal.ethics}"></a></li>
                 <li th:if="${currentJournal.founder != ''}"><a href="#founder" th:text="#{journal.founder}"></a></li>
-                <li th:if="${currentJournal.publicationFee != ''}"><a href="#publicationFee" th:text="#{journal.publicationFee}"></a></li>
+                <li th:if="${currentJournal.publicationFee != ''}"><a href="#publicationFree" th:text="#{journal.publicationFree}"></a></li>
                 <li th:if="${currentJournal.conflicts != ''}"><a href="#conflicts" th:text="#{journal.conflicts}"></a></li>
                 <li th:if="${currentJournal.plagiarism != ''}"><a href="#plagiarism" th:text="#{journal.plagiarism}"></a></li>
                 <li th:if="${currentJournal.print != ''}"><a href="#print" th:text="#{journal.print}"></a></li>
@@ -177,14 +235,14 @@
                 Политика свободного доступа
             </div>
             <div class="padding hidden" th:if="${currentJournal.freeAccess != ''}"
-                 th:utext="${currentJournal.freeAccess}"></div>
+                 th:utext="(#{language} == 'ru' or ${currentJournal.freeAccessEng == ''})?${currentJournal.freeAccess}:${currentJournal.freeAccessEng}"></div>
 
             <div id="archiving" class="field_name margin_top padding hidden" th:if="${currentJournal.archiving != ''}"
                  th:text="#{journal.archiving}">
                 Архивация
             </div>
             <div class="padding hidden" th:if="${currentJournal.archiving != ''}"
-                 th:utext="(#{language} == 'ru' or ${currentJournal.freeAccessEng == ''})?${currentJournal.freeAccess}:${currentJournal.freeAccessEng}"></div>
+                 th:utext="(#{language} == 'ru' or ${currentJournal.archiving == ''})?${currentJournal.archiving}:${currentJournal.archivingEng}"></div>
 
 
             <div id="ethics" class="field_name margin_top padding hidden" th:if="${currentJournal.ethics != ''}"
@@ -203,8 +261,8 @@
                  th:utext="(#{language} == 'ru' or ${currentJournal.founderEng == ''})?${currentJournal.founder}:${currentJournal.founderEng}"></div>
 
 
-            <div id="publicationFee" class="field_name margin_top padding hidden" th:if="${currentJournal.publicationFee != ''}"
-                 th:text="#{journal.publicationFee}">
+            <div id="publicationFree" class="field_name margin_top padding hidden" th:if="${currentJournal.publicationFee != ''}"
+                 th:text="#{journal.publicationFree}">
                 Плата за публикацию
             </div>
             <div class="padding hidden" th:if="${currentJournal.publicationFee != ''}"
@@ -352,7 +410,30 @@
            }
         });
 
+        var hash = window.location.hash;
+        anchor(hash);
+
+        $("#left_menu_journal a").click(function (){
+            var href = $(this).attr("href");
+            var hash = href.substring(href.indexOf("#"));
+            anchor(hash);
+        });
+
+
+        function anchor(hash){
+            if(hash.length > 0) {
+                $(".active_block").hide(350);
+                $(".active_block").next().hide(350);
+                $(".active_block").removeClass("active_block");
+
+                $(hash).show();
+                $(hash).next().show();
+                $(hash).addClass("active_block");
+            }
+        }
+
     </script>
 </div>
+<footer th:replace="~{footer :: footer}"></footer>
 </body>
 </html>

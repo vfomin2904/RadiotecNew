@@ -23,7 +23,11 @@ public class BookService {
     }
 
     public Books getBookById(int id){
-        return bookRepository.findById(id).get();
+        if(bookRepository.findById(id).isPresent()) {
+            return bookRepository.findById(id).get();
+        } else{
+            return null;
+        }
     }
     public int getBookWithMaxId(){
         return bookRepository.findBooksWithMaxId();

@@ -110,7 +110,7 @@ public class Journals implements Comparable<Journals>{
     @Column(name="print")
     private String print;
 
-    @Column(name="sendingArticle")
+    @Column(name="sending_article")
     private String sendingArticle;
 
     @Column(name="rules")
@@ -127,7 +127,6 @@ public class Journals implements Comparable<Journals>{
 
     @Column(name="history")
     private String history;
-
 
 
     @NotEmpty
@@ -230,6 +229,9 @@ public class Journals implements Comparable<Journals>{
 
     @Column(name="link")
     private String link;
+
+    @Column(name="price_subscribe")
+    private int priceSubscribe;
 
 
     public String getMenuName() {
@@ -836,5 +838,13 @@ public class Journals implements Comparable<Journals>{
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public int getPriceSubscribe() {
+        return priceSubscribe;
+    }
+
+    public void setPriceSubscribe(int priceSubscribe) {
+        this.priceSubscribe = priceSubscribe;
     }
 }

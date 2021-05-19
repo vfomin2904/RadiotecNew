@@ -91,16 +91,20 @@
                         <label class="form__label">Цена</label>
                     </div>
 
-                    <input type="hidden" th:field="*{numberFile}">
-                    <p th:if="${number.numberFile != null} and ${#strings.length(number.numberFile) > 0}"><a
-                            target="_blank" th:href="@{'/uploads/numbers/'+${number.numberFile}}">Текущая версия
-                        номера</a></p>
-                    <small class="input_error" th:each="err : ${#fields.errors('numberFile')}" th:text="${err}"></small>
-
                     <div class="form__group field">
                         <input type="file" name="file">
                         <label class="form__label">Файл</label>
                     </div>
+                    <input type="hidden" th:field="*{numberFile}">
+
+                    <input type="button" th:if="${number.numberFile != ''}" class="remove_file" value="Удалить файл">
+
+
+                    <p class="current_file" th:if="${number.numberFile != null} and ${#strings.length(number.numberFile) > 0}"><a
+                            target="_blank" th:href="@{'/uploads/numbers/'+${number.numberFile}}">Текущая версия
+                        номера</a></p>
+                    <small class="input_error" th:each="err : ${#fields.errors('numberFile')}" th:text="${err}"></small>
+
 
                     <input  th:if="${action == 'number_add'}" id="submit" value="Добавить номер"
                            type="submit">

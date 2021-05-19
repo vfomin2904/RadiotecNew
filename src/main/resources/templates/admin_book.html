@@ -167,18 +167,27 @@
                     <input th:field="*{bookNew}" class="checkbox_value"  id="bookNew" name="bookNew" th:value="0" type="hidden">
 
                     <div class="form__group field">
-                        <input class="form__field" th:field="*{price}" id="price" name="price" placeholder="Цена" type="text" >
-                        <label class="form__label">Цена</label>
+                        <input class="form__field" th:field="*{price}" id="price" name="price" placeholder="Цена электронной версии" type="text" >
+                        <label class="form__label">Цена электронной версии</label>
                     </div>
 
-                    <input type="hidden" th:field="*{bookFile}">
-                    <p th:if="${books.bookFile != null} and ${#strings.length(books.bookFile) > 0}"><a target="_blank" th:href="@{'/uploads/books/files/'+${books.bookFile}}">Текущая версия книги</a></p>
-                    <small class="input_error" th:each="err : ${#fields.errors('bookFile')}" th:text="${err}"></small>
+                    <div class="form__group field">
+                        <input class="form__field" th:field="*{priceOrder}" id="priceOrder" name="priceOrder" placeholder="Цена бумажной версии" type="text" >
+                        <label class="form__label">Цена бумажной версии</label>
+                    </div>
+
 
                     <div class="form__group field">
                         <input type="file" name="file">
                         <label class="form__label">Файл</label>
                     </div>
+                    <input type="hidden" th:field="*{bookFile}">
+
+                    <input type="button" th:if="${books.bookFile != ''}" class="remove_file" value="Удалить файл">
+
+                    <p class="current_file" th:if="${books.bookFile != null} and ${#strings.length(books.bookFile) > 0}"><a target="_blank" th:href="@{'/uploads/books/files/'+${books.bookFile}}">Текущая версия книги</a></p>
+                    <small class="input_error" th:each="err : ${#fields.errors('bookFile')}" th:text="${err}"></small>
+
 
                     <div class="form__group field">
                         <input type="file" name="file1">
@@ -196,6 +205,10 @@
 
                     <div class="form_message"></div>
                     <script>
+                            $(".remove_file").click(function(){
+                            $(this).prev("input[type=hidden]").val("");
+                            $(this).next(".current_file").remove();
+                        });
 
                         var textarea = ["author","content","description","authorEng","contentEng","descriptionEng"];
 
@@ -215,7 +228,6 @@
                             }
                         );
                         init_checkbox();
-                        delete_img_activate();
                     </script>
                 </div>
                 <div th:if="${action == 'book_list'}" class="books_main_params main_params" id="books_options">

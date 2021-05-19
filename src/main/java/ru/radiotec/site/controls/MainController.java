@@ -1,27 +1,22 @@
 package ru.radiotec.site.controls;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.radiotec.site.entity.*;
 import ru.radiotec.site.entity.Number;
 import ru.radiotec.site.services.*;
-//import org.springframework.security.core.userdetails.User;
 
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.*;
 
 @Controller
 @RequestMapping(value = {"/ru/", "/en/"})
 public class MainController {
-
-    private RedisProperties.Jedis jedis;
 
     @Autowired
     private JournalsService journalsService;
@@ -45,7 +40,7 @@ public class MainController {
     private PageService pageService;
 
     @Autowired
-    private UserService userService;
+    private OrderService orderService;
 
     @Autowired
     private HttpSession httpSession;
@@ -54,9 +49,7 @@ public class MainController {
 
     @GetMapping("/")
     public String getMainPage(Model model) {
-        init_menu(model);
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
+        
         TreeSet<Books> booksNew = new TreeSet<>(new Comparator<Books>() {
             @Override
             public int compare(Books o1, Books o2) {
@@ -74,52 +67,42 @@ public class MainController {
 
     @GetMapping("/search/")
     public String getSearchPage(Model model) {
-        init_menu(model);
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
+        
         model.addAttribute("title", "Поиск");
         model.addAttribute("titleEng", "Search");
         return "search";
     }
 
-    @GetMapping("/journals_info")
-    public String getJournalsInfoPage(Model model) {
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
-        init_menu(model);
-        Page page = pageService.getPageById(9);
-        model.addAttribute("page", page);
-        model.addAttribute("title", "Журналы");
-        model.addAttribute("titleEng", "Journals");
-        return "journals_info";
+    @GetMapping("/payment_and_delivery")
+    public String getPaymentAndDeliveryPage(Model model) {
+        return "payment_and_delivery";
     }
 
-    @GetMapping("/books_info")
-    public String getBooksInfoPage(Model model) {
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
-        init_menu(model);
-        Page page = pageService.getPageById(10);
-        model.addAttribute("page", page);
-        model.addAttribute("title", "Книги");
-        model.addAttribute("titleEng", "Books");
-        return "books_info";
-    }
-
-
-    @GetMapping("/cart")
-    public String getCartPage(Model model) {
-        init_menu(model);
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
-        List<Cart> carts = (List<Cart>)httpSession.getAttribute("cart");
+    @GetMapping("/success_payment")
+    public String getSuccessPaymentPage(Model model) {
+        List<Cart> carts;
+        int orderId;
+        try {
+            carts = (List<Cart>) httpSession.getAttribute("cart");
+            orderId = (Integer) httpSession.getAttribute("order");
+        }catch(Exception e){
+            return "redirect:/";
+        }
+        Order currentOrder = orderService.getOrderById(orderId);
+        currentOrder.setStatus("Оплачено");
+        orderService.update(currentOrder);
 
         if(carts != null) {
             List<Books> books = new ArrayList<>();
             List<Article> articles = new ArrayList<>();
             List<Number> numbers = new ArrayList<>();
+            List<Journals> subscribes = new ArrayList<>();
+            List<Books> orders = new ArrayList<>();
+            Map<Integer, Integer> orderCount = new HashMap<>();
+            Map<Integer, Integer> subscribeCount = new HashMap<>();
 
             int totalPrice = 0;
+            boolean editorialFee = false;
 
             for (Cart cart : carts) {
                 if (cart.getType().equals("book")) {
@@ -134,15 +117,135 @@ public class MainController {
                     Number number = numberService.getNumberById(cart.getProduct());
                     numbers.add(number);
                     totalPrice += number.getPrice();
+                } else if (cart.getType().equals("journal_subscribe")) {
+                    Journals subscribe = journalsService.getJournalById(cart.getProduct());
+                    subscribes.add(subscribe);
+                    totalPrice += subscribe.getPriceSubscribe()*cart.getCount();
+                    subscribeCount.put(subscribe.getId(),cart.getCount());
+                } else if (cart.getType().equals("order_book")) {
+                    Books order = bookService.getBookById(cart.getProduct());
+                    orders.add(order);
+                    totalPrice += order.getPriceOrder()*cart.getCount();
+                    orderCount.put(order.getId(),cart.getCount());
+                }  else if (cart.getType().equals("editorial_fee")) {
+                    editorialFee = true;
+                    Integer editorialFeePrice = Integer.parseInt(pageService.getPageById(12).getContent());
+                    totalPrice += editorialFeePrice;
+                    model.addAttribute("editorialFeePrice", editorialFeePrice);
+                }
+            }
+
+            model.addAttribute("title", "Корзина");
+            model.addAttribute("editorialFee", editorialFee);
+            model.addAttribute("titleEng", "Cart");
+            model.addAttribute("totalPrice", totalPrice);
+            model.addAttribute("books", books);
+            model.addAttribute("articles", articles);
+            model.addAttribute("numbers", numbers);
+            model.addAttribute("orders", orders);
+            model.addAttribute("subscribes", subscribes);
+            model.addAttribute("orderCount", orderCount);
+            model.addAttribute("subscribeCount", subscribeCount);
+        }
+        model.addAttribute("carts", carts);
+        httpSession.removeAttribute("cart");
+        httpSession.removeAttribute("order");
+
+        return "success_payment";
+    }
+
+    @GetMapping("/journals_info")
+    public String getJournalsInfoPage(Model model) {
+        
+        Page page = pageService.getPageById(9);
+        model.addAttribute("page", page);
+        model.addAttribute("title", "Журналы");
+        model.addAttribute("titleEng", "Journals");
+
+        List<Cart> carts = (List<Cart>)httpSession.getAttribute("cart");
+        boolean cartActive = false;
+        if(carts != null){
+            for(Cart cart: carts){
+                if (cart.getType().equals("editorial_fee")) {
+                    cartActive = true;
+                    break;
+                }
+            }}
+        model.addAttribute("cartActive", cartActive);
+        return "journals_info";
+    }
+
+    @GetMapping("/books_info")
+    public String getBooksInfoPage(Model model) {
+        
+        Page page = pageService.getPageById(10);
+        model.addAttribute("page", page);
+        model.addAttribute("title", "Книги");
+        model.addAttribute("titleEng", "Books");
+        return "books_info";
+    }
+
+
+    @GetMapping("/cart")
+    public String getCartPage(Model model) throws IOException, InterruptedException {
+
+        List<Cart> carts = (List<Cart>)httpSession.getAttribute("cart");
+
+        if(carts != null) {
+            List<Books> books = new ArrayList<>();
+            List<Article> articles = new ArrayList<>();
+            List<Number> numbers = new ArrayList<>();
+            List<Journals> subscribes = new ArrayList<>();
+            List<Books> orders = new ArrayList<>();
+            Map<Integer, Integer> orderCount = new HashMap<>();
+            Map<Integer, Integer> subscribeCount = new HashMap<>();
+
+            int totalPrice = 0;
+            boolean editorialFee = false;
+
+            for (Cart cart : carts) {
+                if (cart.getType().equals("book")) {
+                    Books book = bookService.getBookById(cart.getProduct());
+                    books.add(book);
+                    totalPrice += book.getPrice();
+                } else if (cart.getType().equals("article")) {
+                    Article article = articleService.getArticleById(cart.getProduct());
+                    articles.add(article);
+                    totalPrice += article.getPrice();
+                } else if (cart.getType().equals("number")) {
+                    Number number = numberService.getNumberById(cart.getProduct());
+                    numbers.add(number);
+                    totalPrice += number.getPrice();
+                } else if (cart.getType().equals("journal_subscribe")) {
+                    Journals subscribe = journalsService.getJournalById(cart.getProduct());
+                    subscribes.add(subscribe);
+                    totalPrice += subscribe.getPriceSubscribe()*cart.getCount();
+                    subscribeCount.put(subscribe.getId(),cart.getCount());
+                } else if (cart.getType().equals("order_book")) {
+                    Books order = bookService.getBookById(cart.getProduct());
+                    orders.add(order);
+                    totalPrice += order.getPriceOrder()*cart.getCount();
+                    orderCount.put(order.getId(),cart.getCount());
+                }
+                else if (cart.getType().equals("editorial_fee")) {
+                    editorialFee = true;
+                    Integer editorialFeePrice = Integer.parseInt(pageService.getPageById(12).getContent());
+                    totalPrice += editorialFeePrice;
+                    model.addAttribute("editorialFeePrice", editorialFeePrice);
                 }
             }
 
             model.addAttribute("title", "Корзина");
             model.addAttribute("titleEng", "Cart");
             model.addAttribute("totalPrice", totalPrice);
+            model.addAttribute("editorialFee", editorialFee);
             model.addAttribute("books", books);
             model.addAttribute("articles", articles);
             model.addAttribute("numbers", numbers);
+            model.addAttribute("orders", orders);
+            model.addAttribute("subscribes", subscribes);
+            model.addAttribute("orderCount", orderCount);
+            model.addAttribute("subscribeCount", subscribeCount);
         }
 
 
@@ -173,11 +276,20 @@ public class MainController {
         model.addAttribute("currentJournal", currentJournal);
         model.addAttribute("numbersSorted", numberSorted);
         model.addAttribute("page", page);
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
 
         model.addAttribute("title", currentJournal.getName());
         model.addAttribute("titleEng", currentJournal.getNameEng());
+
+        List<Cart> carts = (List<Cart>)httpSession.getAttribute("cart");
+        boolean cartActive = false;
+        if(carts != null){
+            for(Cart cart: carts){
+                if (cart.getProduct() == currentJournal.getId() && cart.getType().equals("journal_subscribe")) {
+                    cartActive = true;
+                    break;
+                }
+            }}
+        model.addAttribute("cartActive", cartActive);
 
         return "journal";
     }
@@ -203,9 +315,6 @@ public class MainController {
             }
         }
 
-
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
         model.addAttribute("currentJournal", currentJournal);
         model.addAttribute(number);
 
@@ -235,8 +344,6 @@ public class MainController {
         }
 
         Article article = articleService.getArticleById(artId);
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
         model.addAttribute("currentJournal", currentJournal);
         model.addAttribute(article);
 
@@ -259,21 +366,23 @@ public class MainController {
     public String getBookPage(Model model, @PathVariable int book_id) {
         Books currentBook = bookService.getBookById(book_id);
         model.addAttribute("currentBook", currentBook);
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
         ArrayList<BookSec> bookSec = new ArrayList<>(bookSecService.getAllBookSec());
         model.addAttribute("booksecs", bookSec);
 
         List<Cart> carts = (List<Cart>)httpSession.getAttribute("cart");
         boolean cartActive = false;
+        boolean orderActive = false;
         if(carts != null){
         for(Cart cart: carts){
             if (cart.getProduct() == book_id && cart.getType().equals("book")) {
                 cartActive = true;
-                break;
+            }
+            if (cart.getProduct() == book_id && cart.getType().equals("order_book")) {
+                orderActive = true;
             }
         }}
         model.addAttribute("cartActive", cartActive);
+        model.addAttribute("orderActive", orderActive);
         model.addAttribute("backActive", false);
         model.addAttribute("title", currentBook.getName());
         model.addAttribute("titleEng", currentBook.getNameEng());
@@ -289,14 +398,12 @@ public class MainController {
         int totalPages = (bookCount % bookCountOnPage == 0) ? bookCount / bookCountOnPage : bookCount / bookCountOnPage + 1;
         int start = bookCountOnPage * (page - 1);
         int end = (start + bookCountOnPage > bookCount) ? bookCount - 1 : start + bookCountOnPage - 1;
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
         model.addAttribute("start", start);
         model.addAttribute("end", end);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentBookSection", currentBookSection);
-        init_menu(model);
+        
         model.addAttribute("backActive", false);
         model.addAttribute("title", currentBookSection.getName());
         model.addAttribute("titleEng", currentBookSection.getNameEng());
@@ -308,10 +415,8 @@ public class MainController {
     @GetMapping("/news")
     public String getNewsPage(Model model) {
         List<News> news = newsService.getAllNews();
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
         model.addAttribute("news", news);
-        init_menu(model);
+        
         model.addAttribute("title", "Новости");
         model.addAttribute("titleEng", "News");
         return "news";
@@ -320,10 +425,8 @@ public class MainController {
     @GetMapping("/news/{id}")
     public String getNewsPage(Model model, @PathVariable int id) {
         News selectedNews = newsService.getNewsById(id);
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
         model.addAttribute("selectedNews", selectedNews);
-        init_menu(model);
+        
         model.addAttribute("title", "Новости");
         model.addAttribute("titleEng", "News");
         return "news";
@@ -332,19 +435,15 @@ public class MainController {
     @GetMapping("/keywords")
     public String getArticleByKeywordsPage(Model model, @RequestParam(required = true) String keywords) {
         List<Article> articles = articleService.getArticlesByKeywords(keywords);
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
         model.addAttribute("articles", articles);
         model.addAttribute("keywords", keywords);
-        init_menu(model);
+        
         return "keywords";
     }
 
     @GetMapping("/subscription")
     public String getSubscriptionPage(Model model) {
-        init_menu(model);
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
+        
         model.addAttribute("title", "Подписка");
         model.addAttribute("titleEng", "Subscribe");
         return "subscription";
@@ -352,9 +451,7 @@ public class MainController {
 
     @GetMapping("/order")
     public String getOrderPage(Model model) {
-        init_menu(model);
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
+        
         model.addAttribute("title", "Заказ книг");
         model.addAttribute("titleEng", "Ordering books");
         return "order_books";
@@ -362,9 +459,7 @@ public class MainController {
 
     @GetMapping("/for_authors")
     public String getAuthorsPage(Model model) {
-        init_menu(model);
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
+        
         Page page = pageService.getPageById(1);
         model.addAttribute("page", page);
         model.addAttribute("title", "Для авторов");
@@ -374,9 +469,7 @@ public class MainController {
 
     @GetMapping("/about")
     public String getAboutPage(Model model) {
-        init_menu(model);
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
+        
         Page page = pageService.getPageById(2);
         model.addAttribute("page", page);
         model.addAttribute("title", "О журнале");
@@ -388,26 +481,12 @@ public class MainController {
     public String getSubscribePage(Model model, @RequestParam(required = false, defaultValue = "0") int journal){
         Page subscribePage = pageService.getPageById(8);
         model.addAttribute("subscribePage", subscribePage);
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
-        Subscribe subscribe = new Subscribe();
+        List<Journals> journals = journalsService.getActiveJournals();
+        model.addAttribute("journals", journals);
         if(journal != 0) {
-            subscribe.setProduct(journal);
             Journals currentJournal = journalsService.getJournalById(journal);
             model.addAttribute("currentJournal", currentJournal);
         }
-        subscribe.setType("journal");
-
-        List<Journals> journals = journalsService.getActiveJournals();
-        model.addAttribute("journals", journals);
-
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(!auth.getName().equals("anonymousUser")){
-            User currentUser = userService.getUserByLogin(auth.getName());
-            subscribe.setUserId(currentUser.getId().intValue());
-        }
-        model.addAttribute("subscribe", subscribe);
         model.addAttribute("title", "Подписка");
         model.addAttribute("titleEng", "Subscribe");
         return "subscribe";
@@ -418,8 +497,6 @@ public class MainController {
 
         String referer = request.getHeader("Referer");
         System.out.println(referer);
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
         if(book > 0){
             Books currentBook = bookService.getBookById(book);
             model.addAttribute("currentBook", currentBook);
@@ -439,8 +516,6 @@ public class MainController {
 
     @GetMapping("/partner/")
     public String getPartnerPage(Model model, @RequestParam(required = false, defaultValue = "0") int section, @RequestParam(required = false, defaultValue = "0") int book) {
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
         if(book > 0){
             Books currentBook = bookService.getBookById(book);
             model.addAttribute("currentBook", currentBook);
@@ -460,8 +535,6 @@ public class MainController {
 
     @GetMapping("/author/")
     public String getAuthorPage(Model model, @RequestParam(required = false, defaultValue = "0") int section, @RequestParam(required = false, defaultValue = "0") int book) {
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
         if(book > 0){
             Books currentBook = bookService.getBookById(book);
             model.addAttribute("currentBook", currentBook);
@@ -481,8 +554,6 @@ public class MainController {
 
     @GetMapping("/order_book/")
     public String getOrderBookPage(Model model, @RequestParam(required = false, defaultValue = "0") int section, @RequestParam(required = false, defaultValue = "0") int book) {
-        Page headerRight = pageService.getPageById(6);
-        model.addAttribute("headerRight", headerRight);
         if(book > 0){
             Books currentBook = bookService.getBookById(book);
             model.addAttribute("currentBook", currentBook);
@@ -492,31 +563,10 @@ public class MainController {
         }
         ArrayList<BookSec> bookSec = new ArrayList<>(bookSecService.getAllBookSec());
         model.addAttribute("booksecs", bookSec);
-
-
-        Subscribe subscribe = new Subscribe();
-        subscribe.setType("book_section");
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(!auth.getName().equals("anonymousUser")){
-            User currentUser = userService.getUserByLogin(auth.getName());
-            subscribe.setUserId(currentUser.getId().intValue());
-        }
-        model.addAttribute("subscribe", subscribe);
-
         Page page = pageService.getPageById(7);
         model.addAttribute("page", page);
         model.addAttribute("title", "Заказ книг");
         model.addAttribute("titleEng", "Ordering books");
         return "order_book";
-    }
-
-
-        private void init_menu(Model model) {
-        TreeSet<Journals> journals = new TreeSet<>(journalsService.getActiveJournals());
-        ArrayList<BookSec> bookSec = new ArrayList<>(bookSecService.getAllBookSec());
-        Map<String, Collection> attributes = new HashMap<>();
-        attributes.put("journals", journals);
-        attributes.put("booksecs", bookSec);
-        model.addAllAttributes(attributes);
     }
 }

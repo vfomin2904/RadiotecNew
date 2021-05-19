@@ -6,11 +6,12 @@
 
 <div id="content">
 <!--    <div th:replace="~{left_menu :: menu}"></div>-->
-    <div id="main_block" style="width:auto;">
+    <div id="main_block_full" style="width:auto;">
         <div id="custom_content" th:utext="(#{language} == 'ru' or ${page.contentEng == ''})?${page.content}:${page.contentEng}">
 
         </div>
     </div>
 </div>
+<footer th:replace="~{footer :: footer}"></footer>
 </body>
 </html>

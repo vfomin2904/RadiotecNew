@@ -22,9 +22,6 @@ public class User {
     @JoinColumn(name="group_id", referencedColumnName = "id", insertable = false, updatable = false)
     private UserGroup group;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<Subscribe> subscribes = new HashSet<>();
-
     public User(){
 
     }
@@ -59,13 +56,5 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Set<Subscribe> getSubscribes() {
-        return subscribes;
-    }
-
-    public void setSubscribes(Set<Subscribe> subscribes) {
-        this.subscribes = subscribes;
     }
 }
