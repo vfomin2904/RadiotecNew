@@ -462,8 +462,22 @@
                 <input class="ajax_submit" th:if="${action == 'journal_change'}" value="Сохранить журнал"
                        type="button">
                 <script>
+                    var textarea = ["redkol","descript","guide","pricePolicy","agreement","sendingMaterials","contacts", "goals","journalsSections",
+                    "review", "freeAccess", "archiving", "ethics", "founder", "publicationFee", "conflicts", "plagiarism", "print", "sendingArticle",
+                    "rules", "copyright", "privacy", "sponsors", "history", "redkolEng", "descriptEng", "guideEng", "pricePolicyEng", "agreementEng",
+                    "sendingMaterialsEng", "contactsEng", "goalsEng","journalsSectionsEng","reviewEng","freeAccessEng","archivingEng","ethicsEng","founderEng",
+                        "publicationFeeEng","conflictsEng","plagiarismEng","printEng", "sendingArticleEng","rulesEng","copyrightEng","privacyEng","sponsorsEng","historyEng"];
+
+                    for(var i = 0; i < textarea.length;i++){
+                        CKEDITOR.replace(textarea[i]);
+                    }
+
                     $(".ajax_submit").click(
                         function () {
+                            for(var i = 0; i < textarea.length;i++){
+                                var value = CKEDITOR.instances[textarea[i]].getData();
+                                $("#"+textarea[i]).val(value);
+                            }
                             var url = $(".main_form").attr("action");
                             sendAjaxForm('main_params', 'main_form', url);
                             return false;
@@ -483,57 +497,57 @@
                         $(".main_info").hide();
                     });
 
-                    CKEDITOR.replace('redkol');
-                    CKEDITOR.replace('descript');
-                    CKEDITOR.replace('guide');
-                    CKEDITOR.replace('pricePolicy');
-                    CKEDITOR.replace('agreement');
-                    CKEDITOR.replace('sendingMaterials');
+                    // CKEDITOR.replace('redkol');
+                    // CKEDITOR.replace('descript');
+                    // CKEDITOR.replace('guide');
+                    // CKEDITOR.replace('pricePolicy');
+                    // CKEDITOR.replace('agreement');
+                    // CKEDITOR.replace('sendingMaterials');
+                    //
+                    // CKEDITOR.replace('contacts');
+                    // CKEDITOR.replace('goals');
+                    // CKEDITOR.replace('journalsSections');
+                    // CKEDITOR.replace('review');
+                    // CKEDITOR.replace('freeAccess');
+                    // CKEDITOR.replace('archiving');
+                    // CKEDITOR.replace('ethics');
+                    // CKEDITOR.replace('founder');
+                    // CKEDITOR.replace('publicationFee');
+                    // CKEDITOR.replace('conflicts');
+                    // CKEDITOR.replace('plagiarism');
+                    // CKEDITOR.replace('print');
+                    // CKEDITOR.replace('sendingArticle');
+                    // CKEDITOR.replace('rules');
+                    // CKEDITOR.replace('copyright');
+                    // CKEDITOR.replace('privacy');
+                    // CKEDITOR.replace('sponsors');
+                    // CKEDITOR.replace('history');
 
-                    CKEDITOR.replace('contacts');
-                    CKEDITOR.replace('goals');
-                    CKEDITOR.replace('journalsSections');
-                    CKEDITOR.replace('review');
-                    CKEDITOR.replace('freeAccess');
-                    CKEDITOR.replace('archiving');
-                    CKEDITOR.replace('ethics');
-                    CKEDITOR.replace('founder');
-                    CKEDITOR.replace('publicationFee');
-                    CKEDITOR.replace('conflicts');
-                    CKEDITOR.replace('plagiarism');
-                    CKEDITOR.replace('print');
-                    CKEDITOR.replace('sendingArticle');
-                    CKEDITOR.replace('rules');
-                    CKEDITOR.replace('copyright');
-                    CKEDITOR.replace('privacy');
-                    CKEDITOR.replace('sponsors');
-                    CKEDITOR.replace('history');
+                    // CKEDITOR.replace('redkolEng');
+                    // CKEDITOR.replace('descriptEng');
+                    // CKEDITOR.replace('guideEng');
+                    // CKEDITOR.replace('pricePolicyEng');
+                    // CKEDITOR.replace('agreementEng');
+                    // CKEDITOR.replace('sendingMaterialsEng');
 
-                    CKEDITOR.replace('redkolEng');
-                    CKEDITOR.replace('descriptEng');
-                    CKEDITOR.replace('guideEng');
-                    CKEDITOR.replace('pricePolicyEng');
-                    CKEDITOR.replace('agreementEng');
-                    CKEDITOR.replace('sendingMaterialsEng');
-
-                    CKEDITOR.replace('contactsEng');
-                    CKEDITOR.replace('goalsEng');
-                    CKEDITOR.replace('journalsSectionsEng');
-                    CKEDITOR.replace('reviewEng');
-                    CKEDITOR.replace('freeAccessEng');
-                    CKEDITOR.replace('archivingEng');
-                    CKEDITOR.replace('ethicsEng');
-                    CKEDITOR.replace('founderEng');
-                    CKEDITOR.replace('publicationFeeEng');
-                    CKEDITOR.replace('conflictsEng');
-                    CKEDITOR.replace('plagiarismEng');
-                    CKEDITOR.replace('printEng');
-                    CKEDITOR.replace('sendingArticleEng');
-                    CKEDITOR.replace('rulesEng');
-                    CKEDITOR.replace('copyrightEng');
-                    CKEDITOR.replace('privacyEng');
-                    CKEDITOR.replace('sponsorsEng');
-                    CKEDITOR.replace('historyEng');
+                    // CKEDITOR.replace('contactsEng');
+                    // CKEDITOR.replace('goalsEng');
+                    // CKEDITOR.replace('journalsSectionsEng');
+                    // CKEDITOR.replace('reviewEng');
+                    // CKEDITOR.replace('freeAccessEng');
+                    // CKEDITOR.replace('archivingEng');
+                    // CKEDITOR.replace('ethicsEng');
+                    // CKEDITOR.replace('founderEng');
+                    // CKEDITOR.replace('publicationFeeEng');
+                    // CKEDITOR.replace('conflictsEng');
+                    // CKEDITOR.replace('plagiarismEng');
+                    // CKEDITOR.replace('printEng');
+                    // CKEDITOR.replace('sendingArticleEng');
+                    // CKEDITOR.replace('rulesEng');
+                    // CKEDITOR.replace('copyrightEng');
+                    // CKEDITOR.replace('privacyEng');
+                    // CKEDITOR.replace('sponsorsEng');
+                    // CKEDITOR.replace('historyEng');
                     init_checkbox();
 
                 </script>

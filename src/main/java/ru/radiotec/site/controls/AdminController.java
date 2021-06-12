@@ -188,6 +188,12 @@ public class AdminController {
     @PostMapping("/number_add")
     public String getAdminJournalAddPage(@Valid Number number, BindingResult bindingResult, Model model, @RequestParam("file") MultipartFile file) {
 
+
+        if(numberService.getNumberByYearAndNameAndJournalId(number.getYear(), number.getName(), number.getJournalId()) != null){
+            bindingResult.rejectValue("name", "", "Такой номер уже существует");
+            return getAdminNumberAddPage(model, number, 0);
+        }
+
         if (!file.isEmpty()) {
             String name = "/home/tomcat/webapps/uploads/numbers/" + file.getOriginalFilename();
             try {

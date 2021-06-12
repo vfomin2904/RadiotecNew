@@ -310,6 +310,7 @@ public class MainController {
             number = numberService.getNumberById(id);
         }catch(NumberFormatException e){
             String[] search = numberId.split("-",2);
+            System.out.println(Arrays.toString(search));
             if(search.length > 1) {
                 number = numberService.getNumberByYearAndNameAndJournalId(search[0], search[1], currentJournal.getId());
             }

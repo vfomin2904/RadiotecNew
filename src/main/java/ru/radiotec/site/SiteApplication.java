@@ -22,8 +22,8 @@ public class SiteApplication extends SpringBootServletInitializer {
     @Bean
     MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
-        factory.setMaxFileSize(DataSize.of(100, DataUnit.MEGABYTES));
-        factory.setMaxRequestSize(DataSize.of(100, DataUnit.MEGABYTES));
+        factory.setMaxFileSize(DataSize.of(200, DataUnit.MEGABYTES));
+        factory.setMaxRequestSize(DataSize.of(200, DataUnit.MEGABYTES));
         return factory.createMultipartConfig();
     }
 

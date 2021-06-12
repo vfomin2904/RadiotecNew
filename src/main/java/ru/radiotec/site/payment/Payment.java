@@ -26,7 +26,7 @@ public class Payment {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .POST(buildFormDataFromMap(data))
-                .uri(URI.create("https://3dsec.sberbank.ru/payment/rest/register.do?userName=T7702407209-api&password=T7702407209&returnUrl=http://radiotec.ru/ru/success_payment&failUrl=http://radiotec.ru/ru/cart&orderNumber="+order+"&amount="+amount))
+                .uri(URI.create("https://securepayments.sberbank.ru/payment/rest/register.do?userName=P7702407209-api&password=Radiotec1845&returnUrl=http://radiotec.ru/ru/success_payment&failUrl=http://radiotec.ru/ru/cart&orderNumber="+order+"&amount="+amount))
                 .setHeader("User-Agent", "Java") // add request header
                 .build();
 
@@ -39,12 +39,6 @@ public class Payment {
             e.printStackTrace();
         }
 
-//        HttpHeaders headers = response.headers();
-//        headers.map().forEach((k, v) -> System.out.println(k + ":" + v));
-//
-//        System.out.println(response.statusCode());
-
-//        System.out.println(response.body());
         ObjectMapper mapper = new ObjectMapper();
         try {
 
@@ -63,7 +57,7 @@ public class Payment {
         Map<Object, Object> data = new HashMap<>();
         HttpRequest request = HttpRequest.newBuilder()
                 .POST(buildFormDataFromMap(data))
-                .uri(URI.create("https://3dsec.sberbank.ru/payment/rest/getOrderStatusExtended.do?userName=T7702407209-api&password=T7702407209&orderNumber="+order))
+                .uri(URI.create("https://securepayments.sberbank.ru/payment/rest/getOrderStatusExtended.do?userName=P7702407209-api&password=Radiotec1845&orderNumber="+order))
                 .setHeader("User-Agent", "Java")
                 .setHeader("Content-Type", "application/x-www-form-urlencoded")
                 .build();
