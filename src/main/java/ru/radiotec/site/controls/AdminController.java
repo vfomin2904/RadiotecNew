@@ -636,15 +636,15 @@ public class AdminController {
             model.addAttribute("books", newBooks);
             model.addAttribute("action", "book_sort_new");
         } else {
-            TreeSet<Books> books = new TreeSet<>(new Comparator<Books>() {
-                @Override
-                public int compare(Books o1, Books o2) {
-                    return o1.getSort() - o2.getSort();
-                }
-            });
+//            TreeSet<Books> books = new TreeSet<>(new Comparator<Books>() {
+//                @Override
+//                public int compare(Books o1, Books o2) {
+//                    return o1.getSort() - o2.getSort();
+//                }
+//            });
             BookSec booksec = bookSecService.getBookSecById(id);
-            books.addAll(booksec.getBooks());
-            model.addAttribute("books", books);
+//            books.addAll(booksec.getBooks());
+            model.addAttribute("books", booksec.getBooks());
             model.addAttribute("booksec", booksec);
             model.addAttribute("action", "book_sort");
         }

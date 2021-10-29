@@ -37,7 +37,7 @@ public class BookSec {
 
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "bookSec")
-    @OrderBy("sort ASC")
+    @OrderBy("sort DESC, id DESC")
     Set<Books> books = new HashSet();
 
     public BookSec(){

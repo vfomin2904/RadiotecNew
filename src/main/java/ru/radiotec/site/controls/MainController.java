@@ -50,16 +50,16 @@ public class MainController {
     @GetMapping("/")
     public String getMainPage(Model model) {
         
-        TreeSet<Books> booksNew = new TreeSet<>(new Comparator<Books>() {
-            @Override
-            public int compare(Books o1, Books o2) {
-                return o2.getSortNew()- o1.getSortNew();
-            }
-        });
-        booksNew.addAll(bookService.getNewBooks());
+//        TreeSet<Books> booksNew = new TreeSet<>(new Comparator<Books>() {
+//            @Override
+//            public int compare(Books o1, Books o2) {
+//                return o2.getSortNew()- o1.getSortNew();
+//            }
+//        });
+//        booksNew.addAll(bookService.getNewBooks());
         ArrayList<News> urgentlyNews = new ArrayList<>(newsService.getNewsByType(1));
         ArrayList<News> shortNews = new ArrayList<>(newsService.getNewsByType(2));
-        model.addAttribute("booksnew", booksNew);
+        model.addAttribute("booksnew", bookService.getNewBooks());
         model.addAttribute("urgentlyNews", urgentlyNews);
         model.addAttribute("shortNews", shortNews);
         return "index";

@@ -10,6 +10,8 @@ import java.util.List;
 
 @Repository
 public interface BookRepository extends JpaRepository<Books, Integer> {
+
+    @Query("select b from Books b where b.bookNew = 1 order by b.sortNew desc, b.id desc")
     List<Books> findBooksByBookNew(String bookNew);
     List<Books> findBooksBySection(BookSec section);
 
